@@ -6,9 +6,9 @@ export default function AnimatedBackground() {
       aria-hidden="true"
       className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
     >
-      <div className="absolute inset-0 mx-auto w-[90vw]">
+      <div className="absolute inset-0 mx-auto hidden w-[90vw] lg:flex">
         <div className="animated-line" style={{ left: "0%" }} />
-        <div className="animated-line" style={{ left: "10%" }} />
+        {/* <div className="animated-line" style={{ left: "10%" }} /> */}
         <div className="animated-line" style={{ left: "20%" }} />
         {/* <div className="animated-line" style={{ left: "30%" }} />
         <div className="animated-line" style={{ left: "40%" }} />
@@ -16,7 +16,7 @@ export default function AnimatedBackground() {
         <div className="animated-line" style={{ left: "60%" }} />
         <div className="animated-line" style={{ left: "70%" }} /> */}
         <div className="animated-line" style={{ left: "80%" }} />
-        <div className="animated-line" style={{ left: "90%" }} />
+        {/* <div className="animated-line" style={{ left: "90%" }} /> */}
         <div className="animated-line" style={{ left: "100%" }} />
       </div>
 
