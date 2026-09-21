@@ -12,7 +12,7 @@ import type {
   KnowledgeDocument,
 } from "./types"
 
-const DEFAULT_MODEL = "gemini-3.5-flash-lite"
+const DEFAULT_MODEL = "gemini-3.8-flash"
 const MAX_CONTEXT_CHARACTERS = 18_000
 
 const PROFESSIONAL_RESUME_ACTION = {
@@ -30,6 +30,11 @@ const ACADEMIC_CV_ACTION = {
 } satisfies AssistantAction
 
 export class AssistantConfigurationError extends Error {}
+export class AssistantTimeoutError extends Error {}
+export class AssistantRateLimitError extends Error {}
+export class AssistantContentFilteredError extends Error {}
+export class AssistantModelError extends Error {}
+export class AssistantParseError extends Error {}
 
 const CLEARLY_OFF_TOPIC = [
   /\b(weather|forecast|temperature)\b/i,
@@ -367,8 +372,9 @@ export async function createAssistantReply(
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), 25_000)
 
+  let response: Awaited<ReturnType<typeof ai.models.generateContent>>
   try {
-    const response = await ai.models.generateContent({
+    response = await ai.models.generateContent({
       model: process.env.GEMINI_MODEL?.trim() || DEFAULT_MODEL,
       contents: messages.slice(-8).map((message) => ({
         role: message.role === "assistant" ? "model" : "user",
@@ -378,7 +384,7 @@ export async function createAssistantReply(
         abortSignal: controller.signal,
         systemInstruction: buildSystemInstruction(selectedDocuments),
         maxOutputTokens: 2_048,
-        thinkingConfig: { thinkingLevel: ThinkingLevel.MINIMAL },
+        // thinkingConfig: { thinkingLevel: ThinkingLevel.MINIMAL },
         responseMimeType: "application/json",
         responseJsonSchema: {
           type: "object",
@@ -404,32 +410,55 @@ export async function createAssistantReply(
         },
       },
     })
-
-    if (!response.text) {
-      throw new Error("Gemini did not return a response.")
-    }
-
-    const modelReply = parseModelReply(response.text)
-    const sources = modelReply.sourceIds
-      .map((id) => selectedById.get(id))
-      .filter((document): document is KnowledgeDocument => Boolean(document))
-      .map(toSource)
-
-    return {
-      answer: modelReply.answer,
-      sources,
-      suggestions:
-        modelReply.suggestions.length > 0
-          ? modelReply.suggestions
-          : [
-              "Which project should I look at first?",
-              "How do you make technical decisions?",
-              "What have you written recently?",
-            ],
-      actions: getActions(toDocumentActions(requestedDocuments), sources),
-      scope: modelReply.scope,
-    }
-  } finally {
+  } catch (error: unknown) {
     clearTimeout(timeout)
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw new AssistantTimeoutError("The request timed out.")
+    }
+    const message =
+      error instanceof Error ? error.message.toLowerCase() : ""
+    if (message.includes("rate") || message.includes("429")) {
+      throw new AssistantRateLimitError("Gemini rate limit reached.")
+    }
+    if (message.includes("safety") || message.includes("blocked") || message.includes("filter")) {
+      throw new AssistantContentFilteredError("The response was filtered by safety settings.")
+    }
+    if (message.includes("model") || message.includes("not found") || message.includes("invalid")) {
+      throw new AssistantModelError("The AI model is unavailable.")
+    }
+    throw error
+  }
+
+  clearTimeout(timeout)
+
+  if (!response.text) {
+    throw new AssistantModelError("Gemini did not return a response.")
+  }
+
+  let modelReply: ModelReply
+  try {
+    modelReply = parseModelReply(response.text)
+  } catch {
+    throw new AssistantParseError("Failed to parse the AI response.")
+  }
+
+  const sources = modelReply.sourceIds
+    .map((id) => selectedById.get(id))
+    .filter((document): document is KnowledgeDocument => Boolean(document))
+    .map(toSource)
+
+  return {
+    answer: modelReply.answer,
+    sources,
+    suggestions:
+      modelReply.suggestions.length > 0
+        ? modelReply.suggestions
+        : [
+            "Which project should I look at first?",
+            "How do you make technical decisions?",
+            "What have you written recently?",
+          ],
+    actions: getActions(toDocumentActions(requestedDocuments), sources),
+    scope: modelReply.scope,
   }
 }

@@ -28,7 +28,7 @@ export default function SelectedWork({
   return (
     <section className="border-t border-border py-16">
       <div className="mb-8 flex items-baseline justify-between">
-        <span className="eyebrow">Selected Work</span>
+        <span className="eyebrow">Work</span>
         <Link href="/work" className="section-link">
           View all <ArrowRightIcon className="size-3" />
         </Link>

@@ -3,19 +3,19 @@
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { ArrowRightIcon } from "lucide-react"
-import type { ExperienceInterface } from "@/type"
+import type { AcademicInterface } from "@/type"
 
-export default function SelectedExperience({
-  experience,
+export default function SelectedEducation({
+  academic,
 }: {
-  experience: ExperienceInterface | null
+  academic: AcademicInterface | null
 }) {
-  if (!experience) return null
+  if (!academic) return null
 
   return (
     <section className="border-t border-border py-16">
       <div className="mb-8 flex items-baseline justify-between">
-        <span className="eyebrow">Experience</span>
+        <span className="eyebrow">Education</span>
         <Link href="/about" className="section-link">
           View all <ArrowRightIcon className="size-3" />
         </Link>
@@ -29,31 +29,26 @@ export default function SelectedExperience({
         className="space-y-2"
       >
         <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-          <p className="text-sm text-muted-foreground">{experience.timeline}</p>
-          {experience.company.website ? (
+          <p className="text-sm text-muted-foreground">{academic.timeline}</p>
+          {academic.institute.website ? (
             <Link
-              href={experience.company.website}
+              href={academic.institute.website}
               target="_blank"
               rel="noopener noreferrer"
               className="text-xs text-muted-foreground/60 transition-colors hover:text-muted-foreground"
             >
-              {experience.company.name}
-              {experience.company.location
-                ? `, ${experience.company.location}`
-                : ""}
+              {academic.institute.name}
             </Link>
           ) : (
             <p className="text-xs text-muted-foreground/60">
-              {experience.company.name}
-              {experience.company.location
-                ? `, ${experience.company.location}`
-                : ""}
+              {academic.institute.name}
             </p>
           )}
         </div>
         <h3 className="font-heading text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-          {experience.role}
+          {academic.degree}
         </h3>
+        <p className="text-sm text-muted-foreground">{academic.field}</p>
       </motion.div>
     </section>
   )

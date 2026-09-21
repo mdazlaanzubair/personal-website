@@ -7,7 +7,7 @@ export const PUBLICATIONS_LIST_QUERY = defineQuery(/* groq */ `
   | order(
       coalesce(metadata.isFeatured, false) desc,
       metadata.year desc,
-      _createdAt desc,
+      _updatedAt desc,
       _id asc
     ) {
     "id": _id,

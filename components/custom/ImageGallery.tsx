@@ -84,7 +84,7 @@ export default function ImageGallery({ images }: { images: GalleryImage[] }) {
           if (!open) closeLightbox()
         }}
       >
-        <DialogContent className="max-w-[90vw] border-none bg-black/95 p-0 sm:max-w-4xl [&>[data-slot=dialog-close]]:hidden">
+        <DialogContent className="h-screen w-screen min-w-screen border-none bg-black/85 p-0 sm:max-w-4xl [&>[data-slot=dialog-close]]:hidden">
           {lightboxIndex !== null && (
             <div className="relative flex items-center justify-center">
               <button

@@ -72,9 +72,7 @@ const portableTextComponents: PortableTextComponents = {
   },
   list: {
     bullet: ({ children }) => (
-      <ul className="my-3 list-outside list-disc space-y-2 pl-5">
-        {children}
-      </ul>
+      <ul className="my-3 list-outside list-disc space-y-2 pl-5">{children}</ul>
     ),
     number: ({ children }) => (
       <ol className="my-3 list-outside list-decimal space-y-2 pl-5">
@@ -123,7 +121,7 @@ export default function WorkPageContent({
   return (
     <>
       {/* Page header */}
-      <section className="pb-16 pt-12 sm:pb-20 sm:pt-16">
+      <section className="pt-12 pb-16 sm:pt-16 sm:pb-20">
         <motion.span
           className="eyebrow"
           variants={fadeUp}
@@ -143,7 +141,7 @@ export default function WorkPageContent({
           Projects that solve real problems.
         </motion.h1>
         <motion.p
-          className="mt-4 section-subtitle max-w-lg"
+          className="mt-4 max-w-lg section-subtitle"
           variants={fadeUp}
           initial="hidden"
           animate="visible"
@@ -221,7 +219,7 @@ export default function WorkPageContent({
                     )}
                   </div>
                   <div className="flex shrink-0 items-center gap-3 pt-1">
-                    <span className="hidden text-xs tabular-nums text-muted-foreground sm:inline">
+                    <span className="hidden text-xs text-muted-foreground tabular-nums sm:inline">
                       {new Date(project.createdAt).getFullYear()}
                     </span>
                     <ArrowRightIcon className="size-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
@@ -292,7 +290,7 @@ export default function WorkPageContent({
                     </div>
                     <div className="flex shrink-0 items-center gap-3 pt-1">
                       {pub.metadata.year && (
-                        <span className="hidden text-xs tabular-nums text-muted-foreground sm:inline">
+                        <span className="hidden text-xs text-muted-foreground tabular-nums sm:inline">
                           {pub.metadata.year}
                         </span>
                       )}
@@ -351,7 +349,7 @@ export default function WorkPageContent({
                   {selectedProject.tags.map((tag) => (
                     <li
                       key={`${selectedProject.id}-${tag}`}
-                      className="border border-border bg-muted px-2 py-1 text-[11px]"
+                      className="rounded-md border border-border bg-muted px-2 py-px text-[10px]"
                     >
                       {tag}
                     </li>
@@ -362,7 +360,7 @@ export default function WorkPageContent({
 
             {(selectedProject.metadata.repositoryUrl ||
               selectedProject.metadata.projectUrl) && (
-              <DialogFooter className="items-center border-t border-border pt-4">
+              <DialogFooter className="items-center border-t border-border py-4">
                 <div className="flex items-center gap-2">
                   {selectedProject.metadata.repositoryUrl && (
                     <Link
@@ -414,9 +412,7 @@ export default function WorkPageContent({
                 {selectedPublication.metadata.year && (
                   <>
                     <span aria-hidden="true"> · </span>
-                    <time
-                      dateTime={String(selectedPublication.metadata.year)}
-                    >
+                    <time dateTime={String(selectedPublication.metadata.year)}>
                       {selectedPublication.metadata.year}
                     </time>
                   </>
@@ -440,7 +436,7 @@ export default function WorkPageContent({
                         <span
                           key={`${selectedPublication.id}-${author}-${index}`}
                           className={cn(
-                            "border px-2 py-1 text-[11px]",
+                            "rounded-md border px-2 py-px text-[10px]",
                             isMainAuthor
                               ? "border-foreground/30 bg-muted/50 font-medium text-foreground"
                               : "border-border bg-muted/50 text-muted-foreground"
@@ -473,7 +469,7 @@ export default function WorkPageContent({
             </div>
 
             {toDoiUrl(selectedPublication.metadata.doi) && (
-              <DialogFooter className="items-center border-t border-border pt-4">
+              <DialogFooter className="items-center border-t border-border py-4">
                 <Link
                   href={toDoiUrl(selectedPublication.metadata.doi)!}
                   target="_blank"

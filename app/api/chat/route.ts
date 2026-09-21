@@ -1,5 +1,10 @@
 import {
   AssistantConfigurationError,
+  AssistantTimeoutError,
+  AssistantRateLimitError,
+  AssistantContentFilteredError,
+  AssistantModelError,
+  AssistantParseError,
   createAssistantReply,
 } from "@/src/ai/gemini"
 import { checkAssistantRateLimit } from "@/src/ai/rate-limit"
@@ -109,9 +114,60 @@ export async function POST(request: Request) {
     if (error instanceof AssistantConfigurationError) {
       return Response.json(
         {
-          error: "Leo is being configured. Please try again a little later.",
+          error:
+            "Azlaan's assistant is being configured. Please try again a little later.",
         },
         { status: 503, headers: noStoreHeaders }
+      )
+    }
+
+    if (error instanceof AssistantTimeoutError) {
+      return Response.json(
+        {
+          error:
+            "That took longer than expected. Please try a shorter or simpler question.",
+        },
+        { status: 504, headers: noStoreHeaders }
+      )
+    }
+
+    if (error instanceof AssistantRateLimitError) {
+      return Response.json(
+        {
+          error:
+            "The AI service is temporarily busy. Please wait a moment and try again.",
+        },
+        { status: 429, headers: { ...noStoreHeaders, "Retry-After": "30" } }
+      )
+    }
+
+    if (error instanceof AssistantContentFilteredError) {
+      return Response.json(
+        {
+          error:
+            "I wasn't able to generate a response to that question. Try rephrasing it.",
+        },
+        { status: 422, headers: noStoreHeaders }
+      )
+    }
+
+    if (error instanceof AssistantModelError) {
+      return Response.json(
+        {
+          error:
+            "The AI model is temporarily unavailable. Please try again in a moment.",
+        },
+        { status: 503, headers: noStoreHeaders }
+      )
+    }
+
+    if (error instanceof AssistantParseError) {
+      return Response.json(
+        {
+          error:
+            "I received an unexpected response. Please try asking again.",
+        },
+        { status: 502, headers: noStoreHeaders }
       )
     }
 
@@ -119,9 +175,9 @@ export async function POST(request: Request) {
     return Response.json(
       {
         error:
-          "I couldn't reach my knowledge service just now. Please try again.",
+          "Something went wrong. Please try again.",
       },
-      { status: 502, headers: noStoreHeaders }
+      { status: 500, headers: noStoreHeaders }
     )
   }
 }

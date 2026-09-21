@@ -162,7 +162,7 @@ const ProjectsList = ({ projects }: { projects: WorkInterface[] }) => {
                   {selectedProject.tags.map((tag) => (
                     <li
                       key={`${selectedProject.id}-modal-${tag}`}
-                      className="border border-accent bg-muted p-2 text-[11px] leading-0"
+                      className="rounded-md border border-border bg-muted px-2 py-px text-[10px]"
                     >
                       {tag}
                     </li>
@@ -173,7 +173,7 @@ const ProjectsList = ({ projects }: { projects: WorkInterface[] }) => {
 
             {selectedProject.metadata.repositoryUrl ||
             selectedProject.metadata.projectUrl ? (
-              <DialogFooter className="items-center border-t border-accent pt-4">
+              <DialogFooter className="items-center border-t border-accent py-4">
                 <div className="flex items-center gap-2">
                   {selectedProject.metadata.repositoryUrl ? (
                     <Link

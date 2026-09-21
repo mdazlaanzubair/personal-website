@@ -1,7 +1,12 @@
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { GoogleAnalytics } from "@next/third-parties/google"
-import { Geist_Mono, Oxanium, Red_Hat_Display } from "next/font/google"
+import {
+  Geist_Mono,
+  Oxanium,
+  Red_Hat_Display,
+  Playfair_Display,
+} from "next/font/google"
 import Script from "next/script"
 import type { Viewport } from "next"
 
@@ -36,12 +41,12 @@ export const viewport: Viewport = {
   ],
 }
 
-const headingFont = Red_Hat_Display({
+const headingFont = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-heading",
 })
 
-const sansFont = Oxanium({
+const sansFont = Red_Hat_Display({
   subsets: ["latin"],
   variable: "--font-sans",
 })

@@ -106,7 +106,7 @@ const ResearchViewModal = ({
         </div>
 
         {doiUrl ? (
-          <DialogFooter className="items-center border-t border-accent pt-4 sm:justify-between">
+          <DialogFooter className="items-center border-t border-accent py-4 sm:justify-between">
             <div />
             <Link
               href={doiUrl}

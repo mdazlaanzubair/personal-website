@@ -18,7 +18,6 @@ import {
   MessageCircle,
   Send,
   Sparkles,
-  X,
 } from "lucide-react"
 import { AnimatePresence, motion } from "framer-motion"
 
@@ -200,62 +199,74 @@ export default function PortfolioAssistant() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent
           initialFocus={textareaRef}
-          className="glass-card fixed right-0 bottom-0 left-auto top-auto flex h-[min(42rem,calc(100dvh-2rem))] w-full translate-x-0 translate-y-0 flex-col gap-0 overflow-hidden p-0 text-card-foreground shadow-2xl data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom sm:right-6 sm:bottom-6 sm:max-w-[26rem] sm:rounded-2xl"
+          style={{ top: "auto", left: "auto", right: 0, bottom: 0, translate: "none" }}
+          className="!flex !h-[min(36rem,calc(100dvh-2rem))] !w-full !max-w-none !flex-col !gap-0 !overflow-hidden !border !border-border !bg-card !p-0 !ring-0 !shadow-2xl sm:!mr-6 sm:!mb-6 sm:!max-w-[24rem] sm:!rounded-2xl"
         >
-          <DialogHeader className="flex-row items-center gap-3 border-b border-border bg-background/90 p-4 pr-14 backdrop-blur-sm">
-            <div className="relative size-10 shrink-0 overflow-hidden rounded-full border-2 border-border bg-card">
+          {/* Header */}
+          <DialogHeader className="flex-row items-center gap-3 border-b border-border/60 px-4 py-3.5 pr-14">
+            <div className="relative size-9 shrink-0 overflow-hidden rounded-full ring-2 ring-border">
               <Image
                 src="/architect.png"
                 alt=""
                 fill
-                sizes="40px"
+                sizes="36px"
                 className="object-cover"
               />
-              <span className="absolute right-0 bottom-0 size-2.5 rounded-full border-2 border-card bg-emerald-500" />
+              <span className="absolute right-0 bottom-0 size-2 rounded-full border border-background bg-emerald-500" />
             </div>
             <div className="min-w-0 text-left">
-              <DialogTitle className="truncate text-sm font-bold tracking-wide normal-case">
+              <DialogTitle className="text-sm font-semibold tracking-tight normal-case text-foreground">
                 Ask Azlaan
               </DialogTitle>
-              <DialogDescription className="mt-0 truncate text-[11px] leading-4 tracking-wide uppercase">
-                AI assistant · grounded in public sources
+              <DialogDescription className="mt-0 text-[10px] leading-3 text-muted-foreground">
+                AI assistant grounded in public sources
               </DialogDescription>
             </div>
           </DialogHeader>
 
+          {/* Messages */}
           <div
             ref={transcriptRef}
-            className="flex-1 overflow-y-auto overscroll-contain"
+            className="flex-1 space-y-1 overflow-y-auto overscroll-contain px-3 py-4"
             aria-live="polite"
             aria-busy={isSending}
           >
             {messages.map((message, index) => {
               const isLatest = index === messages.length - 1
+              const isUser = message.role === "user"
+
               return (
-                <article
-                  key={message.id}
-                  className={cn(
-                    "border-b border-border/50 p-4",
-                    message.role === "user" && "bg-muted/30"
+                <div key={message.id} className={cn("flex flex-col", isUser ? "items-end" : "items-start")}>
+                  {/* Avatar + name for assistant */}
+                  {!isUser && index > 0 && (
+                    <div className="mb-1 ml-1 flex items-center gap-1.5">
+                      <Sparkles className="size-3 text-primary" />
+                      <span className="text-[10px] font-medium text-muted-foreground">Azlaan</span>
+                    </div>
                   )}
-                >
-                  <div className="mb-2 flex items-center gap-2 text-[10px] font-semibold tracking-widest text-muted-foreground uppercase">
-                    {message.role === "assistant" ? (
-                      <>
-                        <Sparkles className="size-3 text-primary" />
-                        <span>Azlaan</span>
-                      </>
+
+                  {/* Message bubble */}
+                  <div
+                    className={cn(
+                      "max-w-[88%] rounded-2xl px-3.5 py-2.5 text-[13px] leading-relaxed",
+                      isUser
+                        ? "rounded-br-md bg-foreground text-background"
+                        : "rounded-bl-md bg-muted/60 text-foreground"
+                    )}
+                  >
+                    {isUser ? (
+                      <p>{message.content}</p>
                     ) : (
-                      <span>You</span>
+                      <div className="prose-sm prose-p:my-1.5 prose-ul:my-1.5 prose-li:my-0 prose-strong:text-foreground dark:prose-invert max-w-none [&_p:first-child]:mt-0 [&_p:last-child]:mb-0">
+                        <ReactMarkdown>{message.content}</ReactMarkdown>
+                      </div>
                     )}
                   </div>
-                  <div className="prose prose-sm dark:prose-invert prose-p:my-2 prose-ul:my-2 prose-li:my-0 prose-strong:text-foreground max-w-none text-sm leading-6 text-foreground">
-                    <ReactMarkdown>{message.content}</ReactMarkdown>
-                  </div>
 
+                  {/* Sources */}
                   {message.sources && message.sources.length > 0 && (
-                    <div className="mt-4 space-y-2">
-                      <p className="text-[10px] font-semibold tracking-widest text-muted-foreground uppercase">
+                    <div className="mt-2 w-[88%] space-y-1.5">
+                      <p className="ml-1 text-[10px] font-medium tracking-wide text-muted-foreground uppercase">
                         Sources
                       </p>
                       {message.sources.map((source) => (
@@ -270,24 +281,25 @@ export default function PortfolioAssistant() {
                               ? "noopener noreferrer"
                               : undefined
                           }
-                          className="flex items-center justify-between gap-3 rounded-lg border border-border bg-background p-3 transition-colors hover:border-primary/40"
+                          className="group flex items-center gap-2.5 rounded-xl border border-border/60 bg-card px-3 py-2 transition-colors hover:border-primary/30 hover:bg-muted/40"
                         >
-                          <span className="min-w-0">
-                            <span className="block text-[10px] tracking-widest text-primary uppercase">
+                          <span className="min-w-0 flex-1">
+                            <span className="block text-[10px] font-medium text-primary">
                               {source.label}
                             </span>
-                            <span className="mt-1 block truncate text-xs font-medium text-foreground">
+                            <span className="mt-0.5 block truncate text-xs text-foreground">
                               {source.title}
                             </span>
                           </span>
-                          <ExternalLink className="size-3.5 shrink-0 text-muted-foreground" />
+                          <ExternalLink className="size-3 shrink-0 text-muted-foreground transition-colors group-hover:text-primary" />
                         </a>
                       ))}
                     </div>
                   )}
 
+                  {/* Actions */}
                   {message.actions && message.actions.length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-2">
+                    <div className="mt-2 flex flex-wrap gap-1.5">
                       {message.actions.map((action) => (
                         <a
                           key={`${action.label}-${action.url}`}
@@ -305,79 +317,94 @@ export default function PortfolioAssistant() {
                               ? action.fileName || true
                               : undefined
                           }
-                          className={buttonVariants({ size: "xs" })}
+                          className={cn(
+                            buttonVariants({ size: "xs" }),
+                            "h-7 gap-1 rounded-full text-[11px]"
+                          )}
                         >
                           {action.label}
                           {action.kind === "download" ? (
-                            <Download data-icon="inline-end" />
+                            <Download className="size-3" />
                           ) : (
-                            <ArrowRight data-icon="inline-end" />
+                            <ArrowRight className="size-3" />
                           )}
                         </a>
                       ))}
                     </div>
                   )}
 
+                  {/* Suggestion chips */}
                   {isLatest &&
                     message.suggestions &&
                     message.suggestions.length > 0 && (
-                      <div className="mt-4 flex flex-col gap-2">
+                      <div className="mt-3 flex w-full flex-col gap-1.5">
                         {message.suggestions.map((suggestion) => (
                           <button
                             key={suggestion}
                             type="button"
                             onClick={() => void sendMessage(suggestion)}
                             disabled={isSending}
-                            className="flex items-center justify-between gap-3 rounded-lg border border-border bg-card px-3 py-2 text-left text-xs leading-5 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
+                            className="group flex w-full items-center justify-between gap-2 rounded-xl border border-border/60 bg-card px-3 py-2 text-left text-[12px] leading-5 text-muted-foreground transition-all hover:border-primary/30 hover:bg-muted/40 hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
                           >
                             <span>{suggestion}</span>
-                            <ArrowRight className="size-3 shrink-0" />
+                            <ArrowRight className="size-3 shrink-0 transition-transform group-hover:translate-x-0.5" />
                           </button>
                         ))}
                       </div>
                     )}
-                </article>
+                </div>
               )
             })}
 
+            {/* Typing indicator */}
             {isSending && (
-              <div className="flex items-center gap-2 border-b border-border/50 p-4 text-xs text-muted-foreground">
-                <LoaderCircle className="size-3.5 animate-spin motion-reduce:animate-none" />
-                <span>Thinking through my work…</span>
+              <div className="flex items-start">
+                <div className="flex items-center gap-2 rounded-2xl rounded-bl-md bg-muted/60 px-3.5 py-2.5">
+                  <div className="flex gap-1">
+                    <span className="size-1.5 animate-bounce rounded-full bg-muted-foreground/60 [animation-delay:0ms]" />
+                    <span className="size-1.5 animate-bounce rounded-full bg-muted-foreground/60 [animation-delay:150ms]" />
+                    <span className="size-1.5 animate-bounce rounded-full bg-muted-foreground/60 [animation-delay:300ms]" />
+                  </div>
+                  <span className="text-xs text-muted-foreground">Thinking...</span>
+                </div>
               </div>
             )}
           </div>
 
+          {/* Composer */}
           <form
             onSubmit={handleSubmit}
-            className="border-t border-border bg-background/90 p-3 backdrop-blur-sm"
+            className="border-t border-border/60 p-3"
           >
             {error && (
-              <p
+              <div
                 role="alert"
-                className="mb-2 text-xs leading-5 text-destructive"
+                className="mb-2 rounded-lg bg-destructive/10 px-3 py-2 text-xs leading-5 text-destructive"
               >
                 {error}
-              </p>
+              </div>
             )}
-            <div className="flex items-end gap-2 rounded-lg border border-input bg-card p-2 focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/20">
-              <textarea
-                ref={textareaRef}
-                value={input}
-                onChange={(event) => setInput(event.target.value)}
-                onKeyDown={handleComposerKeyDown}
-                rows={2}
-                maxLength={1_200}
-                disabled={isSending}
-                placeholder="Ask about my work, thinking, or writing…"
-                aria-label="Message Azlaan's AI"
-                className="max-h-28 min-h-12 flex-1 resize-none bg-transparent px-1 py-1 text-sm leading-5 text-foreground outline-none placeholder:text-muted-foreground disabled:opacity-60"
-              />
+            <div className="flex items-end gap-2">
+              <div className="flex-1 rounded-xl border border-input bg-background px-3 py-2 focus-within:border-ring focus-within:ring-1 focus-within:ring-ring/30">
+                <textarea
+                  ref={textareaRef}
+                  value={input}
+                  onChange={(event) => setInput(event.target.value)}
+                  onKeyDown={handleComposerKeyDown}
+                  rows={1}
+                  maxLength={1_200}
+                  disabled={isSending}
+                  placeholder="Ask about my work, thinking, or writing..."
+                  aria-label="Message Azlaan's AI"
+                  className="max-h-24 min-h-[1.5rem] w-full resize-none bg-transparent text-[13px] leading-5 text-foreground outline-none placeholder:text-muted-foreground/60 disabled:opacity-60"
+                />
+              </div>
               <Button
                 type="submit"
                 size="icon-sm"
                 disabled={isSending || !input.trim()}
                 aria-label="Send message"
+                className="shrink-0 rounded-xl"
               >
                 {isSending ? (
                   <LoaderCircle className="animate-spin" />
@@ -386,9 +413,8 @@ export default function PortfolioAssistant() {
                 )}
               </Button>
             </div>
-            <p className="mt-2 text-[10px] leading-4 text-muted-foreground">
-              Answers are generated from approved portfolio material and may
-              still make mistakes.
+            <p className="mt-2 text-center text-[10px] leading-4 text-muted-foreground/50">
+              Answers are generated from approved portfolio material
             </p>
           </form>
         </DialogContent>

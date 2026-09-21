@@ -7,7 +7,7 @@ import {
 
 export const EXPERIENCE_QUERY = defineQuery(/* groq */ `
   *[_type == "experience"]
-  | order(_createdAt desc) {
+  | order(_updatedAt desc) {
     "company": select(
       company.isAnonymized == true => {
         "name": "Confidential organization",
@@ -33,7 +33,7 @@ export const EXPERIENCE_QUERY = defineQuery(/* groq */ `
 
 export const ACADEMIC_HISTORY_QUERY = defineQuery(/* groq */ `
   *[_type == "academic"]
-  | order(_createdAt desc) {
+  | order(_updatedAt desc) {
     "institute": {
       "name": institute.name,
       "website": institute.website
