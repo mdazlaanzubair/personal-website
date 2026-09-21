@@ -9,9 +9,9 @@ import "../globals.css"
 import JsonLd from "@/components/seo/JsonLd"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
-import ProfileHeader from "@/components/custom/ProfileHeader"
 import Navbar from "@/components/custom/Navbar"
 import { Footer } from "@/components/custom/Footer"
+import PortfolioAssistant from "@/components/custom/PortfolioAssistant"
 import { toSocialProfiles } from "@/src/sanity/adapters"
 import { client } from "@/src/sanity/client"
 import { SOCIAL_PROFILES_QUERY } from "@/src/sanity/queries"
@@ -35,14 +35,17 @@ export const viewport: Viewport = {
   ],
 }
 
-const playfairDisplayHeading = Red_Hat_Display({
+const headingFont = Red_Hat_Display({
   subsets: ["latin"],
   variable: "--font-heading",
 })
 
-const oxanium = Oxanium({ subsets: ["latin"], variable: "--font-sans" })
+const sansFont = Oxanium({
+  subsets: ["latin"],
+  variable: "--font-sans",
+})
 
-const fontMono = Geist_Mono({
+const monoFont = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 })
@@ -71,38 +74,36 @@ export default async function RootLayout({
       suppressHydrationWarning
       className={cn(
         "antialiased",
-        fontMono.variable,
-        "font-sans",
-        oxanium.variable,
-        playfairDisplayHeading.variable
+        sansFont.variable,
+        headingFont.variable,
+        monoFont.variable,
+        "font-sans"
       )}
     >
       <body>
         <JsonLd data={createSiteJsonLd(socialProfiles)} />
         <ThemeProvider>
-          <div className="flex min-h-screen w-screen flex-col bg-background">
-            <div className="mx-auto flex w-full max-w-xl flex-1 flex-col overflow-x-clip border-s border-e border-accent bg-foreground">
-              <ProfileHeader socialLinks={socialProfiles} />
-              <Navbar />
-              <main className="h-full w-full flex-1 border-b border-accent bg-card">
-                {children}
-                {/* Adds Vercel Analytics telemetry monitoring */}
-                <Analytics />
-                {/* Seamless, optimized Google Analytics tag integration */}
-                <GoogleAnalytics gaId="G-NETESH3QT8" />
-                {/* Google AdSense script */}
-                <Script
-                  async
-                  src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1061119254656808"
-                  crossOrigin="anonymous"
-                  strategy="afterInteractive"
-                />
-                {/* Next.js Speed Insights for performance metrics */}
-                <SpeedInsights />
-              </main>
-              <Footer socialLinks={socialProfiles} />
-            </div>
+          <div className="flex min-h-screen flex-col bg-background">
+            <Navbar />
+            <main className="flex-1">
+              <div className="mx-auto max-w-3xl px-5 sm:px-8">{children}</div>
+            </main>
+            <Footer socialLinks={socialProfiles} />
           </div>
+          <PortfolioAssistant />
+          {/* Vercel Analytics */}
+          <Analytics />
+          {/* Google Analytics */}
+          <GoogleAnalytics gaId="G-NETESH3QT8" />
+          {/* Google AdSense */}
+          <Script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1061119254656808"
+            crossOrigin="anonymous"
+            strategy="afterInteractive"
+          />
+          {/* Speed Insights */}
+          <SpeedInsights />
         </ThemeProvider>
       </body>
     </html>

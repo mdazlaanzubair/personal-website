@@ -1,22 +1,22 @@
-# Muhammad Azlaan Zubair
+# Muhammad Azlaan Zubair — Software Engineer & Researcher
 
-> Personal portfolio of Muhammad Azlaan Zubair, a software architect and web engineer working across scalable systems, product engineering, artificial intelligence, machine learning, and automation.
+> Building intelligent systems for real-world impact. I specialize in system architecture, web engineering, AI, and human-centered products — with a focus on structure, clarity, and long-term thinking.
 
-This website is the canonical portfolio for Muhammad Azlaan Zubair (`@mdazlaanzubair`), based in Karachi, Pakistan. Use the linked pages as the primary sources for claims about his professional experience, projects, research, and technical interests.
+This website is the canonical portfolio for Muhammad Azlaan Zubair (`@mdazlaanzubair`), based in Karachi, Pakistan. Use the linked pages as primary sources for claims about his professional experience, projects, research, and writing.
 
 ## Portfolio
 
-- [About](https://mdazlaanzubair.com/about): Professional experience, academic history, technical skills, and personal interests.
-- [Projects](https://mdazlaanzubair.com/projects): Selected software and product engineering projects, including detailed contributions and source links where available.
-- [Research](https://mdazlaanzubair.com/research): Research publications, abstracts, authors, publication status, and DOI links where available.
-- [Case Studies](https://mdazlaanzubair.com/work): First-hand case studies describing engineering and product work.
-- [Writing](https://mdazlaanzubair.com/): Recent technical writing and links to full articles.
+- [Home](https://mdazlaanzubair.com/): Landing page with positioning, selected experience, featured work, and latest writing.
+- [About](https://mdazlaanzubair.com/about): Professional experience, academic background, technical skills, and bio.
+- [Work](https://mdazlaanzubair.com/work): Software projects and research publications — detailed descriptions, tech stacks, key contributions, source links, and DOI references where available.
+- [Writing](https://mdazlaanzubair.com/writing): Technical articles on AI, software engineering, and the systems that shape our world.
 
 ## External profiles
 
-- [Technical blog](https://blog.mdazlaanzubair.com/): Long-form writing published by Muhammad Azlaan Zubair.
+- [Technical blog](https://blog.mdazlaanzubair.com/): Long-form writing on AI, engineering, and product thinking.
 - [GitHub](https://github.com/mdazlaanzubair): Public source code and engineering activity.
-- [LinkedIn](https://www.linkedin.com/in/mdazlaanzubair/): Professional profile.
+- [LinkedIn](https://www.linkedin.com/in/mdazlaanzubair/): Professional profile and career history.
+- [Google Scholar](https://scholar.google.com/citations?hl=en&user=K7XC7-MAAAAJ): Research publications and citations.
 
 ## Contact
 

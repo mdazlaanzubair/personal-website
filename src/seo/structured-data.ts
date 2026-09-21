@@ -70,26 +70,16 @@ export const createSiteJsonLd = (socialProfiles: SocialMediaInterface[]) => ({
       inLanguage: "en",
       publisher: { "@id": PERSON_ID },
       hasPart: [
-        {
-          "@type": "CollectionPage",
-          name: "Writing",
-          url: absoluteUrl("/"),
-        },
         { "@type": "AboutPage", name: "About", url: absoluteUrl("/about") },
         {
           "@type": "CollectionPage",
-          name: "Projects",
-          url: absoluteUrl("/projects"),
-        },
-        {
-          "@type": "ProfilePage",
-          name: "Research",
-          url: absoluteUrl("/research"),
+          name: "Work",
+          url: absoluteUrl("/work"),
         },
         {
           "@type": "CollectionPage",
-          name: "Case Studies",
-          url: absoluteUrl("/work"),
+          name: "Writing",
+          url: absoluteUrl("/writing"),
         },
       ],
     },
@@ -217,8 +207,8 @@ export const createResearchPageJsonLd = ({
 }) => ({
   "@context": "https://schema.org",
   "@type": "ProfilePage",
-  "@id": `${absoluteUrl("/research")}#profile`,
-  url: absoluteUrl("/research"),
+  "@id": `${absoluteUrl("/work")}#research-profile`,
+  url: absoluteUrl("/work"),
   name: `${SITE_NAME} research profile`,
   description,
   inLanguage: "en",
@@ -233,7 +223,7 @@ export const createResearchPageJsonLd = ({
 
     return {
       "@type": "ScholarlyArticle",
-      "@id": `${absoluteUrl("/research")}#${encodeURIComponent(publication.id)}`,
+      "@id": `${absoluteUrl("/work")}#${encodeURIComponent(publication.id)}`,
       headline: publication.title,
       name: publication.title,
       description: publication.abstract,

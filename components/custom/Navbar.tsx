@@ -1,309 +1,287 @@
 "use client"
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
-import { ChevronDown, ExternalLinkIcon } from "lucide-react"
-
+import { useTheme } from "next-themes"
+import { motion, AnimatePresence } from "framer-motion"
+import {
+  MenuIcon,
+  XIcon,
+  ChevronDownIcon,
+  ExternalLinkIcon,
+  PhoneIcon,
+} from "lucide-react"
 import { cn } from "@/lib/utils"
-
-const useIsomorphicLayoutEffect =
-  typeof window !== "undefined" ? useLayoutEffect : useEffect
+import { ModeToggle } from "./ModeToggle"
 
 interface NavItem {
   label: string
   href: string
+  external?: boolean
 }
 
-const DEFAULT_NAV_ITEMS: NavItem[] = [
-  { label: "Feed", href: "/" },
+const NAV_ITEMS: NavItem[] = [
   { label: "About", href: "/about" },
-  { label: "Research", href: "/research" },
-  { label: "Projects", href: "/projects" },
-  { label: "Blog", href: "https://blog.mdazlaanzubair.com/" },
+  { label: "Work", href: "/work" },
+  { label: "Writing", href: "/writing" },
+]
+
+const MORE_ITEMS: NavItem[] = [
+  {
+    label: "Blog",
+    href: "https://blog.mdazlaanzubair.com/",
+    external: true,
+  },
   {
     label: "Case Studies",
     href: "https://blog.mdazlaanzubair.com/series/case-studies",
+    external: true,
   },
   {
     label: "Product Observations",
     href: "https://blog.mdazlaanzubair.com/series/product-observations",
+    external: true,
   },
 ]
 
-function isExternalHref(href: string) {
-  return /^(https?:)?\/\//i.test(href)
+function Logo() {
+  const { resolvedTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return (
+      <span className="font-heading text-xl font-bold tracking-tight">AZ</span>
+    )
+  }
+
+  return (
+    <Image
+      src={
+        resolvedTheme === "dark" ? "/AZ-logo-light.svg" : "/AZ-logo-dark.svg"
+      }
+      alt="Azlaan Zubair"
+      width={36}
+      height={36}
+      className="h-8 w-auto"
+      priority
+    />
+  )
 }
 
-export default function Navbar({
-  items = DEFAULT_NAV_ITEMS,
-}: {
-  items?: NavItem[]
-}) {
+export default function Navbar() {
   const pathname = usePathname()
-
-  const internalItems = useMemo(
-    () => items.filter((item) => !isExternalHref(item.href)),
-    [items]
-  )
-
-  const externalItems = useMemo(
-    () => items.filter((item) => isExternalHref(item.href)),
-    [items]
-  )
-
-  const [visibleCount, setVisibleCount] = useState(internalItems.length)
-  const [isMoreOpen, setIsMoreOpen] = useState(false)
-
-  const navRef = useRef<HTMLElement>(null)
-  const dropdownRef = useRef<HTMLDivElement>(null)
-  const itemWidthsRef = useRef<(number | null)[]>([])
-  const moreWidthRef = useRef(80)
-
-  useIsomorphicLayoutEffect(() => {
-    const handleResize = () => {
-      const container = navRef.current
-
-      if (!container) return
-
-      const containerWidth = container.clientWidth
-
-      if (!containerWidth) return
-
-      const itemWidths = itemWidthsRef.current
-      const moreWidth = moreWidthRef.current || 80
-      const gap = 8
-      const hasPermanentDropdown = externalItems.length > 0
-
-      const totalInternalWidth = internalItems.reduce((total, _, index) => {
-        const itemWidth = itemWidths[index] ?? 0
-        return total + itemWidth + (index > 0 ? gap : 0)
-      }, 0)
-
-      const totalWidthWithDropdown =
-        totalInternalWidth +
-        (hasPermanentDropdown
-          ? (internalItems.length > 0 ? gap : 0) + moreWidth
-          : 0)
-
-      if (totalWidthWithDropdown <= containerWidth) {
-        setVisibleCount(internalItems.length)
-        return
-      }
-
-      let usedWidth = 0
-      let count = 0
-
-      for (let index = 0; index < internalItems.length; index++) {
-        const itemWidth = itemWidths[index] ?? 0
-        const itemGap = index > 0 ? gap : 0
-        const nextUsedWidth = usedWidth + itemGap + itemWidth
-
-        // A dropdown is required whenever:
-        // 1. external links exist, or
-        // 2. at least one internal link will overflow.
-        const dropdownGap = count >= 0 ? gap : 0
-        const requiredWidth = nextUsedWidth + dropdownGap + moreWidth
-
-        if (requiredWidth <= containerWidth) {
-          usedWidth = nextUsedWidth
-          count++
-        } else {
-          break
-        }
-      }
-
-      setVisibleCount(count)
-    }
-
-    handleResize()
-
-    const observer = new ResizeObserver(handleResize)
-    const nav = navRef.current
-
-    if (nav) {
-      observer.observe(nav)
-    }
-
-    return () => {
-      observer.disconnect()
-    }
-  }, [internalItems, externalItems.length])
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const [moreOpen, setMoreOpen] = useState(false)
 
   useEffect(() => {
-    if (!isMoreOpen) return
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsMoreOpen(false)
-      }
-    }
-
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setIsMoreOpen(false)
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside)
-    document.addEventListener("keydown", handleEscape)
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-      document.removeEventListener("keydown", handleEscape)
-    }
-  }, [isMoreOpen])
-
-  useEffect(() => {
-    setIsMoreOpen(false)
+    setMobileOpen(false)
+    setMoreOpen(false)
   }, [pathname])
 
-  const isItemActive = (href: string) => {
-    if (isExternalHref(href)) return false
-    if (href === "/") return pathname === "/"
+  useEffect(() => {
+    if (!moreOpen) return
+    const close = (e: MouseEvent) => {
+      const target = e.target as HTMLElement
+      if (!target.closest("[data-more-menu]")) setMoreOpen(false)
+    }
+    const esc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMoreOpen(false)
+    }
+    document.addEventListener("mousedown", close)
+    document.addEventListener("keydown", esc)
+    return () => {
+      document.removeEventListener("mousedown", close)
+      document.removeEventListener("keydown", esc)
+    }
+  }, [moreOpen])
 
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/"
     return pathname === href || pathname.startsWith(`${href}/`)
   }
 
-  const visibleItems = internalItems.slice(0, visibleCount)
-  const overflowInternalItems = internalItems.slice(visibleCount)
-
-  const dropdownItems = [...overflowInternalItems, ...externalItems]
-  const hasDropdown = dropdownItems.length > 0
-
-  const isOverflowActive = overflowInternalItems.some((item) =>
-    isItemActive(item.href)
-  )
-
   return (
-    <div className="sticky top-0 z-50 w-full border-b border-accent bg-background text-card-foreground supports-backdrop-filter:backdrop-blur-md">
-      {/* Hidden measurement container */}
-      <div
-        className="pointer-events-none invisible absolute top-0 left-0 -z-50 flex items-center gap-2 opacity-0"
-        aria-hidden="true"
-      >
-        {internalItems.map((item, index) => (
-          <span
-            key={item.href}
-            ref={(element) => {
-              itemWidthsRef.current[index] = element?.offsetWidth ?? 0
-            }}
-            className="px-4 py-3 text-sm font-semibold whitespace-nowrap"
-          >
-            {item.label}
-          </span>
-        ))}
-
-        <span
-          ref={(element) => {
-            if (element) {
-              moreWidthRef.current = element.offsetWidth
-            }
-          }}
-          className="px-4 py-3 text-sm font-semibold whitespace-nowrap"
+    <>
+      <header className="sticky top-0 z-50 w-full border-b glass">
+        <nav
+          className="mx-auto flex h-14 max-w-3xl items-center justify-between px-5 sm:px-8"
+          aria-label="Main navigation"
         >
-          More ▾
-        </span>
-      </div>
+          {/* Logo */}
+          <Link href="/" className="shrink-0" aria-label="Home">
+            <Logo />
+          </Link>
 
-      <nav
-        ref={navRef}
-        className="flex w-full items-center justify-start gap-2 px-2"
-        aria-label="Main navigation"
-      >
-        {visibleItems.map((item) => {
-          const active = isItemActive(item.href)
+          {/* Desktop nav */}
+          <div className="hidden items-center gap-1 md:flex">
+            {NAV_ITEMS.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "relative px-3 py-1.5 text-sm font-medium transition-colors",
+                  isActive(item.href)
+                    ? "text-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {item.label}
+                {isActive(item.href) && (
+                  <motion.span
+                    layoutId="nav-underline"
+                    className="absolute inset-x-3 -bottom-[calc(0.375rem+1px)] h-0.5 bg-primary"
+                    transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                  />
+                )}
+              </Link>
+            ))}
 
-          return (
+            {/* More dropdown */}
+            <div className="relative" data-more-menu>
+              <button
+                type="button"
+                onClick={() => setMoreOpen((o) => !o)}
+                className={cn(
+                  "flex items-center gap-1 px-3 py-1.5 text-sm font-medium transition-colors",
+                  moreOpen
+                    ? "text-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+                aria-expanded={moreOpen}
+                aria-haspopup="menu"
+              >
+                More
+                <ChevronDownIcon
+                  className={cn(
+                    "size-3.5 transition-transform duration-200",
+                    moreOpen && "rotate-180"
+                  )}
+                />
+              </button>
+
+              <AnimatePresence>
+                {moreOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.15 }}
+                    role="menu"
+                    className="absolute top-full right-0 z-50 mt-2 w-56 rounded-lg glass-card p-1.5 shadow-lg"
+                  >
+                    {MORE_ITEMS.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        role="menuitem"
+                        className="flex items-center justify-between rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                      >
+                        <span>{item.label}</span>
+                        <ExternalLinkIcon className="size-3 opacity-50" />
+                      </Link>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+
+          {/* Right side actions */}
+          <div className="flex items-center gap-2">
+            <ModeToggle />
+
             <Link
-              key={item.href}
-              href={item.href}
-              aria-current={active ? "page" : undefined}
-              className={cn(
-                "group relative -mb-px flex items-center justify-center border-b-2 px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors duration-150",
-                active
-                  ? "border-primary font-semibold text-primary"
-                  : "border-transparent text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-              )}
+              href="https://calendar.app.google/Le7g5jxPwGDRSJRSA"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden items-center gap-1.5 rounded-full border border-border bg-foreground px-4 py-1.5 text-xs font-medium text-background transition-colors hover:bg-foreground/90 sm:inline-flex"
             >
-              {item.label}
+              <PhoneIcon className="size-3" />
+              Book a Call
             </Link>
-          )
-        })}
 
-        {hasDropdown && (
-          <div ref={dropdownRef} className="relative">
+            {/* Mobile hamburger */}
             <button
               type="button"
-              onClick={() => setIsMoreOpen((current) => !current)}
-              className={cn(
-                "relative -mb-px flex cursor-pointer items-center gap-1.5 border-b-2 px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors duration-150",
-                isOverflowActive
-                  ? "border-primary font-semibold text-primary"
-                  : isMoreOpen
-                    ? "border-transparent bg-muted/60 text-foreground"
-                    : "border-transparent text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-              )}
-              aria-expanded={isMoreOpen}
-              aria-haspopup="menu"
-              aria-controls="navbar-more-menu"
+              onClick={() => setMobileOpen((o) => !o)}
+              className="inline-flex size-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-foreground md:hidden"
+              aria-label="Toggle menu"
+              aria-expanded={mobileOpen}
             >
-              <span>More</span>
-
-              <ChevronDown
-                aria-hidden="true"
-                className={cn(
-                  "size-4 transition-transform duration-200",
-                  isMoreOpen && "rotate-180"
-                )}
-              />
+              {mobileOpen ? (
+                <XIcon className="size-5" />
+              ) : (
+                <MenuIcon className="size-5" />
+              )}
             </button>
-
-            {isMoreOpen && (
-              <div
-                id="navbar-more-menu"
-                role="menu"
-                className="absolute top-full right-0 z-50 mt-1.5 w-56 animate-in border border-accent bg-popover p-1.5 shadow-md duration-150 fade-in-0 zoom-in-95 motion-reduce:animate-none"
-              >
-                {dropdownItems.map((item) => {
-                  const external = isExternalHref(item.href)
-                  const active = isItemActive(item.href)
-
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      role="menuitem"
-                      target={external ? "_blank" : undefined}
-                      rel={external ? "noopener noreferrer" : undefined}
-                      aria-current={active ? "page" : undefined}
-                      onClick={() => setIsMoreOpen(false)}
-                      className={cn(
-                        "flex items-center justify-between gap-3 px-3 py-2 text-sm font-medium transition-colors",
-                        active
-                          ? "bg-primary/10 font-semibold text-primary"
-                          : "text-popover-foreground hover:bg-muted"
-                      )}
-                    >
-                      <span>{item.label}</span>
-
-                      {external && (
-                        <ExternalLinkIcon
-                          aria-hidden="true"
-                          className="size-3 shrink-0"
-                        />
-                      )}
-                    </Link>
-                  )
-                })}
-              </div>
-            )}
           </div>
+        </nav>
+      </header>
+
+      {/* Mobile menu */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-x-0 top-14 z-40 overflow-hidden border-b glass md:hidden"
+          >
+            <div className="mx-auto max-w-3xl space-y-1 px-5 py-4 sm:px-8">
+              {NAV_ITEMS.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "block rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
+                    isActive(item.href)
+                      ? "bg-muted text-foreground"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  )}
+                >
+                  {item.label}
+                </Link>
+              ))}
+
+              <div className="my-2 border-t border-border" />
+
+              {MORE_ITEMS.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between rounded-md px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                >
+                  <span>{item.label}</span>
+                  <ExternalLinkIcon className="size-3 opacity-50" />
+                </Link>
+              ))}
+
+              <div className="my-2 border-t border-border" />
+
+              <Link
+                href="https://calendar.app.google/Le7g5jxPwGDRSJRSA"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-1.5 rounded-full border border-border bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-colors hover:bg-foreground/90"
+              >
+                <PhoneIcon className="size-3.5" />
+                Book a Call
+              </Link>
+            </div>
+          </motion.div>
         )}
-      </nav>
-    </div>
+      </AnimatePresence>
+    </>
   )
 }

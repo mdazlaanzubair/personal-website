@@ -1,3 +1,5 @@
+"use client"
+
 import {
   Accordion,
   AccordionContent,
@@ -5,11 +7,9 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import Timeline from "@/components/seo/Timeline"
-import { cn } from "@/lib/utils"
 import type { AcademicInterface } from "@/type"
-import { AtSignIcon, BookAIcon, GraduationCapIcon } from "lucide-react"
+import { motion } from "framer-motion"
 import Link from "next/link"
-import { buttonVariants } from "../ui/button"
 
 type EducationAccordionProps = {
   items: AcademicInterface[]
@@ -19,28 +19,32 @@ type EducationAccordionProps = {
 const googleSearchUrl = (query: string) =>
   `https://www.google.com/search?q=${encodeURIComponent(query)}`
 
-const EducationAccordion = ({ items, fetchError }: EducationAccordionProps) => {
+export default function EducationAccordion({
+  items,
+  fetchError,
+}: EducationAccordionProps) {
   if (!fetchError && items.length === 0) return null
 
   return (
-    <section id="education" aria-labelledby="education-heading">
-      <header className="p-4">
-        <span className="eyebrow text-xs">Education</span>
-        <h2
-          id="education-heading"
-          className="mb-3 font-heading text-2xl font-semibold"
-        >
-          Academics
+    <section className="border-t border-border py-16">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-50px" }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
+        className="mb-8"
+      >
+        <span className="eyebrow">Education</span>
+        <h2 className="mt-3 font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+          Academic background
         </h2>
-        <p className="text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-2 section-subtitle">
           Education laid the foundation of my technical and academic knowledge.
         </p>
-      </header>
+      </motion.div>
 
       {fetchError ? (
-        <p className="border-t border-accent p-4 text-xs text-muted-foreground">
-          {fetchError}
-        </p>
+        <p className="text-sm text-muted-foreground">{fetchError}</p>
       ) : (
         <Accordion hiddenUntilFound>
           {items.map((item, idx) => {
@@ -51,51 +55,47 @@ const EducationAccordion = ({ items, fetchError }: EducationAccordionProps) => {
               <AccordionItem
                 key={`${name}-${degree}-${timeline}`}
                 value={`education-${idx}`}
-                className="border-b border-accent last:border-b-0"
+                className="border-b border-border last:border-b-0"
               >
-                <article>
-                  <AccordionTrigger className="group flex items-center px-4 hover:no-underline">
-                    <div className="rounded bg-secondary p-3">
-                      <GraduationCapIcon className="size-3" />
-                    </div>
-                    <div>
-                      <span className="text-xs font-medium text-muted-foreground">
-                        <Timeline value={timeline} />
-                      </span>
-
-                      <span className="line-clamp-2 leading-snug font-semibold tracking-tight">
-                        {degree}
-                      </span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="bg-background p-0">
-                    <div className="flex items-center justify-between border-t border-b border-accent text-xs text-muted-foreground">
-                      <Link
-                        href={website || googleSearchUrl(name)}
-                        className={cn(
-                          buttonVariants({ variant: "link", size: "sm" }),
-                          "text-[10px]"
-                        )}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <AtSignIcon className="size-3" /> {name}
-                      </Link>
-                      <Link
-                        href={googleSearchUrl(field)}
-                        className={cn(
-                          buttonVariants({ variant: "link", size: "sm" }),
-                          "text-[10px]"
-                        )}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <BookAIcon className="size-3" />
-                        {field}
-                      </Link>
-                    </div>
-                  </AccordionContent>
-                </article>
+                <AccordionTrigger className="group flex w-full items-start gap-4 py-4 hover:no-underline">
+                  <div className="flex-1 text-left">
+                    <p className="text-xs tabular-nums text-muted-foreground/60">
+                      <Timeline value={timeline} />
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-foreground sm:text-base">
+                      {degree}
+                    </p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      {website ? (
+                        <Link
+                          href={website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="transition-colors hover:text-foreground"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {name}
+                        </Link>
+                      ) : (
+                        <Link
+                          href={googleSearchUrl(name)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="transition-colors hover:text-foreground"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {name}
+                        </Link>
+                      )}
+                      {field ? ` · ${field}` : ""}
+                    </p>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="pb-6">
+                  <p className="text-sm text-muted-foreground">
+                    {field} at {name}
+                  </p>
+                </AccordionContent>
               </AccordionItem>
             )
           })}
@@ -104,5 +104,3 @@ const EducationAccordion = ({ items, fetchError }: EducationAccordionProps) => {
     </section>
   )
 }
-
-export default EducationAccordion

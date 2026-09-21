@@ -20,16 +20,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: absoluteUrl("/work"),
       changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: absoluteUrl("/research"),
-      changeFrequency: "monthly",
       priority: 0.9,
     },
     {
-      url: absoluteUrl("/projects"),
-      changeFrequency: "monthly",
+      url: absoluteUrl("/writing"),
+      changeFrequency: "weekly",
       priority: 0.8,
     },
   ]
