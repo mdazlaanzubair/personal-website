@@ -107,7 +107,7 @@ export default function HeroSection() {
         >
           <div className="relative h-36 w-36 overflow-hidden rounded-2xl sm:h-44 sm:w-44">
             <Image
-              src="/portrait.png"
+              src="/architect.png"
               alt="Muhammad Azlaan Zubair"
               fill
               sizes="(max-width: 640px) 144px, 176px"

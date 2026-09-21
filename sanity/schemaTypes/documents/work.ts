@@ -42,6 +42,28 @@ export const work = defineType({
       validation: (rule) => rule.required().unique().max(12),
     }),
     defineField({
+      name: "images",
+      title: "Gallery images",
+      description:
+        "Up to 4 images: screenshots, architecture diagrams, system flows, etc.",
+      type: "array",
+      group: "content",
+      of: [
+        defineArrayMember({
+          type: "image",
+          options: { hotspot: true },
+          fields: [
+            defineField({
+              name: "alt",
+              title: "Alt text",
+              type: "string",
+            }),
+          ],
+        }),
+      ],
+      validation: (rule) => rule.max(4),
+    }),
+    defineField({
       name: "metadata",
       title: "Project details",
       type: "object",

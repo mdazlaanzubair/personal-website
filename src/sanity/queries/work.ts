@@ -12,6 +12,13 @@ export const WORK_LIST_QUERY = defineQuery(/* groq */ `
     title,
     description,
     "tags": coalesce(tags, []),
+    "images": coalesce(images[]{
+      "url": asset->url,
+      "alt": alt,
+      "width": asset->metadata.dimensions.width,
+      "height": asset->metadata.dimensions.height,
+      "lqip": asset->metadata.lqip
+    }, []),
     "metadata": {
       "isFeatured": metadata.isFeatured == true,
       "projectUrl": metadata.projectUrl,

@@ -46,6 +46,28 @@ export const publication = defineType({
       validation: (rule) => rule.required().min(1).unique(),
     }),
     defineField({
+      name: "images",
+      title: "Gallery images",
+      description:
+        "Up to 4 images: mind maps, architecture diagrams, paper abstract screenshots, etc.",
+      type: "array",
+      group: "content",
+      of: [
+        defineArrayMember({
+          type: "image",
+          options: { hotspot: true },
+          fields: [
+            defineField({
+              name: "alt",
+              title: "Alt text",
+              type: "string",
+            }),
+          ],
+        }),
+      ],
+      validation: (rule) => rule.max(4),
+    }),
+    defineField({
       name: "metadata",
       title: "Publication details",
       type: "object",

@@ -40,45 +40,43 @@ export default function AboutHeader() {
         I design and build systems that scale.
       </motion.h1>
 
-      <div className="mt-10 flex flex-col-reverse gap-8 sm:flex-row sm:gap-12">
-        <motion.div
-          className="flex-1 space-y-4"
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
-          custom={2}
-        >
-          <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
-            I specialize in system architecture and web engineering. From backend
-            services to frontend performance, I approach development with
-            structure, clarity, and long-term thinking.
-          </p>
-          <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
-            Over the years, I&apos;ve led architectural initiatives, optimized
-            high-traffic applications, and contributed to technical
-            decision-making that supports product growth. I believe strong
-            engineering is defined not just by delivery, but by durability.
-          </p>
-        </motion.div>
+      <motion.div
+        className="mt-10 overflow-hidden rounded-2xl"
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
+      >
+        <div className="relative aspect-[21/9] w-full">
+          <Image
+            src="/builder.png"
+            alt="Muhammad Azlaan Zubair at work"
+            fill
+            sizes="(max-width: 768px) 100vw, 768px"
+            className="object-cover"
+            priority
+          />
+        </div>
+      </motion.div>
 
-        <motion.div
-          className="relative shrink-0"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
-        >
-          <div className="relative h-36 w-36 overflow-hidden rounded-2xl sm:h-44 sm:w-44">
-            <Image
-              src="/portrait.png"
-              alt="Muhammad Azlaan Zubair"
-              fill
-              sizes="(max-width: 640px) 144px, 176px"
-              className="object-cover"
-              priority
-            />
-          </div>
-        </motion.div>
-      </div>
+      <motion.div
+        className="mt-10 space-y-4"
+        variants={fadeUp}
+        initial="hidden"
+        animate="visible"
+        custom={2}
+      >
+        <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+          I specialize in system architecture and web engineering. From backend
+          services to frontend performance, I approach development with
+          structure, clarity, and long-term thinking.
+        </p>
+        <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+          Over the years, I&apos;ve led architectural initiatives, optimized
+          high-traffic applications, and contributed to technical
+          decision-making that supports product growth. I believe strong
+          engineering is defined not just by delivery, but by durability.
+        </p>
+      </motion.div>
 
       <motion.blockquote
         className="mt-10 border-l-2 border-primary pl-4"

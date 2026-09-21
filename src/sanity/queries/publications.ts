@@ -14,6 +14,13 @@ export const PUBLICATIONS_LIST_QUERY = defineQuery(/* groq */ `
     title,
     abstract,
     "authors": coalesce(authors, []),
+    "images": coalesce(images[]{
+      "url": asset->url,
+      "alt": alt,
+      "width": asset->metadata.dimensions.width,
+      "height": asset->metadata.dimensions.height,
+      "lqip": asset->metadata.lqip
+    }, []),
     "metadata": {
       "journal": metadata.journal,
       "status": metadata.status,

@@ -89,7 +89,7 @@ export const createSiteJsonLd = (socialProfiles: SocialMediaInterface[]) => ({
       name: SITE_NAME,
       alternateName: SITE_HANDLE,
       url: absoluteUrl("/about"),
-      image: absoluteUrl("/portrait.png"),
+      image: absoluteUrl("/architect.png"),
       email: "mailto:mdazlaan1996@gmail.com",
       birthDate: "1996-07",
       jobTitle: "Software Architect and Web Engineer",

@@ -9,6 +9,7 @@ import "../globals.css"
 import JsonLd from "@/components/seo/JsonLd"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
+import AnimatedBackground from "@/components/custom/AnimatedBackground"
 import Navbar from "@/components/custom/Navbar"
 import { Footer } from "@/components/custom/Footer"
 import PortfolioAssistant from "@/components/custom/PortfolioAssistant"
@@ -83,7 +84,8 @@ export default async function RootLayout({
       <body>
         <JsonLd data={createSiteJsonLd(socialProfiles)} />
         <ThemeProvider>
-          <div className="flex min-h-screen flex-col bg-background">
+          <AnimatedBackground />
+          <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
             <Navbar />
             <main className="flex-1">
               <div className="mx-auto max-w-3xl px-5 sm:px-8">{children}</div>

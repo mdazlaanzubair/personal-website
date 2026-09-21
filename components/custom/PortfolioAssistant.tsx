@@ -205,7 +205,7 @@ export default function PortfolioAssistant() {
           <DialogHeader className="flex-row items-center gap-3 border-b border-border bg-background/90 p-4 pr-14 backdrop-blur-sm">
             <div className="relative size-10 shrink-0 overflow-hidden rounded-full border-2 border-border bg-card">
               <Image
-                src="/portrait.png"
+                src="/architect.png"
                 alt=""
                 fill
                 sizes="40px"

@@ -15,7 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: absoluteUrl("/about"),
       changeFrequency: "monthly",
       priority: 0.8,
-      images: [absoluteUrl("/portrait.png")],
+      images: [absoluteUrl("/architect.png")],
     },
     {
       url: absoluteUrl("/work"),

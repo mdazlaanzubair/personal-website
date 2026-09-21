@@ -11,13 +11,16 @@ import {
 } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
 import type { PublicationInterface, WorkInterface } from "@/type"
+import ImageGallery from "./ImageGallery"
 import {
   ArrowRightIcon,
   Code2Icon,
   ExternalLinkIcon,
+  ImageIcon,
 } from "lucide-react"
 import { motion } from "framer-motion"
 import { PortableText, type PortableTextComponents } from "next-sanity"
+import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
 
@@ -176,8 +179,27 @@ export default function WorkPageContent({
                 <button
                   type="button"
                   onClick={() => setSelectedProject(project)}
-                  className="group flex w-full items-baseline justify-between gap-4 border-b border-border py-4 text-left transition-colors hover:bg-muted/20"
+                  className="group flex w-full items-start gap-4 border-b border-border py-4 text-left transition-colors hover:bg-muted/20"
                 >
+                  {project.images.length > 0 && (
+                    <div className="relative hidden size-14 shrink-0 overflow-hidden rounded-md bg-muted/30 sm:block">
+                      <Image
+                        src={project.images[0].url}
+                        alt={project.images[0].alt || project.title}
+                        fill
+                        sizes="56px"
+                        className="object-cover"
+                        placeholder={project.images[0].lqip ? "blur" : "empty"}
+                        blurDataURL={project.images[0].lqip || undefined}
+                      />
+                      {project.images.length > 1 && (
+                        <span className="absolute right-0.5 bottom-0.5 flex items-center gap-0.5 rounded bg-black/60 px-1 py-0.5 text-[9px] text-white">
+                          <ImageIcon className="size-2.5" />
+                          {project.images.length}
+                        </span>
+                      )}
+                    </div>
+                  )}
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline gap-2">
                       {project.metadata.isFeatured && (
@@ -198,7 +220,7 @@ export default function WorkPageContent({
                       </p>
                     )}
                   </div>
-                  <div className="flex shrink-0 items-center gap-3">
+                  <div className="flex shrink-0 items-center gap-3 pt-1">
                     <span className="hidden text-xs tabular-nums text-muted-foreground sm:inline">
                       {new Date(project.createdAt).getFullYear()}
                     </span>
@@ -239,8 +261,27 @@ export default function WorkPageContent({
                   <button
                     type="button"
                     onClick={() => setSelectedPublication(pub)}
-                    className="group flex w-full items-baseline justify-between gap-4 border-b border-border py-4 text-left transition-colors hover:bg-muted/20"
+                    className="group flex w-full items-start gap-4 border-b border-border py-4 text-left transition-colors hover:bg-muted/20"
                   >
+                    {pub.images.length > 0 && (
+                      <div className="relative hidden size-14 shrink-0 overflow-hidden rounded-md bg-muted/30 sm:block">
+                        <Image
+                          src={pub.images[0].url}
+                          alt={pub.images[0].alt || pub.title}
+                          fill
+                          sizes="56px"
+                          className="object-cover"
+                          placeholder={pub.images[0].lqip ? "blur" : "empty"}
+                          blurDataURL={pub.images[0].lqip || undefined}
+                        />
+                        {pub.images.length > 1 && (
+                          <span className="absolute right-0.5 bottom-0.5 flex items-center gap-0.5 rounded bg-black/60 px-1 py-0.5 text-[9px] text-white">
+                            <ImageIcon className="size-2.5" />
+                            {pub.images.length}
+                          </span>
+                        )}
+                      </div>
+                    )}
                     <div className="min-w-0 flex-1">
                       <p className="text-[11px] text-muted-foreground/60 capitalize">
                         {pub.metadata.journal || statusLabel}
@@ -249,7 +290,7 @@ export default function WorkPageContent({
                         {pub.title}
                       </h3>
                     </div>
-                    <div className="flex shrink-0 items-center gap-3">
+                    <div className="flex shrink-0 items-center gap-3 pt-1">
                       {pub.metadata.year && (
                         <span className="hidden text-xs tabular-nums text-muted-foreground sm:inline">
                           {pub.metadata.year}
@@ -287,6 +328,10 @@ export default function WorkPageContent({
             </DialogHeader>
 
             <div className="max-h-[52vh] space-y-6 overflow-y-auto pr-2">
+              {selectedProject.images.length > 0 && (
+                <ImageGallery images={selectedProject.images} />
+              )}
+
               {selectedProject.metadata.key_contributions.length > 0 && (
                 <section>
                   <h3 className="mb-3 font-heading text-base font-semibold text-foreground">
@@ -410,7 +455,11 @@ export default function WorkPageContent({
               )}
             </DialogHeader>
 
-            <div className="max-h-64 space-y-6 overflow-y-auto pr-2">
+            <div className="max-h-[52vh] space-y-6 overflow-y-auto pr-2">
+              {selectedPublication.images.length > 0 && (
+                <ImageGallery images={selectedPublication.images} />
+              )}
+
               {selectedPublication.abstract && (
                 <section>
                   <h3 className="mb-3 font-heading text-base font-semibold text-foreground">

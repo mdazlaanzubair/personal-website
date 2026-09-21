@@ -5,11 +5,20 @@ type PublicationStatus =
 
 type SocialPlatform = "x" | "instagram" | "linkedin" | "github" | "scholar"
 
+export interface GalleryImage {
+  url: string
+  alt: string | null
+  width: number | null
+  height: number | null
+  lqip: string | null
+}
+
 export interface PublicationInterface {
   id: string
   title: string
   abstract: string
   authors: string[]
+  images: GalleryImage[]
   metadata: {
     journal: string | null
     status: PublicationStatus
@@ -34,6 +43,7 @@ export interface WorkInterface {
   title: string
   description: string
   tags: string[]
+  images: GalleryImage[]
 
   metadata: {
     isFeatured: boolean
