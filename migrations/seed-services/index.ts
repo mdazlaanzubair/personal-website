@@ -130,15 +130,90 @@ const services = [
   },
 ]
 
+const clientProjects = [
+  {
+    _type: "clientProject" as const,
+    _id: "client-project-digital-asset-distribution",
+    title: "Digital Asset Distribution Platform",
+    domain: "Design Studio",
+    description:
+      "Built a platform for a design studio to distribute, license, and manage digital assets across teams and clients.",
+    tags: ["Next.js", "Supabase", "Stripe", "Tailwind CSS"],
+    isActive: true,
+    sortOrder: 1,
+  },
+  {
+    _type: "clientProject" as const,
+    _id: "client-project-document-intelligence",
+    title: "Document Intelligence System",
+    domain: "Publishing",
+    description:
+      "Developed an AI-powered system to extract, classify, and summarise content from large document archives.",
+    tags: ["Python", "OpenAI", "FastAPI", "PostgreSQL"],
+    isActive: true,
+    sortOrder: 2,
+  },
+  {
+    _type: "clientProject" as const,
+    _id: "client-project-research-data-analysis",
+    title: "Research Data Analysis Pipeline",
+    domain: "Academic Research",
+    description:
+      "Created an automated data pipeline for a university research lab to clean, process, and visualise experimental datasets.",
+    tags: ["Python", "Pandas", "Matplotlib", "Jupyter"],
+    isActive: true,
+    sortOrder: 3,
+  },
+  {
+    _type: "clientProject" as const,
+    _id: "client-project-fire-detection",
+    title: "Computer Vision Model — Fire Detection",
+    domain: "UAV Research",
+    description:
+      "Trained and deployed a computer vision model for real-time fire detection on UAV-captured aerial imagery.",
+    tags: ["Python", "PyTorch", "OpenCV", "YOLO"],
+    isActive: true,
+    sortOrder: 4,
+  },
+  {
+    _type: "clientProject" as const,
+    _id: "client-project-enterprise-sales-collateral",
+    title: "Enterprise Sales Collateral",
+    domain: "Bridgestone",
+    description:
+      "Designed and built interactive sales collateral and product landing pages for Bridgestone's enterprise sales team.",
+    tags: ["Next.js", "Figma", "Tailwind CSS", "Vercel"],
+    isActive: true,
+    sortOrder: 5,
+  },
+  {
+    _type: "clientProject" as const,
+    _id: "client-project-content-workflow-automation",
+    title: "Content Workflow Automation",
+    domain: "Creator Economy",
+    description:
+      "Automated the end-to-end content pipeline — from draft to publish — for a creator-economy startup.",
+    tags: ["n8n", "Notion API", "OpenAI", "Zapier"],
+    isActive: true,
+    sortOrder: 6,
+  },
+]
+
 async function seed() {
   const transaction = client.transaction()
 
   for (const service of services) {
     transaction.createOrReplace(service)
   }
+  for (const project of clientProjects) {
+    transaction.createOrReplace(project)
+  }
 
   const result = await transaction.commit()
-  console.log(`Seeded ${services.length} services:`, result.documentIds)
+  console.log(
+    `Seeded ${services.length} services and ${clientProjects.length} client projects:`,
+    result.documentIds
+  )
 }
 
 seed().catch((error) => {

@@ -35,3 +35,16 @@ export const SERVICE_TESTIMONIALS_QUERY = defineQuery(/* groq */ `
     ${timestampsProjection}
   }
 `)
+
+export const CLIENT_PROJECTS_QUERY = defineQuery(/* groq */ `
+  *[_type == "clientProject" && isActive == true]
+  | order(coalesce(sortOrder, 999) asc, _updatedAt desc, _id asc) {
+    "id": _id,
+    title,
+    domain,
+    description,
+    "tags": coalesce(tags, []),
+    sortOrder,
+    ${timestampsProjection}
+  }
+`)

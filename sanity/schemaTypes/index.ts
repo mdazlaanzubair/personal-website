@@ -1,4 +1,5 @@
 import { academic } from "./documents/academic"
+import { clientProject } from "./documents/clientProject"
 import { experience } from "./documents/experience"
 import { publication } from "./documents/publication"
 import { service } from "./documents/service"
@@ -24,6 +25,7 @@ export const schemaTypes = [
   work,
   service,
   serviceTestimonial,
+  clientProject,
   experience,
   academic,
   siteSettings,

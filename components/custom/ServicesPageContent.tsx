@@ -10,9 +10,9 @@ import {
 } from "lucide-react"
 
 import type {
+  ClientProjectInterface,
   ServiceInterface,
   ServiceTestimonialInterface,
-  WorkInterface,
 } from "@/type"
 
 const fadeUp = {
@@ -268,52 +268,53 @@ function ProcessSection() {
   )
 }
 
-function FeaturedProjects({ projects }: { projects: WorkInterface[] }) {
+function FeaturedProjects({
+  projects,
+}: {
+  projects: ClientProjectInterface[]
+}) {
   if (projects.length === 0) return null
 
   return (
     <section className="border-t border-border py-16">
       <div className="mb-8 flex items-baseline justify-between">
         <span className="eyebrow">Featured Projects</span>
-        <Link href="/work" className="section-link">
-          View all <ArrowRightIcon className="size-3" />
-        </Link>
       </div>
 
       <div className="space-y-0">
         {projects.map((project, i) => (
           <motion.div
             key={project.id}
+            className="border-b border-border py-4"
             variants={itemVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-30px" }}
             custom={i}
           >
-            <Link
-              href="/work"
-              className="group flex items-baseline justify-between gap-4 border-b border-border py-4 transition-colors hover:bg-muted/20"
-            >
-              <div className="flex min-w-0 items-baseline gap-4">
-                <span className="shrink-0 text-xs tabular-nums text-muted-foreground/50">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <div className="min-w-0">
-                  <h3 className="truncate text-sm font-semibold text-foreground sm:text-base">
-                    {project.title}
-                  </h3>
-                  <p className="mt-0.5 truncate text-xs text-muted-foreground">
-                    {project.description}
+            <div className="flex min-w-0 items-baseline gap-4">
+              <span className="shrink-0 text-xs tabular-nums text-muted-foreground/50">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <div className="min-w-0">
+                <h3 className="truncate text-sm font-semibold text-foreground sm:text-base">
+                  {project.title}
+                </h3>
+                {project.domain && (
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    {project.domain}
                   </p>
-                  {project.tags.length > 0 && (
-                    <p className="mt-1 text-[11px] text-muted-foreground/60">
-                      {project.tags.slice(0, 4).join(" · ")}
-                    </p>
-                  )}
-                </div>
+                )}
+                <p className="mt-0.5 truncate text-xs text-muted-foreground/70">
+                  {project.description}
+                </p>
+                {project.tags.length > 0 && (
+                  <p className="mt-1 text-[11px] text-muted-foreground/60">
+                    {project.tags.slice(0, 4).join(" · ")}
+                  </p>
+                )}
               </div>
-              <ArrowRightIcon className="size-3.5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-            </Link>
+            </div>
           </motion.div>
         ))}
       </div>
@@ -441,7 +442,7 @@ export default function ServicesPageContent({
 }: {
   services: ServiceInterface[]
   testimonials: ServiceTestimonialInterface[]
-  featuredProjects: WorkInterface[]
+  featuredProjects: ClientProjectInterface[]
 }) {
   return (
     <>

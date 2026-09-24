@@ -109,6 +109,17 @@ export interface ServiceInterface {
   updatedAt: string
 }
 
+export interface ClientProjectInterface {
+  id: string
+  title: string
+  domain: string | null
+  description: string
+  tags: string[]
+  sortOrder: number | null
+  createdAt: string
+  updatedAt: string
+}
+
 export interface ServiceTestimonialInterface {
   id: string
   clientName: string

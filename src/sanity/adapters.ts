@@ -11,6 +11,7 @@ import type {
 } from "@/sanity.types"
 import type {
   AcademicInterface,
+  ClientProjectInterface,
   ExperienceInterface,
   InterestType,
   PublicationInterface,
@@ -99,3 +100,8 @@ export const toServiceTestimonials = (
   documents: unknown[]
 ): ServiceTestimonialInterface[] =>
   documents as ServiceTestimonialInterface[]
+
+export const toClientProjects = (
+  documents: unknown[]
+): ClientProjectInterface[] =>
+  documents as ClientProjectInterface[]
