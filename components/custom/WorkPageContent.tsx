@@ -165,68 +165,77 @@ export default function WorkPageContent({
           </motion.div>
 
           <div className="space-y-0">
-            {projects.map((project, i) => (
-              <motion.div
-                key={project.id}
-                variants={itemVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-30px" }}
-                custom={i}
-              >
-                <button
-                  type="button"
-                  onClick={() => setSelectedProject(project)}
-                  className="group flex w-full items-start gap-4 border-b border-border py-4 text-left transition-colors hover:bg-muted/20"
+            {projects.map((project, i) => {
+              const isLastItem = i === projects.length - 1
+
+              return (
+                <motion.div
+                  key={project.id}
+                  variants={itemVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-30px" }}
+                  custom={i}
                 >
-                  {project.images.length > 0 && (
-                    <div className="relative hidden size-14 shrink-0 overflow-hidden rounded-md bg-muted/30 sm:block">
-                      <Image
-                        src={project.images[0].url}
-                        alt={project.images[0].alt || project.title}
-                        fill
-                        sizes="56px"
-                        className="object-cover"
-                        placeholder={project.images[0].lqip ? "blur" : "empty"}
-                        blurDataURL={project.images[0].lqip || undefined}
-                      />
-                      {project.images.length > 1 && (
-                        <span className="absolute right-0.5 bottom-0.5 flex items-center gap-0.5 rounded bg-black/60 px-1 py-0.5 text-[9px] text-white">
-                          <ImageIcon className="size-2.5" />
-                          {project.images.length}
-                        </span>
-                      )}
-                    </div>
-                  )}
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-baseline gap-2">
-                      {project.metadata.isFeatured && (
-                        <span className="shrink-0 text-[10px] font-semibold tracking-wider text-primary uppercase">
-                          Featured
-                        </span>
-                      )}
-                    </div>
-                    <h3 className="text-sm font-semibold text-foreground sm:text-base">
-                      {project.title}
-                    </h3>
-                    <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground">
-                      {project.description}
-                    </p>
-                    {project.tags.length > 0 && (
-                      <p className="mt-1 text-[11px] text-muted-foreground/60">
-                        {project.tags.slice(0, 4).join(" · ")}
-                      </p>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedProject(project)}
+                    className={cn(
+                      "group flex w-full items-start gap-4 border-b border-border py-4 text-left transition-colors hover:bg-muted/20",
+                      isLastItem && "border-b-0"
                     )}
-                  </div>
-                  <div className="flex shrink-0 items-center gap-3 pt-1">
-                    <span className="hidden text-xs text-muted-foreground tabular-nums sm:inline">
-                      {new Date(project.createdAt).getFullYear()}
-                    </span>
-                    <ArrowRightIcon className="size-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-                  </div>
-                </button>
-              </motion.div>
-            ))}
+                  >
+                    {project.images.length > 0 && (
+                      <div className="relative hidden size-14 shrink-0 overflow-hidden rounded-md bg-muted/30 sm:block">
+                        <Image
+                          src={project.images[0].url}
+                          alt={project.images[0].alt || project.title}
+                          fill
+                          sizes="56px"
+                          className="object-cover"
+                          placeholder={
+                            project.images[0].lqip ? "blur" : "empty"
+                          }
+                          blurDataURL={project.images[0].lqip || undefined}
+                        />
+                        {project.images.length > 1 && (
+                          <span className="absolute right-0.5 bottom-0.5 flex items-center gap-0.5 rounded bg-black/60 px-1 py-0.5 text-[9px] text-white">
+                            <ImageIcon className="size-2.5" />
+                            {project.images.length}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-baseline gap-2">
+                        {project.metadata.isFeatured && (
+                          <span className="shrink-0 text-[10px] font-semibold tracking-wider text-primary uppercase">
+                            Featured
+                          </span>
+                        )}
+                      </div>
+                      <h3 className="text-sm font-semibold text-foreground sm:text-base">
+                        {project.title}
+                      </h3>
+                      <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground">
+                        {project.description}
+                      </p>
+                      {project.tags.length > 0 && (
+                        <p className="mt-1 text-[11px] text-muted-foreground/60">
+                          {project.tags.slice(0, 4).join(" · ")}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex shrink-0 items-center gap-3 pt-1">
+                      <span className="hidden text-xs text-muted-foreground tabular-nums sm:inline">
+                        {new Date(project.createdAt).getFullYear()}
+                      </span>
+                      <ArrowRightIcon className="size-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+                    </div>
+                  </button>
+                </motion.div>
+              )
+            })}
           </div>
         </section>
       )}
@@ -247,6 +256,8 @@ export default function WorkPageContent({
           <div className="space-y-0">
             {publications.map((pub, i) => {
               const statusLabel = pub.metadata.status.replaceAll("_", " ")
+              const isLastItem = i === publications.length - 1
+
               return (
                 <motion.div
                   key={pub.id}
@@ -259,7 +270,10 @@ export default function WorkPageContent({
                   <button
                     type="button"
                     onClick={() => setSelectedPublication(pub)}
-                    className="group flex w-full items-start gap-4 border-b border-border py-4 text-left transition-colors hover:bg-muted/20"
+                    className={cn(
+                      "group flex w-full items-start gap-4 border-b border-border py-4 text-left transition-colors hover:bg-muted/20",
+                      isLastItem && "border-b-0"
+                    )}
                   >
                     {pub.images.length > 0 && (
                       <div className="relative hidden size-14 shrink-0 overflow-hidden rounded-md bg-muted/30 sm:block">

@@ -50,6 +50,16 @@ const FOOTER_LINKS: { label: string; platform: string; fallbackUrl: string }[] =
       platform: "email",
       fallbackUrl: "mailto:mdazlaan1996@gmail.com",
     },
+    {
+      label: "Instagram",
+      platform: "instagram",
+      fallbackUrl: "https://instagram.com/mdazlaanzubairr",
+    },
+    {
+      label: "Threads",
+      platform: "threads",
+      fallbackUrl: "https://www.threads.com/@mdazlaanzubairr",
+    },
   ]
 
 export function Footer({
@@ -64,7 +74,7 @@ export function Footer({
   }
 
   return (
-    <footer className="border-t border-border">
+    <footer className="">
       <div className="mx-auto flex max-w-3xl flex-col items-center justify-between gap-4 px-5 py-8 sm:flex-row sm:px-8">
         <div className="flex items-center gap-2">
           <FooterLogo />
