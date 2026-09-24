@@ -4,6 +4,7 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { ArrowRightIcon } from "lucide-react"
 import type { HashnodePost } from "@/src/hashnode/hashnode"
+import { cn } from "@/lib/utils"
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -48,7 +49,7 @@ export default function WritingPageContent({
   return (
     <>
       {/* Page header */}
-      <section className="pb-16 pt-12 sm:pb-20 sm:pt-16">
+      <section className="pt-12 pb-16 sm:pt-16 sm:pb-20">
         <motion.span
           className="eyebrow"
           variants={fadeUp}
@@ -68,7 +69,7 @@ export default function WritingPageContent({
           Ideas, notes, and explorations.
         </motion.h1>
         <motion.p
-          className="mt-4 section-subtitle max-w-lg"
+          className="mt-4 max-w-lg section-subtitle"
           variants={fadeUp}
           initial="hidden"
           animate="visible"
@@ -83,41 +84,48 @@ export default function WritingPageContent({
       {posts.length > 0 ? (
         <section className="border-t border-border pb-16">
           <div className="space-y-0">
-            {posts.map((post, i) => (
-              <motion.div
-                key={post.id}
-                variants={itemVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-30px" }}
-                custom={i}
-              >
-                <Link
-                  href={post.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex items-baseline justify-between gap-4 border-b border-border py-5 transition-colors hover:bg-muted/20"
+            {posts.map((post, i) => {
+              const isLastItem = i === posts.length - 1
+
+              return (
+                <motion.div
+                  key={post.id}
+                  variants={itemVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-30px" }}
+                  custom={i}
                 >
-                  <div className="min-w-0 flex-1">
-                    <p className="mb-1 text-xs tabular-nums text-muted-foreground/60">
-                      {formatDate(post.publishedAt)}
-                      {post.readTimeInMinutes > 0 && (
-                        <span className="ml-2">
-                          · {post.readTimeInMinutes} min read
-                        </span>
-                      )}
-                    </p>
-                    <h2 className="text-sm font-semibold text-foreground sm:text-base">
-                      {post.title}
-                    </h2>
-                    <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
-                      {post.brief}
-                    </p>
-                  </div>
-                  <ArrowRightIcon className="size-3.5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-                </Link>
-              </motion.div>
-            ))}
+                  <Link
+                    href={post.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cn(
+                      "group flex items-baseline justify-between gap-4 border-b border-border py-5 transition-colors hover:bg-muted/20",
+                      isLastItem && "border-b-0"
+                    )}
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="mb-1 text-xs text-muted-foreground/60 tabular-nums">
+                        {formatDate(post.publishedAt)}
+                        {post.readTimeInMinutes > 0 && (
+                          <span className="ml-2">
+                            · {post.readTimeInMinutes} min read
+                          </span>
+                        )}
+                      </p>
+                      <h2 className="text-sm font-semibold text-foreground sm:text-base">
+                        {post.title}
+                      </h2>
+                      <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+                        {post.brief}
+                      </p>
+                    </div>
+                    <ArrowRightIcon className="size-3.5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+                  </Link>
+                </motion.div>
+              )
+            })}
           </div>
         </section>
       ) : (

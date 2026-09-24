@@ -150,7 +150,7 @@ function ServicePackages({ services }: { services: ServiceInterface[] }) {
         {services.map((service, i) => (
           <motion.div
             key={service.id}
-            className="border-b border-border py-6 first:pt-0"
+            className="border-b border-border py-6 first:pt-0 last:border-0"
             variants={itemVariants}
             initial="hidden"
             whileInView="visible"
@@ -277,7 +277,7 @@ function FeaturedProjects({
         {projects.map((project, i) => (
           <motion.div
             key={project.id}
-            className="border-b border-border py-4"
+            className="border-b border-border py-4 last:border-0"
             variants={itemVariants}
             initial="hidden"
             whileInView="visible"
@@ -285,7 +285,7 @@ function FeaturedProjects({
             custom={i}
           >
             <div className="flex min-w-0 items-baseline gap-4">
-              <span className="shrink-0 text-xs tabular-nums text-muted-foreground/50">
+              <span className="shrink-0 text-xs text-muted-foreground/50 tabular-nums">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <div className="min-w-0">
@@ -349,7 +349,7 @@ function TestimonialsSection({
         {testimonials.map((t, i) => (
           <motion.blockquote
             key={t.id}
-            className="border-b border-border py-6"
+            className="border-b border-border py-6 last:border-0"
             variants={itemVariants}
             initial="hidden"
             whileInView="visible"
@@ -367,7 +367,8 @@ function TestimonialsSection({
               {(t.clientRole || t.projectType) && (
                 <span className="text-xs text-muted-foreground">
                   {" "}
-                  &mdash; {[t.clientRole, t.projectType].filter(Boolean).join(", ")}
+                  &mdash;{" "}
+                  {[t.clientRole, t.projectType].filter(Boolean).join(", ")}
                 </span>
               )}
             </footer>

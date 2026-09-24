@@ -113,8 +113,7 @@ const services = [
     _id: "service-automation-workflow-setup",
     title: "Automation & Workflow Setup",
     slug: { _type: "slug" as const, current: "automation-workflow-setup" },
-    tagline:
-      "One core business workflow — automated end to end.",
+    tagline: "One core business workflow — automated end to end.",
     price: "Starting at $800",
     timeline: "5 business days",
     deliverables: [
@@ -127,6 +126,27 @@ const services = [
     stackTags: ["n8n", "Python", "AI Agents", "REST APIs"],
     isActive: true,
     sortOrder: 5,
+  },
+  {
+    _type: "service" as const,
+    _id: "service-one-time-strategy-call",
+    title: "One-Time Strategy Call",
+    slug: { _type: "slug" as const, current: "one-time-strategy-call" },
+    tagline:
+      "Focused technical advice — stack decisions, architecture review, or a second opinion before you commit.",
+    price: "$150",
+    timeline: "45 minutes",
+    deliverables: [
+      "45-minute focused 1-on-1 call",
+      "Tech stack recommendations",
+      "Architecture review or direction",
+      "Build-vs-buy guidance",
+      "Phased approach suggestions",
+      "Summary notes shared after the call",
+    ],
+    stackTags: ["Technical Advisory", "Architecture", "Strategy"],
+    isActive: true,
+    sortOrder: 7,
   },
 ]
 

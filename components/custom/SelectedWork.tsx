@@ -4,6 +4,7 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { ArrowRightIcon } from "lucide-react"
 import type { WorkInterface } from "@/type"
+import { cn } from "@/lib/utils"
 
 const itemVariants = {
   hidden: { opacity: 0, y: 8 },
@@ -35,41 +36,48 @@ export default function SelectedWork({
       </div>
 
       <div className="space-y-0">
-        {projects.map((project, i) => (
-          <motion.div
-            key={project.id}
-            variants={itemVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-30px" }}
-            custom={i}
-          >
-            <Link
-              href="/work"
-              className="group flex items-baseline justify-between gap-4 border-b border-border py-4 transition-colors hover:bg-muted/20"
+        {projects.map((project, i) => {
+          const isLastItem = i === projects.length - 1
+
+          return (
+            <motion.div
+              key={project.id}
+              variants={itemVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-30px" }}
+              custom={i}
             >
-              <div className="flex min-w-0 items-baseline gap-4">
-                <span className="shrink-0 text-xs tabular-nums text-muted-foreground/50">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <div className="min-w-0">
-                  <h3 className="truncate text-sm font-semibold text-foreground sm:text-base">
-                    {project.title}
-                  </h3>
-                  <p className="mt-0.5 truncate text-xs text-muted-foreground">
-                    {project.description}
-                  </p>
+              <Link
+                href="/work"
+                className={cn(
+                  "group flex items-baseline justify-between gap-4 border-b border-border py-4 transition-colors hover:bg-muted/20",
+                  isLastItem && "border-b-0"
+                )}
+              >
+                <div className="flex min-w-0 items-baseline gap-4">
+                  <span className="shrink-0 text-xs text-muted-foreground/50 tabular-nums">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div className="min-w-0">
+                    <h3 className="truncate text-sm font-semibold text-foreground sm:text-base">
+                      {project.title}
+                    </h3>
+                    <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                      {project.description}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex shrink-0 items-center gap-3">
-                <span className="hidden text-xs tabular-nums text-muted-foreground sm:inline">
-                  {new Date(project.createdAt).getFullYear()}
-                </span>
-                <ArrowRightIcon className="size-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-              </div>
-            </Link>
-          </motion.div>
-        ))}
+                <div className="flex shrink-0 items-center gap-3">
+                  <span className="hidden text-xs text-muted-foreground tabular-nums sm:inline">
+                    {new Date(project.createdAt).getFullYear()}
+                  </span>
+                  <ArrowRightIcon className="size-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+                </div>
+              </Link>
+            </motion.div>
+          )
+        })}
       </div>
     </section>
   )
