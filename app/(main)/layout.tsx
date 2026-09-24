@@ -97,7 +97,7 @@ export default async function RootLayout({
             </main>
             <Footer socialLinks={socialProfiles} />
           </div>
-          <PortfolioAssistant />
+          {/* <PortfolioAssistant /> */}
           {/* Vercel Analytics */}
           <Analytics />
           {/* Google Analytics */}
