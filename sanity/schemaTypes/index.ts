@@ -1,6 +1,8 @@
 import { academic } from "./documents/academic"
 import { experience } from "./documents/experience"
 import { publication } from "./documents/publication"
+import { service } from "./documents/service"
+import { serviceTestimonial } from "./documents/serviceTestimonial"
 import { siteSettings } from "./documents/siteSettings"
 import { work } from "./documents/work"
 import { experienceCompany } from "./objects/experienceCompany"
@@ -20,6 +22,8 @@ import { socialProfile } from "./objects/socialProfile"
 export const schemaTypes = [
   publication,
   work,
+  service,
+  serviceTestimonial,
   experience,
   academic,
   siteSettings,

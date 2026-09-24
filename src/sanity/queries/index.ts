@@ -6,4 +6,5 @@ export {
   SOCIAL_PROFILES_QUERY,
 } from "./profile"
 export { PUBLICATIONS_LIST_QUERY } from "./publications"
+export { SERVICES_QUERY, SERVICE_TESTIMONIALS_QUERY } from "./services"
 export { WORK_LIST_QUERY } from "./work"

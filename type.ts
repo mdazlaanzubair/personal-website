@@ -93,3 +93,28 @@ export interface SkillInterface {
 }
 
 export type InterestType = string[]
+
+export interface ServiceInterface {
+  id: string
+  title: string
+  slug: string | null
+  tagline: string | null
+  description: PortableTextBlock[]
+  price: string | null
+  timeline: string | null
+  deliverables: string[]
+  stackTags: string[]
+  sortOrder: number | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface ServiceTestimonialInterface {
+  id: string
+  clientName: string
+  clientRole: string | null
+  quote: string
+  projectType: string | null
+  createdAt: string
+  updatedAt: string
+}

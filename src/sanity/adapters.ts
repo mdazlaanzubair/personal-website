@@ -14,6 +14,8 @@ import type {
   ExperienceInterface,
   InterestType,
   PublicationInterface,
+  ServiceInterface,
+  ServiceTestimonialInterface,
   SkillInterface,
   SocialMediaInterface,
   WorkInterface,
@@ -86,3 +88,14 @@ export const toSkills = (skills: SKILLS_QUERY_RESULT): SkillInterface[] =>
 
 export const toInterests = (interests: INTERESTS_QUERY_RESULT): InterestType =>
   interests
+
+export const toServices = (documents: unknown[]): ServiceInterface[] =>
+  (documents as Record<string, unknown>[]).map((document) => ({
+    ...(document as Omit<ServiceInterface, "description">),
+    description: asPortableTextBlocks(document.description),
+  }))
+
+export const toServiceTestimonials = (
+  documents: unknown[]
+): ServiceTestimonialInterface[] =>
+  documents as ServiceTestimonialInterface[]
