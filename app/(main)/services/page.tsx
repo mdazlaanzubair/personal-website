@@ -1,9 +1,14 @@
 import ServicesPageContent from "@/components/custom/ServicesPageContent"
-import { toServices, toServiceTestimonials } from "@/src/sanity/adapters"
+import {
+  toServices,
+  toServiceTestimonials,
+  toWorkItems,
+} from "@/src/sanity/adapters"
 import { client } from "@/src/sanity/client"
 import {
   SERVICES_QUERY,
   SERVICE_TESTIMONIALS_QUERY,
+  WORK_LIST_QUERY,
 } from "@/src/sanity/queries"
 import { createPageMetadata } from "@/src/seo/site"
 
@@ -30,10 +35,14 @@ const fetchOptions = {
 }
 
 export default async function ServicesPage() {
-  const [servicesResult, testimonialsResult] = await Promise.allSettled([
-    client.fetch(SERVICES_QUERY, {}, fetchOptions),
-    client.fetch(SERVICE_TESTIMONIALS_QUERY, {}, fetchOptions),
-  ])
+  const [servicesResult, testimonialsResult, workResult] =
+    await Promise.allSettled([
+      client.fetch(SERVICES_QUERY, {}, fetchOptions),
+      client.fetch(SERVICE_TESTIMONIALS_QUERY, {}, fetchOptions),
+      client.fetch(WORK_LIST_QUERY, {}, {
+        next: { revalidate: 21600, tags: ["sanity-work"] },
+      }),
+    ])
 
   const services =
     servicesResult.status === "fulfilled"
@@ -43,6 +52,9 @@ export default async function ServicesPage() {
     testimonialsResult.status === "fulfilled"
       ? toServiceTestimonials(testimonialsResult.value)
       : []
+  const allProjects =
+    workResult.status === "fulfilled" ? toWorkItems(workResult.value) : []
+  const featuredProjects = allProjects.filter((p) => p.metadata.isFeatured)
 
   if (servicesResult.status === "rejected")
     console.error("Sanity services fetch error:", servicesResult.reason)
@@ -51,8 +63,14 @@ export default async function ServicesPage() {
       "Sanity testimonials fetch error:",
       testimonialsResult.reason
     )
+  if (workResult.status === "rejected")
+    console.error("Sanity work fetch error:", workResult.reason)
 
   return (
-    <ServicesPageContent services={services} testimonials={testimonials} />
+    <ServicesPageContent
+      services={services}
+      testimonials={testimonials}
+      featuredProjects={featuredProjects}
+    />
   )
 }
