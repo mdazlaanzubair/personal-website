@@ -2,12 +2,7 @@
 
 import Link from "next/link"
 import { motion } from "framer-motion"
-import {
-  ArrowRightIcon,
-  CheckIcon,
-  PhoneIcon,
-  QuoteIcon,
-} from "lucide-react"
+import { ArrowRightIcon, CheckIcon, PhoneIcon, QuoteIcon } from "lucide-react"
 
 import type {
   ClientProjectInterface,
@@ -47,14 +42,12 @@ const PROCESS_STEPS = [
   {
     step: "01",
     title: "Discovery Call",
-    description:
-      "15-minute call to understand your idea, scope, and timeline.",
+    description: "15-minute call to understand your idea, scope, and timeline.",
   },
   {
     step: "02",
     title: "Scope & Payment",
-    description:
-      "Clear deliverables, fixed price, payment before work begins.",
+    description: "Clear deliverables, fixed price, payment before work begins.",
   },
   {
     step: "03",
@@ -65,14 +58,13 @@ const PROCESS_STEPS = [
   {
     step: "04",
     title: "Delivery & Handoff",
-    description:
-      "Deployed, documented, and handed off with full source code.",
+    description: "Deployed, documented, and handed off with full source code.",
   },
 ]
 
 function HeroSection() {
   return (
-    <section className="pb-16 pt-12 sm:pb-20 sm:pt-16">
+    <section className="pt-12 pb-16 sm:pt-16 sm:pb-20">
       <div className="space-y-6">
         <motion.span
           className="eyebrow"
@@ -95,15 +87,15 @@ function HeroSection() {
         </motion.h1>
 
         <motion.p
-          className="section-subtitle max-w-lg"
+          className="max-w-lg section-subtitle"
           variants={fadeUp}
           initial="hidden"
           animate="visible"
           custom={2}
         >
           Launch-ready SaaS apps, AI tools, landing pages, and browser
-          extensions&nbsp;&mdash; built by a software engineer with 5+ years of
-          shipping production applications.
+          extensions built by a software engineer with years of shipping
+          production applications.
         </motion.p>
 
         <motion.div
