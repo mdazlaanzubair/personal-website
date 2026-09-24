@@ -41,26 +41,6 @@ const services = [
   },
   {
     _type: "service" as const,
-    _id: "service-landing-page-waitlist",
-    title: "Landing Page + Waitlist",
-    slug: { _type: "slug" as const, current: "landing-page-waitlist" },
-    tagline:
-      "High-converting landing page with email capture — live in 5 days.",
-    price: "Starting at $500",
-    timeline: "5 business days",
-    deliverables: [
-      "Responsive landing page",
-      "Email capture integration",
-      "Analytics setup",
-      "SEO basics",
-      "Deployed and live",
-    ],
-    stackTags: ["Next.js", "Tailwind CSS", "Vercel"],
-    isActive: true,
-    sortOrder: 2,
-  },
-  {
-    _type: "service" as const,
     _id: "service-ai-powered-tool-mvp",
     title: "AI-Powered Tool MVP",
     slug: { _type: "slug" as const, current: "ai-powered-tool-mvp" },
@@ -85,7 +65,7 @@ const services = [
       "Vercel",
     ],
     isActive: true,
-    sortOrder: 3,
+    sortOrder: 2,
   },
   {
     _type: "service" as const,
@@ -106,7 +86,47 @@ const services = [
     ],
     stackTags: ["React", "TypeScript", "Chrome APIs"],
     isActive: true,
+    sortOrder: 3,
+  },
+  {
+    _type: "service" as const,
+    _id: "service-landing-page-waitlist",
+    title: "Landing Page + Waitlist",
+    slug: { _type: "slug" as const, current: "landing-page-waitlist" },
+    tagline:
+      "High-converting landing page with email capture — live in 5 days.",
+    price: "Starting at $500",
+    timeline: "5 business days",
+    deliverables: [
+      "Responsive landing page",
+      "Email capture integration",
+      "Analytics setup",
+      "SEO basics",
+      "Deployed and live",
+    ],
+    stackTags: ["Next.js", "Tailwind CSS", "Vercel"],
+    isActive: true,
     sortOrder: 4,
+  },
+  {
+    _type: "service" as const,
+    _id: "service-automation-workflow-setup",
+    title: "Automation & Workflow Setup",
+    slug: { _type: "slug" as const, current: "automation-workflow-setup" },
+    tagline:
+      "One core business workflow — automated end to end.",
+    price: "Starting at $800",
+    timeline: "5 business days",
+    deliverables: [
+      "Workflow design and mapping",
+      "n8n / Python / AI agent implementation",
+      "API integrations",
+      "Testing and error handling",
+      "Documentation and handoff",
+    ],
+    stackTags: ["n8n", "Python", "AI Agents", "REST APIs"],
+    isActive: true,
+    sortOrder: 5,
   },
 ]
 
