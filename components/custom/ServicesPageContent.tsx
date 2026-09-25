@@ -505,6 +505,11 @@ function TestimonialsSection({
 }) {
   if (testimonials.length === 0) return null
 
+  const columns = [
+    testimonials.filter((_, index) => index % 2 === 0),
+    testimonials.filter((_, index) => index % 2 === 1),
+  ].filter((column) => column.length > 0)
+
   return (
     <section className="border-t border-border py-16">
       <motion.span
@@ -529,35 +534,41 @@ function TestimonialsSection({
         What Clients Say
       </motion.h2>
 
-      <div className="mt-10 space-y-0">
-        {testimonials.map((t, i) => (
-          <motion.blockquote
-            key={t.id}
-            className="border-b border-border py-6 last:border-0"
-            variants={itemVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-30px" }}
-            custom={i}
-          >
-            <QuoteIcon className="size-4 text-primary/40" />
-            <p className="mt-2 text-sm leading-relaxed text-foreground">
-              &ldquo;{t.quote}&rdquo;
-            </p>
-            <footer className="mt-3">
-              <span className="text-sm font-medium text-foreground">
-                {t.clientName}
-              </span>
-              {(t.clientRole || t.projectType) && (
-                <span className="text-xs text-muted-foreground">
-                  {" "}
-                  &mdash;{" "}
-                  {[t.clientRole, t.projectType].filter(Boolean).join(", ")}
-                </span>
-              )}
-            </footer>
-          </motion.blockquote>
-        ))}
+      <div className="relative mt-10 max-h-[42rem] overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_8%,black_92%,transparent)]">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
+          {columns.map((column, columnIndex) => (
+            <div
+              key={columnIndex}
+              className="group/testimonials min-h-0 overflow-hidden"
+            >
+              <div className="flex flex-col gap-4 group-focus-within/testimonials:[animation-play-state:paused] group-hover/testimonials:[animation-play-state:paused] motion-safe:animate-[testimonials-scroll-up_34s_linear_infinite]">
+                {[...column, ...column].map((t, index) => (
+                  <blockquote
+                    key={`${t.id}-${index}`}
+                    className="rounded-2xl border border-border bg-muted/20 p-5 sm:p-6"
+                  >
+                    <QuoteIcon className="size-4 text-primary/60" />
+                    <p className="mt-4 text-sm leading-7 text-foreground sm:text-base">
+                      &ldquo;{t.quote}&rdquo;
+                    </p>
+                    <footer className="mt-6">
+                      <span className="text-sm font-semibold text-foreground">
+                        {t.clientName}
+                      </span>
+                      {(t.clientRole || t.projectType) && (
+                        <span className="mt-1 block text-xs text-muted-foreground">
+                          {[t.clientRole, t.projectType]
+                            .filter(Boolean)
+                            .join(" · ")}
+                        </span>
+                      )}
+                    </footer>
+                  </blockquote>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )

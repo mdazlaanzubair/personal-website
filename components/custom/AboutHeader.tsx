@@ -42,24 +42,6 @@ export default function AboutHeader() {
       </motion.h1>
 
       <motion.div
-        className="mt-10 overflow-hidden rounded-2xl"
-        initial={{ opacity: 0, scale: 0.98 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
-      >
-        <div className="relative aspect-[21/9] w-full">
-          <Image
-            src="/builder.png"
-            alt="Muhammad Azlaan Zubair at work"
-            fill
-            sizes="(max-width: 768px) 100vw, 768px"
-            className="object-cover"
-            priority
-          />
-        </div>
-      </motion.div>
-
-      <motion.div
         className="mt-10 space-y-4"
         variants={fadeUp}
         initial="hidden"
@@ -71,6 +53,25 @@ export default function AboutHeader() {
           services to frontend performance, I approach development with
           structure, clarity, and long-term thinking.
         </p>
+
+        <motion.div
+          className="my-10 overflow-hidden rounded-2xl"
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
+        >
+          <div className="relative aspect-[21/12] w-full">
+            <Image
+              src="/builder.png"
+              alt="Muhammad Azlaan Zubair at work"
+              fill
+              sizes="(max-width: 768px) 100vw, 768px"
+              className="object-cover"
+              priority
+            />
+          </div>
+        </motion.div>
+
         <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
           Over the years, I&apos;ve led architectural initiatives, optimized
           high-traffic applications, and contributed to technical
