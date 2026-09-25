@@ -109,9 +109,9 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 py-3 w-full glass bg-transparent">
+      <header className="sticky top-0 z-50 w-full glass bg-transparent py-3">
         <nav
-          className="mx-auto flex h-14 max-w-3xl items-center justify-between px-5 sm:px-8 shadow rounded-xl bg-white dark:bg-black"
+          className="mx-auto flex h-14 max-w-3xl items-center justify-between rounded-xl bg-white px-5 shadow sm:px-8 dark:bg-black"
           aria-label="Main navigation"
         >
           {/* Logo */}
@@ -174,7 +174,7 @@ export default function Navbar() {
                     exit={{ opacity: 0, y: -4 }}
                     transition={{ duration: 0.15 }}
                     role="menu"
-                    className="absolute top-full right-0 z-50 mt-2 w-56 rounded-lg glass-card p-1.5 shadow-lg"
+                    className="absolute top-full right-0 z-50 mt-2 w-56 rounded-lg bg-white p-1.5 shadow-lg dark:bg-black"
                   >
                     {MORE_ITEMS.map((item) => (
                       <Link

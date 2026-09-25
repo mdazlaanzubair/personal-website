@@ -1,12 +1,7 @@
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { GoogleAnalytics } from "@next/third-parties/google"
-import {
-  Geist_Mono,
-  Oxanium,
-  Red_Hat_Display,
-  Playfair_Display,
-} from "next/font/google"
+import { Geist_Mono, Red_Hat_Display, Playfair_Display } from "next/font/google"
 import Script from "next/script"
 import type { Viewport } from "next"
 
@@ -17,7 +12,6 @@ import { cn } from "@/lib/utils"
 import AnimatedBackground from "@/components/custom/AnimatedBackground"
 import Navbar from "@/components/custom/Navbar"
 import { Footer } from "@/components/custom/Footer"
-import PortfolioAssistant from "@/components/custom/PortfolioAssistant"
 import { toSocialProfiles } from "@/src/sanity/adapters"
 import { client } from "@/src/sanity/client"
 import { SOCIAL_PROFILES_QUERY } from "@/src/sanity/queries"
@@ -93,7 +87,9 @@ export default async function RootLayout({
           <div className="relative z-10 flex min-h-screen flex-col bg-transparent">
             <Navbar />
             <main className="flex-1">
-              <div className="mx-auto max-w-3xl px-5 sm:px-8 bg-white dark:bg-black rounded-xl">{children}</div>
+              <div className="mx-auto max-w-3xl rounded-xl bg-white px-5 shadow-md sm:px-8 dark:bg-black">
+                {children}
+              </div>
             </main>
             <Footer socialLinks={socialProfiles} />
           </div>

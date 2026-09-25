@@ -2,7 +2,8 @@
 
 import Image from "next/image"
 import { motion } from "framer-motion"
-import { MapPinIcon, MailIcon, CalendarIcon } from "lucide-react"
+import { MapPinIcon, MailIcon, CalendarIcon, DownloadIcon } from "lucide-react"
+import Link from "next/link"
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -19,7 +20,7 @@ const fadeUp = {
 
 export default function AboutHeader() {
   return (
-    <section className="pb-16 pt-12 sm:pb-20 sm:pt-16">
+    <section className="pt-12 pb-16 sm:pt-16 sm:pb-20">
       <motion.span
         className="eyebrow"
         variants={fadeUp}
@@ -76,6 +77,15 @@ export default function AboutHeader() {
           decision-making that supports product growth. I believe strong
           engineering is defined not just by delivery, but by durability.
         </p>
+
+        <Link
+          href="/resume/Resume - Software Engineer - Muhammad Azlaan Zubair.pdf"
+          download
+          className="mt-6 inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-colors hover:bg-foreground/90"
+        >
+          Download CV
+          <DownloadIcon className="size-3.5" />
+        </Link>
       </motion.div>
 
       <motion.blockquote

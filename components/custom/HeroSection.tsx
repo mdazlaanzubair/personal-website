@@ -3,7 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { ArrowRightIcon, DownloadIcon, MapPinIcon } from "lucide-react"
+import { ArrowRightIcon, MapPinIcon } from "lucide-react"
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -20,7 +20,7 @@ const fadeUp = {
 
 export default function HeroSection() {
   return (
-    <section className="pb-16 pt-12 sm:pb-20 sm:pt-16">
+    <section className="pt-12 pb-16 sm:pt-16 sm:pb-20">
       <div className="flex flex-col-reverse gap-8 sm:flex-row sm:items-start sm:justify-between sm:gap-12">
         {/* Text content */}
         <div className="flex-1 space-y-6">
@@ -31,7 +31,7 @@ export default function HeroSection() {
             animate="visible"
             custom={0}
           >
-            Software Engineer &amp; Researcher
+            Software Engineer · Researcher
           </motion.span>
 
           <motion.h1
@@ -41,18 +41,19 @@ export default function HeroSection() {
             animate="visible"
             custom={1}
           >
-            Building intelligent systems for real&#8209;world impact.
+            I build and investigate software systems.
           </motion.h1>
 
           <motion.p
-            className="section-subtitle max-w-md"
+            className="max-w-md section-subtitle"
             variants={fadeUp}
             initial="hidden"
             animate="visible"
             custom={2}
           >
-            I&apos;m Md. Azlaan Zubair, a software engineer focused on scalable
-            systems, AI, and human&#8209;centered products.
+            Software engineer with years shipping production applications. I
+            build MVPs for startups, write about AI and engineering, and publish
+            research on software systems.
           </motion.p>
 
           <motion.div
@@ -63,19 +64,18 @@ export default function HeroSection() {
             custom={3}
           >
             <Link
-              href="/work"
+              href="/services"
               className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-colors hover:bg-foreground/90"
             >
-              View my work
+              View Services
               <ArrowRightIcon className="size-3.5" />
             </Link>
             <Link
-              href="/resume/Resume - Software Engineer - Muhammad Azlaan Zubair.pdf"
-              download
+              href="/writing"
               className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
             >
-              Download CV
-              <DownloadIcon className="size-3.5" />
+              Read my writing
+              <ArrowRightIcon className="size-3.5" />
             </Link>
           </motion.div>
 
@@ -93,7 +93,7 @@ export default function HeroSection() {
             <span className="text-muted-foreground/40">·</span>
             <span className="inline-flex items-center gap-1.5">
               <span className="size-2 rounded-full bg-emerald-500" />
-              Open to opportunities
+              Available for projects
             </span>
           </motion.div>
         </div>

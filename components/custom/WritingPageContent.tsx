@@ -50,7 +50,7 @@ export default function WritingPageContent({
   return (
     <>
       {/* Page header */}
-      <section className="pt-12 pb-16 sm:pt-16 sm:pb-20">
+      <section className="border-b border-border pt-12 pb-16 sm:pt-16 sm:pb-20">
         <motion.span
           className="eyebrow"
           variants={fadeUp}
@@ -83,10 +83,19 @@ export default function WritingPageContent({
 
       {/* Posts list */}
       {posts.length > 0 ? (
-        <section className="border-t border-border pb-16">
+        <section className="pb-16">
           <div className="space-y-0">
             {posts.map((post, i) => {
               const isLastItem = i === posts.length - 1
+
+              if (i === 3) {
+                return (
+                  <ServicesInlineCta
+                    text="Need technical content written by someone who actually builds the systems?"
+                    href="/services?service=technical-writing#service-pages-block"
+                  />
+                )
+              }
 
               return (
                 <motion.div
@@ -102,7 +111,7 @@ export default function WritingPageContent({
                     target="_blank"
                     rel="noopener noreferrer"
                     className={cn(
-                      "group flex items-baseline justify-between gap-4 border-b border-border py-5 transition-colors hover:bg-muted/20",
+                      "group flex items-baseline justify-between gap-4 border-b border-border py-5 transition-colors",
                       isLastItem && "border-b-0"
                     )}
                   >
@@ -136,11 +145,6 @@ export default function WritingPageContent({
           </p>
         </section>
       )}
-
-      <ServicesInlineCta
-        text="Need technical content written by someone who actually builds the systems?"
-        href="/services?service=technical-writing#service-pages-block"
-      />
     </>
   )
 }

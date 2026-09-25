@@ -11,7 +11,8 @@ export default function ServicesInlineCta({
   href: string
 }) {
   return (
-    <section className="border-t border-border py-14 sm:py-16">
+    // <section className="border-t border-border py-14 sm:py-16">
+    <section className="py-14 sm:py-16">
       <div className="rounded-2xl border border-border bg-muted/30 px-5 py-7 sm:px-8 sm:py-9">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">

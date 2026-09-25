@@ -1,9 +1,8 @@
-import JsonLd from "@/components/seo/JsonLd"
 import HeroSection from "@/components/custom/HeroSection"
-import SelectedExperience from "@/components/custom/SelectedExperience"
-import SelectedEducation from "@/components/custom/SelectedEducation"
+import WhatIDo from "@/components/custom/WhatIDo"
+import FeaturedServices from "@/components/custom/FeaturedServices"
+import BackgroundSummary from "@/components/custom/BackgroundSummary"
 import SelectedWork from "@/components/custom/SelectedWork"
-import QuoteSection from "@/components/custom/QuoteSection"
 import LatestWriting from "@/components/custom/LatestWriting"
 import ServicesInlineCta from "@/components/custom/ServicesInlineCta"
 import { client } from "@/src/sanity/client"
@@ -11,11 +10,13 @@ import {
   ACADEMIC_HISTORY_QUERY,
   EXPERIENCE_QUERY,
   WORK_LIST_QUERY,
+  SERVICES_QUERY,
 } from "@/src/sanity/queries"
 import {
   toAcademicHistory,
   toExperience,
   toWorkItems,
+  toServices,
 } from "@/src/sanity/adapters"
 import {
   getHashnodePosts,
@@ -23,10 +24,6 @@ import {
   type HashnodePost,
 } from "@/src/hashnode/hashnode"
 import { createPageMetadata } from "@/src/seo/site"
-import {
-  createSiteJsonLd,
-  DEFAULT_SOCIAL_PROFILES,
-} from "@/src/seo/structured-data"
 
 const description =
   "Muhammad Azlaan Zubair — Software engineer and researcher building intelligent systems for real-world impact. Focused on scalable systems, AI, and human-centered products."
@@ -49,11 +46,12 @@ export const revalidate = 21600
 const fetchOptions = { next: { revalidate: 21600 } }
 
 export default async function Page() {
-  const [experienceResult, academicResult, workResult] =
+  const [experienceResult, academicResult, workResult, servicesResult] =
     await Promise.allSettled([
       client.fetch(EXPERIENCE_QUERY, {}, fetchOptions),
       client.fetch(ACADEMIC_HISTORY_QUERY, {}, fetchOptions),
       client.fetch(WORK_LIST_QUERY, {}, fetchOptions),
+      client.fetch(SERVICES_QUERY, {}, fetchOptions),
     ])
 
   const experiences =
@@ -68,6 +66,10 @@ export default async function Page() {
 
   const allProjects =
     workResult.status === "fulfilled" ? toWorkItems(workResult.value) : []
+  const services =
+    servicesResult.status === "fulfilled"
+      ? toServices(servicesResult.value)
+      : []
 
   const featuredProjects = allProjects
     .filter((p) => p.metadata.isFeatured)
@@ -87,17 +89,14 @@ export default async function Page() {
     }
   }
 
-  const latestExperience = experiences.length > 0 ? experiences[0] : null
-  const latestAcademic = academics.length > 0 ? academics[0] : null
-
   return (
     <>
       <HeroSection />
-      <SelectedExperience experience={latestExperience} />
-      <SelectedEducation academic={latestAcademic} />
+      <WhatIDo />
+      <FeaturedServices services={services} />
       <SelectedWork projects={selectedProjects} />
-      <QuoteSection />
       <LatestWriting posts={posts} />
+      <BackgroundSummary experiences={experiences} academics={academics} />
       <ServicesInlineCta
         heading="Need something built?"
         text="I offer productized services — MVPs, websites, technical writing, and automation — delivered in days, not months."

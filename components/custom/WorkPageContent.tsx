@@ -154,15 +154,15 @@ export default function WorkPageContent({
 
       {/* Projects section */}
       {projects.length > 0 && (
-        <section className="border-t border-border py-16">
+        <section className="">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-50px" }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
-            className="mb-8"
+            className="mb-4"
           >
-            <span className="eyebrow">Projects</span>
+            <span className="eyebrow">Side Projects</span>
           </motion.div>
 
           <div className="space-y-0">
@@ -182,7 +182,7 @@ export default function WorkPageContent({
                     type="button"
                     onClick={() => setSelectedProject(project)}
                     className={cn(
-                      "group flex w-full items-start gap-4 border-b border-border py-4 text-left transition-colors hover:bg-muted/20",
+                      "group flex w-full items-start gap-4 border-b border-border py-4 text-left transition-colors",
                       isLastItem && "border-b-0"
                     )}
                   >
@@ -248,13 +248,13 @@ export default function WorkPageContent({
 
       {/* Publications section */}
       {publications.length > 0 && (
-        <section className="border-t border-border py-16">
+        <section className="pb-8">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-50px" }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
-            className="mb-8"
+            className="mb-4"
           >
             <span className="eyebrow">Publications &amp; Research</span>
           </motion.div>
@@ -277,7 +277,7 @@ export default function WorkPageContent({
                     type="button"
                     onClick={() => setSelectedPublication(pub)}
                     className={cn(
-                      "group flex w-full items-start gap-4 border-b border-border py-4 text-left transition-colors hover:bg-muted/20",
+                      "group flex w-full items-start gap-4 border-b border-border py-4 text-left transition-colors",
                       isLastItem && "border-b-0"
                     )}
                   >

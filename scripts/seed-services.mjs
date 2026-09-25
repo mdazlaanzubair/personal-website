@@ -168,7 +168,7 @@ const services = [
         _key: "web-frontend-first-quality",
         label: "Frontend-First Quality",
         description:
-          "Built by an engineer with 5+ years of production frontend experience.",
+          "Built by an engineer with years of production frontend experience.",
       },
       {
         _type: "object",

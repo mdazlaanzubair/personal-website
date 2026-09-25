@@ -1,4 +1,13 @@
 @import "tailwindcss";
+
+@keyframes services-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-50% - 0.375rem));
+  }
+}
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
