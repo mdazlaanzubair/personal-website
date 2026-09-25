@@ -3,9 +3,9 @@ import type { Metadata } from "next"
 export const SITE_NAME = "Muhammad Azlaan Zubair"
 export const SITE_HANDLE = "@mdazlaanzubair"
 export const SITE_TITLE =
-  "Muhammad Azlaan Zubair | Software Architect & Web Engineer"
+  "Muhammad Azlaan Zubair — Software Engineer & Researcher"
 export const SITE_DESCRIPTION =
-  "Portfolio of Muhammad Azlaan Zubair, a software architect and web engineer focused on scalable systems, product engineering, AI, and automation."
+  "Portfolio of Muhammad Azlaan Zubair, a software engineer and researcher focused on scalable systems, product engineering, AI, and automation."
 export const SITE_URL = new URL("https://mdazlaanzubair.com")
 
 export const absoluteUrl = (path: string) => new URL(path, SITE_URL).toString()
@@ -14,7 +14,7 @@ const socialImage = {
   url: absoluteUrl("/api/og"),
   width: 1200,
   height: 630,
-  alt: `${SITE_NAME} — Software Architect & Web Engineer`,
+  alt: `${SITE_NAME} — Software Engineer & Researcher`,
 }
 
 export const rootMetadata: Metadata = {
@@ -26,8 +26,8 @@ export const rootMetadata: Metadata = {
   description: SITE_DESCRIPTION,
   keywords: [
     "Muhammad Azlaan Zubair",
-    "software architect",
-    "web engineer",
+    "software engineer",
+    "researcher",
     "Next.js developer",
     "artificial intelligence",
     "developer automation",
@@ -85,10 +85,11 @@ export const createPageMetadata = ({
   path: string
   keywords: string[]
 }): Metadata => {
-  const socialTitle = `${title} | ${SITE_NAME}`
+  const hasBrandTitle = title.includes(SITE_NAME)
+  const socialTitle = hasBrandTitle ? title : `${title} | ${SITE_NAME}`
 
   return {
-    title,
+    title: hasBrandTitle ? { absolute: title } : title,
     description,
     keywords,
     alternates: {

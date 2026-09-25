@@ -228,6 +228,64 @@ export type Experience = {
   key_contributions: PortableText
 }
 
+export type ClientProject = {
+  _id: string
+  _type: "clientProject"
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  title: string
+  domain?: string
+  description: string
+  tags?: Array<string>
+  isActive?: boolean
+  sortOrder?: number
+}
+
+export type ServiceTestimonial = {
+  _id: string
+  _type: "serviceTestimonial"
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  clientName: string
+  clientRole?: string
+  quote: string
+  projectType?: string
+  isActive?: boolean
+  sortOrder?: number
+}
+
+export type Service = {
+  _id: string
+  _type: "service"
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  title: string
+  slug?: Slug
+  tagline?: string
+  description?: string
+  price?: string
+  timeline?: string
+  buyers?: Array<string>
+  deliverables?: Array<string>
+  stackTags?: Array<string>
+  highlights?: Array<{
+    label: string
+    description: string
+    _key: string
+  }>
+  isActive?: boolean
+  sortOrder?: number
+}
+
+export type Slug = {
+  _type: "slug"
+  current: string
+  source?: string
+}
+
 export type Work = {
   _id: string
   _type: "work"
@@ -237,6 +295,15 @@ export type Work = {
   title: string
   description: string
   tags: Array<string>
+  images?: Array<{
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    _type: "image"
+    _key: string
+  }>
   metadata: {
     isFeatured?: boolean
     projectUrl?: string
@@ -270,6 +337,15 @@ export type Publication = {
   title: string
   abstract: string
   authors: Array<string>
+  images?: Array<{
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    _type: "image"
+    _key: string
+  }>
   metadata: {
     journal?: string
     status:
@@ -377,12 +453,6 @@ export type Geopoint = {
   alt?: number
 }
 
-export type Slug = {
-  _type: "slug"
-  current: string
-  source?: string
-}
-
 export type AllSanitySchemaTypes =
   | PublicationReference
   | WorkReference
@@ -401,6 +471,10 @@ export type AllSanitySchemaTypes =
   | SiteSettings
   | Academic
   | Experience
+  | ClientProject
+  | ServiceTestimonial
+  | Service
+  | Slug
   | Work
   | SanityImageCrop
   | SanityImageHotspot
@@ -413,11 +487,10 @@ export type AllSanitySchemaTypes =
   | SanityAssetSourceData
   | SanityImageAsset
   | Geopoint
-  | Slug
 
 // Source: src/sanity/queries/profile.ts
 // Variable: EXPERIENCE_QUERY
-// Query: *[_type == "experience"]  | order(_createdAt desc) {    "company": select(      company.isAnonymized == true => {        "name": "Confidential organization",        "website": null,        "location": company.location,        "isAnonymized": true      },      {        "name": coalesce(company.name, "Organization"),        "website": company.website,        "location": company.location,        "isAnonymized": false      }    ),    timeline,    role,    "key_contributions": coalesce(key_contributions[]{        ...,  _type == "portableImage" => {    image {      ...,      asset->{        _id,        url,        metadata {          dimensions,          lqip        }      }    }  },  _type == "callout" => {    content[]{...}  },  _type == "tableBlock" => {    rows[]{      _key,      cells    }  },  _type == "relatedContent" => {    reference->{      _id,      _type,      title,      "slug": slug.current    }  },  _type == "block" => {    markDefs[]{      ...,      _type == "relatedContentLink" => {        reference->{          _id,          _type,          title,          "slug": slug.current        }      }    }  }    }, []),      "createdAt": _createdAt,  "updatedAt": _updatedAt  }
+// Query: *[_type == "experience"]  | order(_updatedAt desc) {    "company": select(      company.isAnonymized == true => {        "name": "Confidential organization",        "website": null,        "location": company.location,        "isAnonymized": true      },      {        "name": coalesce(company.name, "Organization"),        "website": company.website,        "location": company.location,        "isAnonymized": false      }    ),    timeline,    role,    "key_contributions": coalesce(key_contributions[]{        ...,  _type == "portableImage" => {    image {      ...,      asset->{        _id,        url,        metadata {          dimensions,          lqip        }      }    }  },  _type == "callout" => {    content[]{...}  },  _type == "tableBlock" => {    rows[]{      _key,      cells    }  },  _type == "relatedContent" => {    reference->{      _id,      _type,      title,      "slug": slug.current    }  },  _type == "block" => {    markDefs[]{      ...,      _type == "relatedContentLink" => {        reference->{          _id,          _type,          title,          "slug": slug.current        }      }    }  }    }, []),      "createdAt": _createdAt,  "updatedAt": _updatedAt  }
 export type EXPERIENCE_QUERY_RESULT = Array<{
   company:
     | {
@@ -570,7 +643,7 @@ export type EXPERIENCE_QUERY_RESULT = Array<{
 
 // Source: src/sanity/queries/profile.ts
 // Variable: ACADEMIC_HISTORY_QUERY
-// Query: *[_type == "academic"]  | order(_createdAt desc) {    "institute": {      "name": institute.name,      "website": institute.website    },    degree,    field,    timeline,      "createdAt": _createdAt,  "updatedAt": _updatedAt  }
+// Query: *[_type == "academic"]  | order(_updatedAt desc) {    "institute": {      "name": institute.name,      "website": institute.website    },    degree,    field,    timeline,      "createdAt": _createdAt,  "updatedAt": _updatedAt  }
 export type ACADEMIC_HISTORY_QUERY_RESULT = Array<{
   institute: {
     name: string
@@ -614,13 +687,21 @@ export type INTERESTS_QUERY_RESULT = Array<string> | Array<never>
 
 // Source: src/sanity/queries/publications.ts
 // Variable: PUBLICATIONS_LIST_QUERY
-// Query: *[_type == "publication"]  | order(      coalesce(metadata.isFeatured, false) desc,      metadata.year desc,      _createdAt desc,      _id asc    ) {    "id": _id,    title,    abstract,    "authors": coalesce(authors, []),    "images": coalesce(images[]{      "url": asset->url,      "alt": alt,      "width": asset->metadata.dimensions.width,      "height": asset->metadata.dimensions.height,      "lqip": asset->metadata.lqip    }, []),    "metadata": {      "journal": metadata.journal,      "status": metadata.status,      "year": metadata.year,      "doi": metadata.doi,      "isFeatured": metadata.isFeatured == true    },      "createdAt": _createdAt,  "updatedAt": _updatedAt  }
+// Query: *[_type == "publication"]  | order(      coalesce(metadata.isFeatured, false) desc,      metadata.year desc,      _updatedAt desc,      _id asc    ) {    "id": _id,    title,    abstract,    "authors": coalesce(authors, []),    "images": coalesce(images[]{      "url": asset->url,      "alt": alt,      "width": asset->metadata.dimensions.width,      "height": asset->metadata.dimensions.height,      "lqip": asset->metadata.lqip    }, []),    "metadata": {      "journal": metadata.journal,      "status": metadata.status,      "year": metadata.year,      "doi": metadata.doi,      "isFeatured": metadata.isFeatured == true    },      "createdAt": _createdAt,  "updatedAt": _updatedAt  }
 export type PUBLICATIONS_LIST_QUERY_RESULT = Array<{
   id: string
   title: string
   abstract: string
   authors: Array<string>
-  images: Array<never>
+  images:
+    | Array<{
+        url: string | null
+        alt: string | null
+        width: number | null
+        height: number | null
+        lqip: string | null
+      }>
+    | Array<never>
   metadata: {
     journal: string | null
     status:
@@ -633,6 +714,58 @@ export type PUBLICATIONS_LIST_QUERY_RESULT = Array<{
   updatedAt: string
 }>
 
+// Source: src/sanity/queries/services.ts
+// Variable: SERVICES_QUERY
+// Query: *[_type == "service" && isActive == true]  | order(coalesce(sortOrder, 999) asc, _updatedAt desc, _id asc) {    "id": _id,    title,    "slug": slug.current,    tagline,    description,    price,    timeline,    "buyers": coalesce(buyers, []),    "deliverables": coalesce(deliverables, []),    "stackTags": coalesce(stackTags, []),    "highlights": coalesce(highlights[]{      label,      description    }, []),    sortOrder,      "createdAt": _createdAt,  "updatedAt": _updatedAt  }
+export type SERVICES_QUERY_RESULT = Array<{
+  id: string
+  title: string
+  slug: string | null
+  tagline: string | null
+  description: string | null
+  price: string | null
+  timeline: string | null
+  buyers: Array<string> | Array<never>
+  deliverables: Array<string> | Array<never>
+  stackTags: Array<string> | Array<never>
+  highlights:
+    | Array<{
+        label: string
+        description: string
+      }>
+    | Array<never>
+  sortOrder: number | null
+  createdAt: string
+  updatedAt: string
+}>
+
+// Source: src/sanity/queries/services.ts
+// Variable: SERVICE_TESTIMONIALS_QUERY
+// Query: *[_type == "serviceTestimonial" && isActive == true]  | order(coalesce(sortOrder, 999) asc, _updatedAt desc, _id asc) {    "id": _id,    clientName,    clientRole,    quote,    projectType,      "createdAt": _createdAt,  "updatedAt": _updatedAt  }
+export type SERVICE_TESTIMONIALS_QUERY_RESULT = Array<{
+  id: string
+  clientName: string
+  clientRole: string | null
+  quote: string
+  projectType: string | null
+  createdAt: string
+  updatedAt: string
+}>
+
+// Source: src/sanity/queries/services.ts
+// Variable: CLIENT_PROJECTS_QUERY
+// Query: *[_type == "clientProject" && isActive == true]  | order(coalesce(sortOrder, 999) asc, _updatedAt desc, _id asc) {    "id": _id,    title,    domain,    description,    "tags": coalesce(tags, []),    sortOrder,      "createdAt": _createdAt,  "updatedAt": _updatedAt  }
+export type CLIENT_PROJECTS_QUERY_RESULT = Array<{
+  id: string
+  title: string
+  domain: string | null
+  description: string
+  tags: Array<string> | Array<never>
+  sortOrder: number | null
+  createdAt: string
+  updatedAt: string
+}>
+
 // Source: src/sanity/queries/work.ts
 // Variable: WORK_LIST_QUERY
 // Query: *[_type == "work"]  | order(coalesce(metadata.isFeatured, false) desc, _updatedAt desc, _id asc) {    "id": _id,    title,    description,    "tags": coalesce(tags, []),    "images": coalesce(images[]{      "url": asset->url,      "alt": alt,      "width": asset->metadata.dimensions.width,      "height": asset->metadata.dimensions.height,      "lqip": asset->metadata.lqip    }, []),    "metadata": {      "isFeatured": metadata.isFeatured == true,      "projectUrl": metadata.projectUrl,      "repositoryUrl": metadata.repositoryUrl,      "key_contributions": coalesce(metadata.key_contributions[]{          ...,  _type == "portableImage" => {    image {      ...,      asset->{        _id,        url,        metadata {          dimensions,          lqip        }      }    }  },  _type == "callout" => {    content[]{...}  },  _type == "tableBlock" => {    rows[]{      _key,      cells    }  },  _type == "relatedContent" => {    reference->{      _id,      _type,      title,      "slug": slug.current    }  },  _type == "block" => {    markDefs[]{      ...,      _type == "relatedContentLink" => {        reference->{          _id,          _type,          title,          "slug": slug.current        }      }    }  }      }, [])    },      "createdAt": _createdAt,  "updatedAt": _updatedAt  }
@@ -641,7 +774,15 @@ export type WORK_LIST_QUERY_RESULT = Array<{
   title: string
   description: string
   tags: Array<string>
-  images: Array<never>
+  images:
+    | Array<{
+        url: string | null
+        alt: string | null
+        width: number | null
+        height: number | null
+        lqip: string | null
+      }>
+    | Array<never>
   metadata: {
     isFeatured: boolean | false
     projectUrl: string | null
@@ -785,12 +926,15 @@ export type WORK_LIST_QUERY_RESULT = Array<{
 import "@sanity/client"
 declare module "@sanity/client" {
   interface SanityQueries {
-    '\n  *[_type == "experience"]\n  | order(_createdAt desc) {\n    "company": select(\n      company.isAnonymized == true => {\n        "name": "Confidential organization",\n        "website": null,\n        "location": company.location,\n        "isAnonymized": true\n      },\n      {\n        "name": coalesce(company.name, "Organization"),\n        "website": company.website,\n        "location": company.location,\n        "isAnonymized": false\n      }\n    ),\n    timeline,\n    role,\n    "key_contributions": coalesce(key_contributions[]{\n      \n  ...,\n  _type == "portableImage" => {\n    image {\n      ...,\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions,\n          lqip\n        }\n      }\n    }\n  },\n  _type == "callout" => {\n    content[]{...}\n  },\n  _type == "tableBlock" => {\n    rows[]{\n      _key,\n      cells\n    }\n  },\n  _type == "relatedContent" => {\n    reference->{\n      _id,\n      _type,\n      title,\n      "slug": slug.current\n    }\n  },\n  _type == "block" => {\n    markDefs[]{\n      ...,\n      _type == "relatedContentLink" => {\n        reference->{\n          _id,\n          _type,\n          title,\n          "slug": slug.current\n        }\n      }\n    }\n  }\n\n    }, []),\n    \n  "createdAt": _createdAt,\n  "updatedAt": _updatedAt\n\n  }\n': EXPERIENCE_QUERY_RESULT
-    '\n  *[_type == "academic"]\n  | order(_createdAt desc) {\n    "institute": {\n      "name": institute.name,\n      "website": institute.website\n    },\n    degree,\n    field,\n    timeline,\n    \n  "createdAt": _createdAt,\n  "updatedAt": _updatedAt\n\n  }\n': ACADEMIC_HISTORY_QUERY_RESULT
+    '\n  *[_type == "experience"]\n  | order(_updatedAt desc) {\n    "company": select(\n      company.isAnonymized == true => {\n        "name": "Confidential organization",\n        "website": null,\n        "location": company.location,\n        "isAnonymized": true\n      },\n      {\n        "name": coalesce(company.name, "Organization"),\n        "website": company.website,\n        "location": company.location,\n        "isAnonymized": false\n      }\n    ),\n    timeline,\n    role,\n    "key_contributions": coalesce(key_contributions[]{\n      \n  ...,\n  _type == "portableImage" => {\n    image {\n      ...,\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions,\n          lqip\n        }\n      }\n    }\n  },\n  _type == "callout" => {\n    content[]{...}\n  },\n  _type == "tableBlock" => {\n    rows[]{\n      _key,\n      cells\n    }\n  },\n  _type == "relatedContent" => {\n    reference->{\n      _id,\n      _type,\n      title,\n      "slug": slug.current\n    }\n  },\n  _type == "block" => {\n    markDefs[]{\n      ...,\n      _type == "relatedContentLink" => {\n        reference->{\n          _id,\n          _type,\n          title,\n          "slug": slug.current\n        }\n      }\n    }\n  }\n\n    }, []),\n    \n  "createdAt": _createdAt,\n  "updatedAt": _updatedAt\n\n  }\n': EXPERIENCE_QUERY_RESULT
+    '\n  *[_type == "academic"]\n  | order(_updatedAt desc) {\n    "institute": {\n      "name": institute.name,\n      "website": institute.website\n    },\n    degree,\n    field,\n    timeline,\n    \n  "createdAt": _createdAt,\n  "updatedAt": _updatedAt\n\n  }\n': ACADEMIC_HISTORY_QUERY_RESULT
     '\n  coalesce(*[_id == "siteSettings"][0].socialMedia, [])[]{\n    _key,\n    platform,\n    username,\n    url,\n    "isHidden": isHidden == true\n  }\n': SOCIAL_PROFILES_QUERY_RESULT
     '\n  coalesce(*[_id == "siteSettings"][0].skills, [])[]{\n    "id": _key,\n    "title": coalesce(title, "Untitled skill"),\n    "tags": coalesce(tags, [])\n  }\n': SKILLS_QUERY_RESULT
     '\n  coalesce(*[_id == "siteSettings"][0].interests, [])\n': INTERESTS_QUERY_RESULT
-    '\n  *[_type == "publication"]\n  | order(\n      coalesce(metadata.isFeatured, false) desc,\n      metadata.year desc,\n      _createdAt desc,\n      _id asc\n    ) {\n    "id": _id,\n    title,\n    abstract,\n    "authors": coalesce(authors, []),\n    "images": coalesce(images[]{\n      "url": asset->url,\n      "alt": alt,\n      "width": asset->metadata.dimensions.width,\n      "height": asset->metadata.dimensions.height,\n      "lqip": asset->metadata.lqip\n    }, []),\n    "metadata": {\n      "journal": metadata.journal,\n      "status": metadata.status,\n      "year": metadata.year,\n      "doi": metadata.doi,\n      "isFeatured": metadata.isFeatured == true\n    },\n    \n  "createdAt": _createdAt,\n  "updatedAt": _updatedAt\n\n  }\n': PUBLICATIONS_LIST_QUERY_RESULT
+    '\n  *[_type == "publication"]\n  | order(\n      coalesce(metadata.isFeatured, false) desc,\n      metadata.year desc,\n      _updatedAt desc,\n      _id asc\n    ) {\n    "id": _id,\n    title,\n    abstract,\n    "authors": coalesce(authors, []),\n    "images": coalesce(images[]{\n      "url": asset->url,\n      "alt": alt,\n      "width": asset->metadata.dimensions.width,\n      "height": asset->metadata.dimensions.height,\n      "lqip": asset->metadata.lqip\n    }, []),\n    "metadata": {\n      "journal": metadata.journal,\n      "status": metadata.status,\n      "year": metadata.year,\n      "doi": metadata.doi,\n      "isFeatured": metadata.isFeatured == true\n    },\n    \n  "createdAt": _createdAt,\n  "updatedAt": _updatedAt\n\n  }\n': PUBLICATIONS_LIST_QUERY_RESULT
+    '\n  *[_type == "service" && isActive == true]\n  | order(coalesce(sortOrder, 999) asc, _updatedAt desc, _id asc) {\n    "id": _id,\n    title,\n    "slug": slug.current,\n    tagline,\n    description,\n    price,\n    timeline,\n    "buyers": coalesce(buyers, []),\n    "deliverables": coalesce(deliverables, []),\n    "stackTags": coalesce(stackTags, []),\n    "highlights": coalesce(highlights[]{\n      label,\n      description\n    }, []),\n    sortOrder,\n    \n  "createdAt": _createdAt,\n  "updatedAt": _updatedAt\n\n  }\n': SERVICES_QUERY_RESULT
+    '\n  *[_type == "serviceTestimonial" && isActive == true]\n  | order(coalesce(sortOrder, 999) asc, _updatedAt desc, _id asc) {\n    "id": _id,\n    clientName,\n    clientRole,\n    quote,\n    projectType,\n    \n  "createdAt": _createdAt,\n  "updatedAt": _updatedAt\n\n  }\n': SERVICE_TESTIMONIALS_QUERY_RESULT
+    '\n  *[_type == "clientProject" && isActive == true]\n  | order(coalesce(sortOrder, 999) asc, _updatedAt desc, _id asc) {\n    "id": _id,\n    title,\n    domain,\n    description,\n    "tags": coalesce(tags, []),\n    sortOrder,\n    \n  "createdAt": _createdAt,\n  "updatedAt": _updatedAt\n\n  }\n': CLIENT_PROJECTS_QUERY_RESULT
     '\n  *[_type == "work"]\n  | order(coalesce(metadata.isFeatured, false) desc, _updatedAt desc, _id asc) {\n    "id": _id,\n    title,\n    description,\n    "tags": coalesce(tags, []),\n    "images": coalesce(images[]{\n      "url": asset->url,\n      "alt": alt,\n      "width": asset->metadata.dimensions.width,\n      "height": asset->metadata.dimensions.height,\n      "lqip": asset->metadata.lqip\n    }, []),\n    "metadata": {\n      "isFeatured": metadata.isFeatured == true,\n      "projectUrl": metadata.projectUrl,\n      "repositoryUrl": metadata.repositoryUrl,\n      "key_contributions": coalesce(metadata.key_contributions[]{\n        \n  ...,\n  _type == "portableImage" => {\n    image {\n      ...,\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions,\n          lqip\n        }\n      }\n    }\n  },\n  _type == "callout" => {\n    content[]{...}\n  },\n  _type == "tableBlock" => {\n    rows[]{\n      _key,\n      cells\n    }\n  },\n  _type == "relatedContent" => {\n    reference->{\n      _id,\n      _type,\n      title,\n      "slug": slug.current\n    }\n  },\n  _type == "block" => {\n    markDefs[]{\n      ...,\n      _type == "relatedContentLink" => {\n        reference->{\n          _id,\n          _type,\n          title,\n          "slug": slug.current\n        }\n      }\n    }\n  }\n\n      }, [])\n    },\n    \n  "createdAt": _createdAt,\n  "updatedAt": _updatedAt\n\n  }\n': WORK_LIST_QUERY_RESULT
   }
 }

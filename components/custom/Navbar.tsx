@@ -109,9 +109,9 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full border-b glass">
+      <header className="sticky top-0 z-50 py-3 w-full glass bg-transparent">
         <nav
-          className="mx-auto flex h-14 max-w-3xl items-center justify-between px-5 sm:px-8"
+          className="mx-auto flex h-14 max-w-3xl items-center justify-between px-5 sm:px-8 shadow rounded-xl bg-white dark:bg-black"
           aria-label="Main navigation"
         >
           {/* Logo */}

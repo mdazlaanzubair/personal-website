@@ -2,6 +2,7 @@ import type {
   AcademicInterface,
   ExperienceInterface,
   PublicationInterface,
+  ServiceInterface,
   SkillInterface,
   SocialMediaInterface,
 } from "@/type"
@@ -92,7 +93,7 @@ export const createSiteJsonLd = (socialProfiles: SocialMediaInterface[]) => ({
       image: absoluteUrl("/architect.png"),
       email: "mailto:mdazlaan1996@gmail.com",
       birthDate: "1996-07",
-      jobTitle: "Software Architect and Web Engineer",
+      jobTitle: "Software Engineer and Researcher",
       description: SITE_DESCRIPTION,
       homeLocation: {
         "@type": "Place",
@@ -260,6 +261,66 @@ export const createResearchPageJsonLd = ({
         : {}),
     }
   }),
+})
+
+export const createServicesPageJsonLd = ({
+  services,
+  description,
+}: {
+  services: ServiceInterface[]
+  description: string
+}) => ({
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "@id": `${absoluteUrl("/services")}#services`,
+  url: absoluteUrl("/services"),
+  name: "Software engineering services by Muhammad Azlaan Zubair",
+  description,
+  inLanguage: "en",
+  isPartOf: { "@id": WEBSITE_ID },
+  about: { "@id": PERSON_ID },
+  mainEntity: {
+    "@type": "ItemList",
+    numberOfItems: services.length,
+    itemListElement: services.map((service, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "Service",
+        "@id": `${absoluteUrl("/services")}#${service.slug || service.id}`,
+        name: service.title,
+        description: service.description || service.tagline || undefined,
+        serviceType: service.title,
+        provider: { "@id": PERSON_ID },
+        areaServed: [
+          { "@type": "Country", name: "Pakistan" },
+          { "@type": "Place", name: "Worldwide" },
+        ],
+        audience: service.buyers.map((buyer) => ({
+          "@type": "Audience",
+          audienceType: buyer,
+        })),
+        url: absoluteUrl(
+          `/services?service=${encodeURIComponent(service.slug || service.id)}#service-pages-block`
+        ),
+        ...(service.price
+          ? {
+              offers: {
+                "@type": "Offer",
+                name: service.price,
+                url: absoluteUrl(
+                  `/services?service=${encodeURIComponent(service.slug || service.id)}#service-pages-block`
+                ),
+                availability: "https://schema.org/InStock",
+              },
+            }
+          : {}),
+        ...(service.stackTags.length
+          ? { keywords: service.stackTags.join(", ") }
+          : {}),
+      },
+    })),
+  },
 })
 
 export const createCollectionJsonLd = ({

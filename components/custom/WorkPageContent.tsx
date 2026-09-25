@@ -12,6 +12,7 @@ import {
 import { cn } from "@/lib/utils"
 import type { PublicationInterface, WorkInterface } from "@/type"
 import ImageGallery from "./ImageGallery"
+import ServicesInlineCta from "./ServicesInlineCta"
 import {
   ArrowRightIcon,
   Code2Icon,
@@ -239,6 +240,11 @@ export default function WorkPageContent({
           </div>
         </section>
       )}
+
+      <ServicesInlineCta
+        text="Want me to build something like this for you?"
+        href="/services?service=web-and-product#service-pages-block"
+      />
 
       {/* Publications section */}
       {publications.length > 0 && (

@@ -5,6 +5,7 @@ import { motion } from "framer-motion"
 import { ArrowRightIcon } from "lucide-react"
 import type { HashnodePost } from "@/src/hashnode/hashnode"
 import { cn } from "@/lib/utils"
+import ServicesInlineCta from "./ServicesInlineCta"
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -135,6 +136,11 @@ export default function WritingPageContent({
           </p>
         </section>
       )}
+
+      <ServicesInlineCta
+        text="Need technical content written by someone who actually builds the systems?"
+        href="/services?service=technical-writing#service-pages-block"
+      />
     </>
   )
 }

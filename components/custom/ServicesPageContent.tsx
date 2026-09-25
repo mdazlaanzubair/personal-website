@@ -1,8 +1,16 @@
 "use client"
 
+import { Suspense, useEffect, useMemo, useState } from "react"
 import Link from "next/link"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { motion } from "framer-motion"
-import { ArrowRightIcon, CheckIcon, PhoneIcon, QuoteIcon } from "lucide-react"
+import {
+  ArrowRightIcon,
+  CheckIcon,
+  PhoneCallIcon,
+  PhoneIcon,
+  QuoteIcon,
+} from "lucide-react"
 
 import type {
   ClientProjectInterface,
@@ -119,8 +127,58 @@ function HeroSection() {
   )
 }
 
+function ServicePackagesFallback() {
+  return (
+    <section className="border-t border-border py-16">
+      <span className="eyebrow">What I Offer</span>
+      <h2 className="mt-4 font-heading text-2xl font-bold tracking-tight sm:text-3xl">
+        Service Packages
+      </h2>
+      <div className="mt-8 h-32 rounded-2xl border border-border bg-muted/20" />
+    </section>
+  )
+}
+
 function ServicePackages({ services }: { services: ServiceInterface[] }) {
-  if (services.length === 0) return null
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const requestedService = searchParams.get("service")
+  const [selectedId, setSelectedId] = useState(services[0]?.id ?? "")
+
+  const selectedService = useMemo(
+    () => services.find((service) => service.id === selectedId) ?? services[0],
+    [selectedId, services]
+  )
+
+  useEffect(() => {
+    if (services.length === 0) return
+
+    const serviceFromUrl = services.find(
+      (service) =>
+        service.slug === requestedService || service.id === requestedService
+    )
+
+    setSelectedId((currentId) => {
+      const nextId = serviceFromUrl?.id ?? services[0].id
+      return currentId === nextId ? currentId : nextId
+    })
+  }, [requestedService, services])
+
+  const handleSelectService = (service: ServiceInterface) => {
+    setSelectedId(service.id)
+
+    const params = new URLSearchParams(searchParams.toString())
+    if (service.slug) {
+      params.set("service", service.slug)
+    } else {
+      params.set("service", service.id)
+    }
+
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+  }
+
+  if (services.length === 0 || !selectedService) return null
 
   return (
     <section className="border-t border-border py-16">
@@ -136,6 +194,7 @@ function ServicePackages({ services }: { services: ServiceInterface[] }) {
       </motion.span>
 
       <motion.h2
+        id="service-pages-block"
         className="mt-4 font-heading text-2xl font-bold tracking-tight sm:text-3xl"
         variants={fadeUp}
         initial="hidden"
@@ -146,64 +205,174 @@ function ServicePackages({ services }: { services: ServiceInterface[] }) {
         Service Packages
       </motion.h2>
 
-      <div className="mt-10 space-y-0">
-        {services.map((service, i) => (
-          <motion.div
-            key={service.id}
-            className="border-b border-border py-6 first:pt-0 last:border-0"
-            variants={itemVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-30px" }}
-            custom={i}
-          >
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-              <div className="min-w-0 flex-1">
-                <h3 className="font-heading text-base font-bold text-foreground sm:text-lg">
-                  {service.title}
-                </h3>
-                {service.tagline && (
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {service.tagline}
-                  </p>
-                )}
-              </div>
-              <div className="flex items-baseline gap-3 sm:shrink-0 sm:text-right">
-                {service.price && (
-                  <span className="text-sm font-semibold text-foreground">
-                    {service.price}
-                  </span>
-                )}
-                {service.timeline && (
-                  <span className="text-xs text-muted-foreground">
-                    {service.timeline}
-                  </span>
-                )}
-              </div>
-            </div>
+      <motion.div
+        className="mt-8 border-t border-border pt-8"
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-30px" }}
+        custom={2}
+      >
+        <div
+          className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-2 sm:mx-0 sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0 sm:pb-0"
+          role="tablist"
+          aria-label="Service packages"
+        >
+          {services.map((service) => {
+            const isSelected = service.id === selectedService.id
 
-            {service.deliverables.length > 0 && (
-              <ul className="mt-4 grid gap-x-8 gap-y-1.5 sm:grid-cols-2">
-                {service.deliverables.map((item) => (
-                  <li
-                    key={item}
-                    className="flex items-start gap-2 text-xs text-muted-foreground"
-                  >
-                    <CheckIcon className="mt-0.5 size-3 shrink-0 text-primary" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            )}
+            return (
+              <button
+                key={service.id}
+                type="button"
+                role="tab"
+                aria-selected={isSelected}
+                aria-controls={`service-panel-${service.id}`}
+                id={`service-tab-${service.id}`}
+                onClick={() => handleSelectService(service)}
+                className={`shrink-0 rounded-full border px-4 py-2 text-xs font-medium whitespace-nowrap transition-colors sm:text-sm ${
+                  isSelected
+                    ? "border-foreground bg-foreground text-background"
+                    : "border-border bg-background text-muted-foreground hover:border-foreground/40 hover:text-foreground"
+                }`}
+              >
+                {service.title}
+              </button>
+            )
+          })}
+        </div>
+      </motion.div>
 
-            {service.stackTags.length > 0 && (
-              <p className="mt-3 text-[11px] text-muted-foreground/60">
-                {service.stackTags.join(" · ")}
+      <motion.article
+        key={selectedService.id}
+        id={`service-panel-${selectedService.id}`}
+        role="tabpanel"
+        aria-labelledby={`service-tab-${selectedService.id}`}
+        className="mt-8 min-w-0"
+        variants={fadeUp}
+        initial="hidden"
+        animate="visible"
+        custom={0}
+      >
+        <div className="flex min-w-0 flex-col gap-5 border-b border-border pb-6 lg:flex-row lg:items-start lg:justify-between lg:pb-8">
+          <div className="min-w-0">
+            <p className="text-xs font-semibold tracking-[0.22em] text-primary uppercase">
+              Package Details
+            </p>
+            <h3 className="mt-3 font-heading text-2xl font-bold tracking-tight break-words text-foreground sm:text-3xl">
+              {selectedService.title}
+            </h3>
+            {selectedService.tagline && (
+              <p className="mt-3 max-w-3xl text-sm leading-6 break-words text-muted-foreground sm:text-base">
+                {selectedService.tagline}
               </p>
             )}
-          </motion.div>
-        ))}
-      </div>
+            {selectedService.description && (
+              <p className="mt-4 max-w-3xl text-sm leading-7 break-words text-muted-foreground">
+                {selectedService.description}
+              </p>
+            )}
+
+            <Link
+              href={BOOKING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-8 inline-flex max-w-full items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-colors hover:bg-foreground/90"
+            >
+              <PhoneCallIcon className="size-3.5 shrink-0" />
+              <span className="truncate">Let&apos;s Discuss</span>
+            </Link>
+          </div>
+
+          {(selectedService.price || selectedService.timeline) && (
+            <div className="min-w-0 shrink-0 rounded-2xl border border-border bg-background p-4 lg:min-w-48 lg:text-right">
+              {selectedService.price && (
+                <p className="font-heading text-lg font-bold break-words text-foreground">
+                  {selectedService.price}
+                </p>
+              )}
+              {selectedService.timeline && (
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {selectedService.timeline}
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+
+        {selectedService.buyers.length > 0 && (
+          <div className="mt-6 sm:mt-8">
+            <p className="text-xs font-semibold tracking-[0.22em] text-muted-foreground/70 uppercase">
+              Best For
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {selectedService.buyers.map((buyer) => (
+                <span
+                  key={buyer}
+                  className="max-w-full rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-[11px] font-medium break-words text-primary"
+                >
+                  {buyer}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {selectedService.highlights.length > 0 && (
+          <div className="mt-6 grid min-w-0 gap-3 sm:mt-8 sm:grid-cols-2">
+            {selectedService.highlights.map((highlight) => (
+              <div
+                key={highlight.label}
+                className="min-w-0 rounded-2xl border border-border bg-background p-4"
+              >
+                <h4 className="text-sm font-semibold break-words text-foreground">
+                  {highlight.label}
+                </h4>
+                <p className="mt-2 text-xs leading-5 break-words text-muted-foreground">
+                  {highlight.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {selectedService.deliverables.length > 0 && (
+          <div className="mt-6 border-t border-border pt-6 sm:mt-8 sm:pt-8">
+            <p className="text-xs font-semibold tracking-[0.22em] text-muted-foreground/70 uppercase">
+              What you get
+            </p>
+            <ul className="mt-4 grid min-w-0 gap-x-8 gap-y-3 sm:grid-cols-2">
+              {selectedService.deliverables.map((item) => (
+                <li
+                  key={item}
+                  className="flex min-w-0 items-start gap-2 text-sm leading-6 text-muted-foreground"
+                >
+                  <CheckIcon className="mt-1 size-3.5 shrink-0 text-primary" />
+                  <span className="min-w-0 break-words">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {selectedService.stackTags.length > 0 && (
+          <div className="mt-6 border-t border-border pt-6 sm:mt-8 sm:pt-8">
+            <p className="text-xs font-semibold tracking-[0.22em] text-muted-foreground/70 uppercase">
+              Stack
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {selectedService.stackTags.map((tag) => (
+                <span
+                  key={tag}
+                  className="max-w-full rounded-full border border-border bg-background px-3 py-1 text-[11px] break-words text-muted-foreground"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </motion.article>
     </section>
   )
 }
@@ -440,7 +609,9 @@ export default function ServicesPageContent({
   return (
     <>
       <HeroSection />
-      <ServicePackages services={services} />
+      <Suspense fallback={<ServicePackagesFallback />}>
+        <ServicePackages services={services} />
+      </Suspense>
       <ProcessSection />
       <FeaturedProjects projects={featuredProjects} />
       <TestimonialsSection testimonials={testimonials} />

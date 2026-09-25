@@ -41,7 +41,7 @@ export const createSocialImage = () =>
             lineHeight: 1.2,
           }}
         >
-          Software Architect · Web Engineer · Researcher
+          Software Engineer · Researcher
         </div>
       </div>
       <div

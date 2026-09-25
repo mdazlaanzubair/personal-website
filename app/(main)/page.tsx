@@ -5,6 +5,7 @@ import SelectedEducation from "@/components/custom/SelectedEducation"
 import SelectedWork from "@/components/custom/SelectedWork"
 import QuoteSection from "@/components/custom/QuoteSection"
 import LatestWriting from "@/components/custom/LatestWriting"
+import ServicesInlineCta from "@/components/custom/ServicesInlineCta"
 import { client } from "@/src/sanity/client"
 import {
   ACADEMIC_HISTORY_QUERY,
@@ -22,7 +23,10 @@ import {
   type HashnodePost,
 } from "@/src/hashnode/hashnode"
 import { createPageMetadata } from "@/src/seo/site"
-import { createSiteJsonLd, DEFAULT_SOCIAL_PROFILES } from "@/src/seo/structured-data"
+import {
+  createSiteJsonLd,
+  DEFAULT_SOCIAL_PROFILES,
+} from "@/src/seo/structured-data"
 
 const description =
   "Muhammad Azlaan Zubair — Software engineer and researcher building intelligent systems for real-world impact. Focused on scalable systems, AI, and human-centered products."
@@ -94,6 +98,11 @@ export default async function Page() {
       <SelectedWork projects={selectedProjects} />
       <QuoteSection />
       <LatestWriting posts={posts} />
+      <ServicesInlineCta
+        heading="Need something built?"
+        text="I offer productized services — MVPs, websites, technical writing, and automation — delivered in days, not months."
+        href="/services?service=mvp-build#service-pages-block"
+      />
     </>
   )
 }

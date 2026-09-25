@@ -1,8 +1,6 @@
 import { PackageIcon } from "@sanity/icons/Package"
 import { defineArrayMember, defineField, defineType } from "sanity"
 
-import { MAX_TITLE_LENGTH } from "../shared/validation"
-
 export const service = defineType({
   name: "service",
   title: "Service",
@@ -10,84 +8,122 @@ export const service = defineType({
   icon: PackageIcon,
   initialValue: {
     isActive: true,
+    buyers: [],
     deliverables: [],
     stackTags: [],
+    highlights: [],
   },
   fields: [
     defineField({
       name: "title",
+      title: "Title",
       type: "string",
-      validation: (rule) => rule.required().max(MAX_TITLE_LENGTH),
+      validation: (rule) => rule.required(),
     }),
     defineField({
       name: "slug",
+      title: "Slug",
       type: "slug",
-      options: { source: "title" },
-      validation: (rule) => rule.required(),
+      options: { source: "title", maxLength: 96 },
     }),
     defineField({
       name: "tagline",
       title: "Tagline",
-      description: "One-line description shown on cards",
       type: "string",
+      description: "One-line positioning statement",
     }),
     defineField({
       name: "description",
       title: "Description",
-      description: "Detailed scope description",
-      type: "portableText",
+      type: "text",
+      description: "2-3 sentence expanded description",
     }),
     defineField({
       name: "price",
       title: "Price",
-      description: 'e.g. "Starting at $1,500" or "Custom"',
       type: "string",
+      description: 'Display price — e.g. "Starting at $1,200"',
     }),
     defineField({
       name: "timeline",
       title: "Timeline",
-      description: 'e.g. "7 business days"',
       type: "string",
+      description: 'e.g. "7 business days" or "Per article"',
+    }),
+    defineField({
+      name: "buyers",
+      title: "Buyers",
+      type: "array",
+      of: [defineArrayMember({ type: "string" })],
+      description: "Who this service is for — shown as tags on the UI",
     }),
     defineField({
       name: "deliverables",
       title: "Deliverables",
-      description: "Bullet list of what's included",
       type: "array",
       of: [defineArrayMember({ type: "string" })],
+      description: "What the client gets",
     }),
     defineField({
       name: "stackTags",
-      title: "Tech stack",
-      description: 'Labels like "Next.js", "Auth", "Payments"',
+      title: "Stack Tags",
       type: "array",
       of: [defineArrayMember({ type: "string" })],
-      validation: (rule) => rule.unique(),
+      description: "Tech stack labels",
+    }),
+    defineField({
+      name: "highlights",
+      title: "Highlights",
+      type: "array",
+      of: [
+        defineArrayMember({
+          type: "object",
+          fields: [
+            defineField({
+              name: "label",
+              title: "Label",
+              type: "string",
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "description",
+              title: "Description",
+              type: "string",
+              validation: (rule) => rule.required(),
+            }),
+          ],
+          preview: {
+            select: { title: "label", subtitle: "description" },
+          },
+        }),
+      ],
+      description: "3-4 key selling points shown on the visual side",
     }),
     defineField({
       name: "isActive",
       title: "Active",
-      description: "Toggle visibility without deleting",
       type: "boolean",
       initialValue: true,
+      description: "Toggle visibility without deleting",
     }),
     defineField({
       name: "sortOrder",
-      title: "Sort order",
+      title: "Sort Order",
       type: "number",
+      description: "Controls display order (lower = first)",
     }),
   ],
   preview: {
     select: {
       title: "title",
-      tagline: "tagline",
-      price: "price",
-    },
-    prepare({ title, tagline, price }) {
-      return {
-        title,
-        subtitle: [tagline, price].filter(Boolean).join(" · "),
-      }
+      subtitle: "tagline",
     },
   },
+  orderings: [
+    {
+      title: "Sort Order",
+      name: "sortOrderAsc",
+      by: [{ field: "sortOrder", direction: "asc" }],
+    },
+  ],
 })

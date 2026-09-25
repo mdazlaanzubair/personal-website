@@ -36,7 +36,7 @@ const asPortableTextBlocks = (body: unknown): PortableTextBlock[] =>
 
 export const toPublications = (
   documents: PUBLICATIONS_LIST_QUERY_RESULT
-): PublicationInterface[] => documents
+): PublicationInterface[] => documents as PublicationInterface[]
 
 export const toWorkItems = (
   documents: WORK_LIST_QUERY_RESULT
@@ -49,7 +49,7 @@ export const toWorkItems = (
         document.metadata.key_contributions
       ),
     },
-  }))
+  })) as WorkInterface[]
 
 const looksLikeTimeline = (value: string) => /\b(?:19|20)\d{2}\b/.test(value)
 
@@ -91,17 +91,12 @@ export const toInterests = (interests: INTERESTS_QUERY_RESULT): InterestType =>
   interests
 
 export const toServices = (documents: unknown[]): ServiceInterface[] =>
-  (documents as Record<string, unknown>[]).map((document) => ({
-    ...(document as Omit<ServiceInterface, "description">),
-    description: asPortableTextBlocks(document.description),
-  }))
+  documents as ServiceInterface[]
 
 export const toServiceTestimonials = (
   documents: unknown[]
-): ServiceTestimonialInterface[] =>
-  documents as ServiceTestimonialInterface[]
+): ServiceTestimonialInterface[] => documents as ServiceTestimonialInterface[]
 
 export const toClientProjects = (
   documents: unknown[]
-): ClientProjectInterface[] =>
-  documents as ClientProjectInterface[]
+): ClientProjectInterface[] => documents as ClientProjectInterface[]

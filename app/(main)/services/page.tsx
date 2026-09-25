@@ -1,4 +1,5 @@
 import ServicesPageContent from "@/components/custom/ServicesPageContent"
+import JsonLd from "@/components/seo/JsonLd"
 import {
   toClientProjects,
   toServices,
@@ -11,20 +12,29 @@ import {
   SERVICE_TESTIMONIALS_QUERY,
 } from "@/src/sanity/queries"
 import { createPageMetadata } from "@/src/seo/site"
+import { createServicesPageJsonLd } from "@/src/seo/structured-data"
+
+const description =
+  "Hire a software engineer to build and deploy your MVP in 7 business days. SaaS apps, AI tools, landing pages, automation — fixed price, full handoff."
 
 export const metadata = createPageMetadata({
-  title: "Services",
-  description:
-    "I build launch-ready SaaS MVPs, AI tools, landing pages, and Chrome extensions in 7 business days. Book a free discovery call.",
+  title: "Build Your MVP in 7 Days | Muhammad Azlaan Zubair",
+  description,
   path: "/services",
   keywords: [
-    "SaaS MVP development",
-    "AI tool development",
-    "landing page development",
-    "Chrome extension development",
-    "freelance software engineer",
-    "productized services",
-    "MVP in 7 days",
+    "hire developer to build MVP",
+    "build MVP in 7 days",
+    "MVP developer for startups",
+    "SaaS MVP developer",
+    "Next.js developer for hire",
+    "Chrome extension developer",
+    "AI automation setup",
+    "technical writing for developers",
+    "freelance software engineer Pakistan",
+    "software engineer Karachi",
+    "hire developer Karachi",
+    "fixed price MVP development",
+    "productized development services",
   ],
 })
 
@@ -58,18 +68,26 @@ export default async function ServicesPage() {
   if (servicesResult.status === "rejected")
     console.error("Sanity services fetch error:", servicesResult.reason)
   if (testimonialsResult.status === "rejected")
-    console.error(
-      "Sanity testimonials fetch error:",
-      testimonialsResult.reason
-    )
+    console.error("Sanity testimonials fetch error:", testimonialsResult.reason)
   if (clientProjectsResult.status === "rejected")
-    console.error("Sanity client projects fetch error:", clientProjectsResult.reason)
+    console.error(
+      "Sanity client projects fetch error:",
+      clientProjectsResult.reason
+    )
+
+  const servicesJsonLd = createServicesPageJsonLd({
+    services,
+    description,
+  })
 
   return (
-    <ServicesPageContent
-      services={services}
-      testimonials={testimonials}
-      featuredProjects={featuredProjects}
-    />
+    <>
+      <JsonLd data={servicesJsonLd} />
+      <ServicesPageContent
+        services={services}
+        testimonials={testimonials}
+        featuredProjects={featuredProjects}
+      />
+    </>
   )
 }

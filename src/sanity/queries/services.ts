@@ -1,9 +1,6 @@
 import { defineQuery } from "next-sanity"
 
-import {
-  portableTextMembersProjection,
-  timestampsProjection,
-} from "./fragments"
+import { timestampsProjection } from "./fragments"
 
 export const SERVICES_QUERY = defineQuery(/* groq */ `
   *[_type == "service" && isActive == true]
@@ -12,13 +9,16 @@ export const SERVICES_QUERY = defineQuery(/* groq */ `
     title,
     "slug": slug.current,
     tagline,
-    "description": coalesce(description[]{
-      ${portableTextMembersProjection}
-    }, []),
+    description,
     price,
     timeline,
+    "buyers": coalesce(buyers, []),
     "deliverables": coalesce(deliverables, []),
     "stackTags": coalesce(stackTags, []),
+    "highlights": coalesce(highlights[]{
+      label,
+      description
+    }, []),
     sortOrder,
     ${timestampsProjection}
   }
