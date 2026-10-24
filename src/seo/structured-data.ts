@@ -77,11 +77,6 @@ export const createSiteJsonLd = (socialProfiles: SocialMediaInterface[]) => ({
           name: "Work",
           url: absoluteUrl("/work"),
         },
-        {
-          "@type": "CollectionPage",
-          name: "Writing",
-          url: absoluteUrl("/writing"),
-        },
       ],
     },
     {
@@ -113,7 +108,7 @@ export const createSiteJsonLd = (socialProfiles: SocialMediaInterface[]) => ({
           ...socialProfiles
             .filter((profile) => !profile.isHidden)
             .map((profile) => profile.url),
-          "https://blog.mdazlaanzubair.com/",
+          "https://letinix.com/",
         ]),
       ],
     },

@@ -5,7 +5,7 @@ import {
   toServices,
   toServiceTestimonials,
 } from "@/src/sanity/adapters"
-import { client } from "@/src/sanity/client"
+import { buildTimeFetch, client } from "@/src/sanity/client"
 import {
   CLIENT_PROJECTS_QUERY,
   SERVICES_QUERY,
@@ -38,11 +38,10 @@ export const metadata = createPageMetadata({
   ],
 })
 
-export const revalidate = 21600
+export const dynamic = "force-static"
+export const revalidate = false
 
-const fetchOptions = {
-  next: { revalidate: 21600, tags: ["sanity-services"] },
-}
+const fetchOptions = buildTimeFetch
 
 export default async function ServicesPage() {
   const [servicesResult, testimonialsResult, clientProjectsResult] =
@@ -60,7 +59,7 @@ export default async function ServicesPage() {
     testimonialsResult.status === "fulfilled"
       ? toServiceTestimonials(testimonialsResult.value)
       : []
-  const featuredProjects =
+  const clientProjects =
     clientProjectsResult.status === "fulfilled"
       ? toClientProjects(clientProjectsResult.value)
       : []
@@ -86,7 +85,7 @@ export default async function ServicesPage() {
       <ServicesPageContent
         services={services}
         testimonials={testimonials}
-        featuredProjects={featuredProjects}
+        clientProjects={clientProjects}
       />
     </>
   )

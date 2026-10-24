@@ -1,32 +1,19 @@
 import HeroSection from "@/components/custom/HeroSection"
-import WhatIDo from "@/components/custom/WhatIDo"
+import AudiencePaths from "@/components/custom/AudiencePaths"
 import FeaturedServices from "@/components/custom/FeaturedServices"
-import BackgroundSummary from "@/components/custom/BackgroundSummary"
 import SelectedWork from "@/components/custom/SelectedWork"
-import LatestWriting from "@/components/custom/LatestWriting"
-import ServicesInlineCta from "@/components/custom/ServicesInlineCta"
-import { client } from "@/src/sanity/client"
+import ContactCta from "@/components/custom/ContactCta"
+import { buildTimeFetch, client } from "@/src/sanity/client"
 import {
-  ACADEMIC_HISTORY_QUERY,
-  EXPERIENCE_QUERY,
+  FEATURED_CASE_STUDIES_QUERY,
   WORK_LIST_QUERY,
   SERVICES_QUERY,
 } from "@/src/sanity/queries"
-import {
-  toAcademicHistory,
-  toExperience,
-  toWorkItems,
-  toServices,
-} from "@/src/sanity/adapters"
-import {
-  getHashnodePosts,
-  getHashnodeRssPosts,
-  type HashnodePost,
-} from "@/src/hashnode/hashnode"
+import { toCaseStudies, toWorkItems, toServices } from "@/src/sanity/adapters"
 import { createPageMetadata } from "@/src/seo/site"
 
 const description =
-  "Muhammad Azlaan Zubair — Software engineer and researcher building intelligent systems for real-world impact. Focused on scalable systems, AI, and human-centered products."
+  "Muhammad Azlaan Zubair — software engineer with 5+ years building web products, integrations and AI-enabled workflows. Published researcher in AI for software engineering and visiting faculty."
 
 export const metadata = createPageMetadata({
   title: "Muhammad Azlaan Zubair — Software Engineer & Researcher",
@@ -41,27 +28,22 @@ export const metadata = createPageMetadata({
   ],
 })
 
-export const revalidate = 21600
+export const dynamic = "force-static"
+export const revalidate = false
 
-const fetchOptions = { next: { revalidate: 21600 } }
+const fetchOptions = buildTimeFetch
 
 export default async function Page() {
-  const [experienceResult, academicResult, workResult, servicesResult] =
+  const [workResult, servicesResult, caseStudiesResult] =
     await Promise.allSettled([
-      client.fetch(EXPERIENCE_QUERY, {}, fetchOptions),
-      client.fetch(ACADEMIC_HISTORY_QUERY, {}, fetchOptions),
       client.fetch(WORK_LIST_QUERY, {}, fetchOptions),
       client.fetch(SERVICES_QUERY, {}, fetchOptions),
+      client.fetch(FEATURED_CASE_STUDIES_QUERY, {}, fetchOptions),
     ])
 
-  const experiences =
-    experienceResult.status === "fulfilled"
-      ? toExperience(experienceResult.value)
-      : []
-
-  const academics =
-    academicResult.status === "fulfilled"
-      ? toAcademicHistory(academicResult.value)
+  const featuredCaseStudies =
+    caseStudiesResult.status === "fulfilled"
+      ? toCaseStudies(caseStudiesResult.value)
       : []
 
   const allProjects =
@@ -77,31 +59,16 @@ export default async function Page() {
   const selectedProjects =
     featuredProjects.length > 0 ? featuredProjects : allProjects.slice(0, 3)
 
-  let posts: HashnodePost[] = []
-  try {
-    const res = await getHashnodePosts({ first: 3, excludeCaseStudies: false })
-    posts = res.posts
-  } catch {
-    try {
-      posts = await getHashnodeRssPosts({ first: 3, excludeCaseStudies: false })
-    } catch {
-      /* writing section will be empty */
-    }
-  }
-
   return (
     <>
       <HeroSection />
-      <WhatIDo />
-      <FeaturedServices services={services} />
-      <SelectedWork projects={selectedProjects} />
-      <LatestWriting posts={posts} />
-      <BackgroundSummary experiences={experiences} academics={academics} />
-      <ServicesInlineCta
-        heading="Need something built?"
-        text="I offer productized services — MVPs, websites, technical writing, and automation — delivered in days, not months."
-        href="/services?service=mvp-build#service-pages-block"
+      <AudiencePaths />
+      <SelectedWork
+        caseStudies={featuredCaseStudies}
+        projects={selectedProjects}
       />
+      <FeaturedServices services={services} />
+      <ContactCta />
     </>
   )
 }

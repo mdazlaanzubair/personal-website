@@ -1,10 +1,31 @@
 import type { MetadataRoute } from "next"
 
+import { buildTimeFetch, client } from "@/src/sanity/client"
+import { CASE_STUDY_SLUGS_QUERY } from "@/src/sanity/queries"
 import { absoluteUrl } from "@/src/seo/site"
 
-export const revalidate = 21600
+export const dynamic = "force-static"
+export const revalidate = false
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  let caseStudies: MetadataRoute.Sitemap = []
+
+  try {
+    const studies = await client.fetch(
+      CASE_STUDY_SLUGS_QUERY,
+      {},
+      buildTimeFetch
+    )
+    caseStudies = studies.map((study) => ({
+      url: absoluteUrl(`/work/${study.slug}`),
+      lastModified: study._updatedAt,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    }))
+  } catch (error: unknown) {
+    console.error("Sanity case study slugs fetch error:", error)
+  }
+
   return [
     {
       url: absoluteUrl("/"),
@@ -27,10 +48,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.9,
     },
-    {
-      url: absoluteUrl("/writing"),
-      changeFrequency: "weekly",
-      priority: 0.8,
-    },
+    ...caseStudies,
   ]
 }

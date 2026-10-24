@@ -164,8 +164,7 @@ export async function POST(request: Request) {
     if (error instanceof AssistantParseError) {
       return Response.json(
         {
-          error:
-            "I received an unexpected response. Please try asking again.",
+          error: "I received an unexpected response. Please try asking again.",
         },
         { status: 502, headers: noStoreHeaders }
       )
@@ -174,8 +173,7 @@ export async function POST(request: Request) {
     console.error("Portfolio assistant request failed:", error)
     return Response.json(
       {
-        error:
-          "Something went wrong. Please try again.",
+        error: "Something went wrong. Please try again.",
       },
       { status: 500, headers: noStoreHeaders }
     )

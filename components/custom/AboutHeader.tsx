@@ -32,7 +32,7 @@ export default function AboutHeader() {
       </motion.span>
 
       <motion.h1
-        className="mt-4 display-heading"
+        className="mt-4 max-w-xl display-heading"
         variants={fadeUp}
         initial="hidden"
         animate="visible"

@@ -1,9 +1,16 @@
 import WorkPageContent from "@/components/custom/WorkPageContent"
 import JsonLd from "@/components/seo/JsonLd"
-import { toPublications } from "@/src/sanity/adapters"
-import { toWorkItems } from "@/src/sanity/adapters"
-import { client } from "@/src/sanity/client"
-import { PUBLICATIONS_LIST_QUERY, WORK_LIST_QUERY } from "@/src/sanity/queries"
+import {
+  toCaseStudies,
+  toPublications,
+  toWorkItems,
+} from "@/src/sanity/adapters"
+import { buildTimeFetch, client } from "@/src/sanity/client"
+import {
+  CASE_STUDIES_QUERY,
+  PUBLICATIONS_LIST_QUERY,
+  WORK_LIST_QUERY,
+} from "@/src/sanity/queries"
 import { createPageMetadata } from "@/src/seo/site"
 import {
   createCollectionJsonLd,
@@ -14,7 +21,7 @@ import { absoluteUrl } from "@/src/seo/site"
 import { toPlainText } from "next-sanity"
 
 const description =
-  "Selected projects, experiments, and research publications by Muhammad Azlaan Zubair — software engineer and researcher."
+  "Client case studies, side projects, and research publications by Muhammad Azlaan Zubair — software engineer and researcher."
 
 export const metadata = createPageMetadata({
   title: "Work",
@@ -22,6 +29,7 @@ export const metadata = createPageMetadata({
   path: "/work",
   keywords: [
     "Muhammad Azlaan Zubair projects",
+    "Muhammad Azlaan Zubair case studies",
     "software architecture portfolio",
     "AI research publications",
     "web engineering projects",
@@ -29,15 +37,23 @@ export const metadata = createPageMetadata({
   ],
 })
 
-export const revalidate = 21600
+export const dynamic = "force-static"
+export const revalidate = false
 
-const fetchOptions = { next: { revalidate: 21600, tags: ["sanity-work"] } }
+const fetchOptions = buildTimeFetch
 
 export default async function WorkPage() {
-  const [projectsResult, publicationsResult] = await Promise.allSettled([
-    client.fetch(WORK_LIST_QUERY, {}, fetchOptions),
-    client.fetch(PUBLICATIONS_LIST_QUERY, {}, fetchOptions),
-  ])
+  const [caseStudiesResult, projectsResult, publicationsResult] =
+    await Promise.allSettled([
+      client.fetch(CASE_STUDIES_QUERY, {}, fetchOptions),
+      client.fetch(WORK_LIST_QUERY, {}, fetchOptions),
+      client.fetch(PUBLICATIONS_LIST_QUERY, {}, fetchOptions),
+    ])
+
+  const caseStudies =
+    caseStudiesResult.status === "fulfilled"
+      ? toCaseStudies(caseStudiesResult.value)
+      : []
 
   const projects =
     projectsResult.status === "fulfilled"
@@ -50,26 +66,39 @@ export default async function WorkPage() {
 
   const projectsJsonLd = createCollectionJsonLd({
     path: "/work",
-    name: "Software and product engineering projects",
+    name: "Case studies and software projects",
     description,
-    items: projects.map((project) => {
-      const featureList = toPlainText(project.metadata.key_contributions).trim()
-      return {
-        "@type": "SoftwareApplication",
-        "@id": `${absoluteUrl("/work")}#${encodeURIComponent(project.id)}`,
-        name: project.title,
-        description: project.description,
+    items: [
+      ...caseStudies.map((study) => ({
+        "@type": "CreativeWork",
+        "@id": absoluteUrl(`/work/${study.slug}`),
+        name: study.title,
+        description: study.outcome,
+        url: absoluteUrl(`/work/${study.slug}`),
         creator: { "@id": PERSON_ID },
-        keywords: project.tags,
-        ...(featureList ? { featureList } : {}),
-        ...(project.metadata.projectUrl
-          ? { url: project.metadata.projectUrl }
-          : {}),
-        ...(project.metadata.repositoryUrl
-          ? { sameAs: [project.metadata.repositoryUrl] }
-          : {}),
-      }
-    }),
+        keywords: study.stack,
+      })),
+      ...projects.map((project) => {
+        const featureList = toPlainText(
+          project.metadata.key_contributions
+        ).trim()
+        return {
+          "@type": "SoftwareApplication",
+          "@id": `${absoluteUrl("/work")}#${encodeURIComponent(project.id)}`,
+          name: project.title,
+          description: project.description,
+          creator: { "@id": PERSON_ID },
+          keywords: project.tags,
+          ...(featureList ? { featureList } : {}),
+          ...(project.metadata.projectUrl
+            ? { url: project.metadata.projectUrl }
+            : {}),
+          ...(project.metadata.repositoryUrl
+            ? { sameAs: [project.metadata.repositoryUrl] }
+            : {}),
+        }
+      }),
+    ],
   })
 
   const researchJsonLd = createResearchPageJsonLd({
@@ -80,7 +109,11 @@ export default async function WorkPage() {
   return (
     <>
       <JsonLd data={[projectsJsonLd, researchJsonLd]} />
-      <WorkPageContent projects={projects} publications={publications} />
+      <WorkPageContent
+        caseStudies={caseStudies}
+        projects={projects}
+        publications={publications}
+      />
     </>
   )
 }

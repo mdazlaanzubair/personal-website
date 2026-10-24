@@ -2,7 +2,8 @@ import type { MetadataRoute } from "next"
 
 import { absoluteUrl, SITE_URL } from "@/src/seo/site"
 
-export const revalidate = 21600
+export const dynamic = "force-static"
+export const revalidate = false
 
 export default function robots(): MetadataRoute.Robots {
   return {

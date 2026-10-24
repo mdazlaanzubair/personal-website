@@ -1,4 +1,16 @@
 import { academic } from "./documents/academic"
+import { caseStudy } from "./caseStudy"
+import { company } from "./company"
+import { technology } from "./technology"
+import {
+  caseStudyImage,
+  caseStudyPoint,
+  caseStudyResult,
+  externalLink,
+  richText,
+  seo,
+  teamMember,
+} from "./objects"
 import { clientProject } from "./documents/clientProject"
 import { experience } from "./documents/experience"
 import { publication } from "./documents/publication"
@@ -17,10 +29,23 @@ import {
   tableBlock,
   tableRow,
 } from "./objects/portableText"
+import { projectSummary } from "./objects/projectSummary"
 import { skill } from "./objects/skill"
 import { socialProfile } from "./objects/socialProfile"
 
 export const schemaTypes = [
+  // Case studies (case-study-schema.md)
+  caseStudy,
+  company,
+  technology,
+  richText,
+  caseStudyPoint,
+  caseStudyResult,
+  teamMember,
+  externalLink,
+  caseStudyImage,
+  seo,
+  // Portfolio content
   publication,
   work,
   service,
@@ -29,6 +54,7 @@ export const schemaTypes = [
   experience,
   academic,
   siteSettings,
+  projectSummary,
   experienceCompany,
   institute,
   socialProfile,

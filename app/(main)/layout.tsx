@@ -13,7 +13,7 @@ import AnimatedBackground from "@/components/custom/AnimatedBackground"
 import Navbar from "@/components/custom/Navbar"
 import { Footer } from "@/components/custom/Footer"
 import { toSocialProfiles } from "@/src/sanity/adapters"
-import { client } from "@/src/sanity/client"
+import { buildTimeFetch, client } from "@/src/sanity/client"
 import { SOCIAL_PROFILES_QUERY } from "@/src/sanity/queries"
 import { rootMetadata } from "@/src/seo/site"
 import {
@@ -23,7 +23,8 @@ import {
 } from "@/src/seo/structured-data"
 
 export const metadata = rootMetadata
-export const revalidate = 21600
+export const dynamic = "force-static"
+export const revalidate = false
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -61,7 +62,7 @@ export default async function RootLayout({
     const response = await client.fetch(
       SOCIAL_PROFILES_QUERY,
       {},
-      { next: { revalidate: 21600, tags: ["sanity-social-profiles"] } }
+      buildTimeFetch
     )
     socialProfiles = resolveSocialProfiles(toSocialProfiles(response))
   } catch (error: unknown) {

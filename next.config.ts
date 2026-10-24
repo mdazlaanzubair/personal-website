@@ -13,22 +13,15 @@ const nextConfig: NextConfig = {
         destination: "/work",
         permanent: true,
       },
+      {
+        source: "/writing/:path*",
+        destination: "https://letinix.com",
+        permanent: true,
+      },
     ]
   },
   images: {
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "cdn.hashnode.com",
-      },
-      {
-        protocol: "https",
-        hostname: "**.hashnode.com",
-      },
-      {
-        protocol: "https",
-        hostname: "**.hashnodecdn.com",
-      },
       {
         protocol: "https",
         hostname: "cdn.sanity.io",

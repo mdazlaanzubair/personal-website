@@ -56,6 +56,76 @@ export interface WorkInterface {
   updatedAt: string
 }
 
+export type CaseStudyImageKind = "illustration" | "screenshot" | "diagram"
+
+export interface CaseStudyImageInterface {
+  asset: {
+    url: string
+    metadata: {
+      lqip: string | null
+      dimensions: { width: number; height: number } | null
+    } | null
+  } | null
+  alt: string
+  kind: CaseStudyImageKind
+  caption: string | null
+  hotspot: { x?: number; y?: number } | null
+}
+
+export interface CaseStudyInterface {
+  id: string
+  title: string
+  slug: string
+  subtitle: string | null
+  outcome: string
+  listing: "featured" | "listed" | "hidden"
+  priority: number
+  clientName: string | null
+  via: string | null
+  startDate: string
+  endDate: string | null
+  stack: string[]
+  coverImage: CaseStudyImageInterface | null
+}
+
+export interface CaseStudyPointInterface {
+  _key: string
+  title: string
+  description: string
+}
+
+export interface CaseStudyDetailInterface extends CaseStudyInterface {
+  role: string
+  client: { industry: string | null; region: string | null } | null
+  team: {
+    _key: string
+    role: string
+    name: string | null
+    profileUrl: string | null
+  }[]
+  links: { _key: string; label: string; url: string }[]
+  linkNote: string | null
+  problem: PortableTextBlock[]
+  built: CaseStudyPointInterface[]
+  decisions: CaseStudyPointInterface[]
+  results: {
+    _key: string
+    statement: string
+    metric: {
+      value: number | null
+      prefix: string | null
+      suffix: string | null
+      label: string | null
+    } | null
+  }[]
+  credit: string | null
+  coverVideoUrl: string | null
+  gallery: (CaseStudyImageInterface & { _key: string })[]
+  seo: { title: string; description: string; ogImageUrl: string | null }
+  next: { title: string; slug: string; outcome: string } | null
+  previous: { title: string; slug: string; outcome: string } | null
+}
+
 export interface ExperienceInterface {
   company: {
     name: string

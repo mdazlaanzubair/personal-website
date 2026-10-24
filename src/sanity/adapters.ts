@@ -2,6 +2,8 @@ import type { PortableTextBlock } from "next-sanity"
 
 import type {
   ACADEMIC_HISTORY_QUERY_RESULT,
+  CASE_STUDIES_QUERY_RESULT,
+  CASE_STUDY_QUERY_RESULT,
   EXPERIENCE_QUERY_RESULT,
   INTERESTS_QUERY_RESULT,
   PUBLICATIONS_LIST_QUERY_RESULT,
@@ -11,6 +13,8 @@ import type {
 } from "@/sanity.types"
 import type {
   AcademicInterface,
+  CaseStudyDetailInterface,
+  CaseStudyInterface,
   ClientProjectInterface,
   ExperienceInterface,
   InterestType,
@@ -37,6 +41,49 @@ const asPortableTextBlocks = (body: unknown): PortableTextBlock[] =>
 export const toPublications = (
   documents: PUBLICATIONS_LIST_QUERY_RESULT
 ): PublicationInterface[] => documents as PublicationInterface[]
+
+const toCaseStudyCard = ({
+  _id,
+  stack,
+  ...document
+}: CASE_STUDIES_QUERY_RESULT[number]): CaseStudyInterface => ({
+  ...document,
+  id: _id,
+  stack: stack ?? [],
+})
+
+export const toCaseStudies = (
+  documents: CASE_STUDIES_QUERY_RESULT
+): CaseStudyInterface[] => documents.map(toCaseStudyCard)
+
+export const toCaseStudy = (
+  document: CASE_STUDY_QUERY_RESULT
+): CaseStudyDetailInterface | null =>
+  document
+    ? {
+        ...toCaseStudyCard(document),
+        role: document.role,
+        client: document.client
+          ? {
+              industry: document.client.industry,
+              region: document.client.region,
+            }
+          : null,
+        team: document.team ?? [],
+        links: document.links ?? [],
+        linkNote: document.linkNote,
+        problem: asPortableTextBlocks(document.problem),
+        built: document.built,
+        decisions: document.decisions ?? [],
+        results: document.results,
+        credit: document.credit,
+        coverVideoUrl: document.coverVideoUrl,
+        gallery: document.gallery ?? [],
+        seo: document.seo,
+        next: document.next,
+        previous: document.previous,
+      }
+    : null
 
 export const toWorkItems = (
   documents: WORK_LIST_QUERY_RESULT
