@@ -38,3 +38,6 @@ next-env.d.ts
 
 .vercel
 .claude
+# sanity studio build output
+/dist
+/.sanity

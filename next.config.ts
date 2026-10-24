@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: "/studio/:path*",
+        destination: "https://mdazlaanzubair.sanity.studio/:path*",
+        permanent: false,
+      },
+      {
         source: "/writing/:path*",
         destination: "https://letinix.com",
         permanent: true,

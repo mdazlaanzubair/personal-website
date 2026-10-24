@@ -11,6 +11,9 @@
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit",
     "typegen": "sanity schema extract --enforce-required-fields --force && sanity typegen generate",
+    "studio:dev": "sanity dev",
+    "studio:build": "sanity build",
+    "studio:deploy": "sanity deploy",
     "dev:turbo": "next dev --turbo"
   },
   "dependencies": {
