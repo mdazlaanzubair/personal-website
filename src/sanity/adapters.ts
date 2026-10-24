@@ -81,6 +81,7 @@ export const toCaseStudy = (
         gallery: document.gallery ?? [],
         seo: document.seo,
         next: document.next,
+        previous: document.previous,
       }
     : null
 

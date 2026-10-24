@@ -76,7 +76,10 @@ export const CASE_STUDY_QUERY = defineQuery(/* groq */ `
     },
     "next": *[
       _type == "caseStudy" && listing in ["featured", "listed"] && priority > ^.priority
-    ] | order(priority asc)[0] { title, "slug": slug.current, outcome }
+    ] | order(priority asc)[0] { title, "slug": slug.current, outcome },
+    "previous": *[
+      _type == "caseStudy" && listing in ["featured", "listed"] && priority < ^.priority
+    ] | order(priority desc)[0] { title, "slug": slug.current, outcome }
   }
 `)
 

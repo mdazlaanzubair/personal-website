@@ -1,16 +1,28 @@
 "use client"
 
-import { Suspense, useEffect, useMemo, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import Link from "next/link"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { motion } from "framer-motion"
 import {
   ArrowRightIcon,
+  ArrowUpRightIcon,
   CheckIcon,
+  ClockIcon,
   PhoneCallIcon,
   PhoneIcon,
   QuoteIcon,
 } from "lucide-react"
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { cn } from "@/lib/utils"
 
 import type {
   ClientProjectInterface,
@@ -127,66 +139,200 @@ function HeroSection() {
   )
 }
 
-function ServicePackagesFallback() {
+function PricingFallback() {
   return (
-    <section className="border-t border-border py-16">
-      <span className="eyebrow">What I Offer</span>
+    <section id="service-pages-block" className="border-t border-border py-16">
+      <span className="eyebrow">Pricing</span>
       <h2 className="mt-4 font-heading text-2xl font-bold tracking-tight sm:text-3xl">
         Service Packages
       </h2>
-      <div className="mt-8 h-32 rounded-2xl border border-border bg-muted/20" />
+      <div className="mt-10 grid gap-4 sm:grid-cols-2">
+        {[0, 1].map((i) => (
+          <div
+            key={i}
+            className="h-96 rounded-2xl border border-border bg-muted/20"
+          />
+        ))}
+      </div>
     </section>
   )
 }
 
-function ServicePackages({ services }: { services: ServiceInterface[] }) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-  const requestedService = searchParams.get("service")
-  const [selectedId, setSelectedId] = useState(services[0]?.id ?? "")
-  const [activeTab, setActiveTab] = useState("Highlights")
+/** "Starting at $1,200" → { prefix: "Starting at", amount: "$1,200" } */
+const splitPrice = (price: string) => {
+  const match = price.match(/^(.*?)\s*([$€£]\s?[\d,.]+.*)$/)
+  return match
+    ? { prefix: match[1] || null, amount: match[2] }
+    : { prefix: null, amount: price }
+}
 
-  const selectedService = useMemo(() => {
-    const service = services.find((service) => service.id === selectedId)
-    setActiveTab("Highlights")
-    return service ?? services[0]
-  }, [selectedId, services])
-
-  const tabs = ["Highlights", "What You’ll Get"]
-
-  useEffect(() => {
-    if (services.length === 0) return
-
-    const serviceFromUrl = services.find(
-      (service) =>
-        service.slug === requestedService || service.id === requestedService
-    )
-
-    setSelectedId((currentId) => {
-      const nextId = serviceFromUrl?.id ?? services[0].id
-      return currentId === nextId ? currentId : nextId
-    })
-  }, [requestedService, services])
-
-  const handleSelectService = (service: ServiceInterface) => {
-    setSelectedId(service.id)
-    setActiveTab("Best For")
-
-    const params = new URLSearchParams(searchParams.toString())
-    if (service.slug) {
-      params.set("service", service.slug)
-    } else {
-      params.set("service", service.id)
-    }
-
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false })
-  }
-
-  if (services.length === 0 || !selectedService) return null
+function PricingCard({
+  service,
+  index,
+  isRequested,
+  onViewDetails,
+}: {
+  service: ServiceInterface
+  index: number
+  isRequested: boolean
+  onViewDetails: () => void
+}) {
+  const price = service.price ? splitPrice(service.price) : null
+  const hasAbout = Boolean(service.description) || service.highlights.length > 0
 
   return (
-    <section className="border-t border-border py-16">
+    <motion.article
+      id={`plan-${service.slug || service.id}`}
+      variants={itemVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-30px" }}
+      custom={index}
+      className={cn(
+        "flex scroll-mt-28 flex-col gap-6 rounded-2xl border bg-muted/20 p-6 sm:row-span-5 sm:grid sm:grid-rows-subgrid sm:gap-0",
+        isRequested ? "border-primary ring-1 ring-primary" : "border-border"
+      )}
+    >
+      {/* 1 · Plan */}
+      <header>
+        <h3 className="font-heading text-xl font-bold tracking-tight text-foreground">
+          {service.title}
+        </h3>
+        {service.tagline && (
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            {service.tagline}
+          </p>
+        )}
+      </header>
+
+      {/* 2 · Price, timeline and call to action */}
+      <div className="sm:pt-6">
+        {price ? (
+          <p>
+            {price.prefix && (
+              <span className="block text-xs text-muted-foreground">
+                {price.prefix}
+              </span>
+            )}
+            <span className="font-heading text-4xl font-bold tracking-tight text-foreground">
+              {price.amount}
+            </span>
+          </p>
+        ) : (
+          <p className="font-heading text-2xl font-bold text-foreground">
+            Contact for pricing
+          </p>
+        )}
+        {service.timeline && (
+          <p className="mt-2 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+            <ClockIcon className="size-3.5" />
+            {service.timeline}
+          </p>
+        )}
+        <Link
+          href={BOOKING_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-colors hover:bg-foreground/90"
+        >
+          <PhoneCallIcon className="size-3.5 shrink-0" />
+          Let&apos;s Discuss
+        </Link>
+      </div>
+
+      {/* 3 · What you'll get */}
+      <div className="border-t border-border pt-6 sm:mt-6">
+        <p className="text-xs font-semibold tracking-wider text-foreground uppercase">
+          What you&apos;ll get
+        </p>
+        <ul className="mt-4 space-y-2.5">
+          {service.deliverables.map((item) => (
+            <li
+              key={item}
+              className="flex items-start gap-2.5 text-sm leading-6 text-muted-foreground"
+            >
+              <CheckIcon className="mt-1 size-3.5 shrink-0 text-primary" />
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* 4 · Best for and stack */}
+      <div className="space-y-5 border-t border-border pt-6 sm:mt-6">
+        {service.buyers.length > 0 && (
+          <div>
+            <p className="text-xs font-semibold tracking-wider text-foreground uppercase">
+              Best for
+            </p>
+            <ul className="mt-3 flex flex-wrap gap-1.5">
+              {service.buyers.map((buyer) => (
+                <li
+                  key={buyer}
+                  className="rounded-full border border-border px-2.5 py-1 text-xs text-muted-foreground"
+                >
+                  {buyer}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {service.stackTags.length > 0 && (
+          <div>
+            <p className="text-xs font-semibold tracking-wider text-foreground uppercase">
+              Stack
+            </p>
+            <p className="mt-2 text-xs leading-5 text-muted-foreground">
+              {service.stackTags.join(" · ")}
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* 5 · About this plan (opens the plan modal) */}
+      {hasAbout ? (
+        <div className="border-t border-border pt-5 sm:mt-6">
+          <button
+            type="button"
+            onClick={onViewDetails}
+            aria-haspopup="dialog"
+            className="group/details flex w-full items-center justify-between text-left text-sm font-medium text-foreground transition-colors hover:text-primary"
+          >
+            About this plan
+            <ArrowUpRightIcon className="size-4 text-muted-foreground transition-transform group-hover/details:translate-x-0.5 group-hover/details:-translate-y-0.5" />
+          </button>
+        </div>
+      ) : (
+        <span aria-hidden="true" />
+      )}
+    </motion.article>
+  )
+}
+
+function PricingPlans({ services }: { services: ServiceInterface[] }) {
+  const [selectedService, setSelectedService] =
+    useState<ServiceInterface | null>(null)
+  const requestedService = useSearchParams().get("service")
+  const requestedId = services.find(
+    (service) =>
+      service.slug === requestedService || service.id === requestedService
+  )?.id
+
+  useEffect(() => {
+    if (!requestedId) return
+    const service = services.find((s) => s.id === requestedId)
+    document
+      .getElementById(`plan-${service?.slug || requestedId}`)
+      ?.scrollIntoView({ behavior: "smooth", block: "start" })
+  }, [requestedId, services])
+
+  if (services.length === 0) return null
+
+  return (
+    <section
+      id="service-pages-block"
+      className="scroll-mt-24 border-t border-border py-16"
+    >
       <motion.span
         className="eyebrow"
         variants={fadeUp}
@@ -195,11 +341,10 @@ function ServicePackages({ services }: { services: ServiceInterface[] }) {
         viewport={{ once: true, margin: "-30px" }}
         custom={0}
       >
-        What I Offer
+        Pricing
       </motion.span>
 
       <motion.h2
-        id="service-pages-block"
         className="mt-4 font-heading text-2xl font-bold tracking-tight sm:text-3xl"
         variants={fadeUp}
         initial="hidden"
@@ -210,184 +355,106 @@ function ServicePackages({ services }: { services: ServiceInterface[] }) {
         Service Packages
       </motion.h2>
 
-      <motion.div
-        className="pt-8"
+      <motion.p
+        className="mt-3 max-w-xl text-sm text-muted-foreground"
         variants={fadeUp}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-30px" }}
         custom={2}
       >
-        <div
-          className="-mx-4 flex w-full gap-0 overflow-x-auto px-4 pb-2 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0"
-          role="tablist"
-          aria-label="Service packages"
-        >
-          {services.map((service) => {
-            const isSelected = service.id === selectedService.id
+        Scope and price are agreed on a discovery call, before any work begins.
+      </motion.p>
 
-            return (
-              <button
-                key={service.id}
-                type="button"
-                role="tab"
-                aria-selected={isSelected}
-                aria-controls={`service-panel-${service.id}`}
-                id={`service-tab-${service.id}`}
-                onClick={() => handleSelectService(service)}
-                className={`flex-1 shrink-0 border-b-2 px-4 py-2 text-xs font-medium whitespace-nowrap transition-colors sm:text-sm ${
-                  isSelected
-                    ? "border-primary font-semibold text-primary"
-                    : "border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground"
-                }`}
-              >
-                {service.title}
-              </button>
-            )
-          })}
-        </div>
-      </motion.div>
+      <div className="mt-10 grid gap-4 sm:grid-cols-2">
+        {services.map((service, i) => (
+          <PricingCard
+            key={service.id}
+            service={service}
+            index={i}
+            isRequested={service.id === requestedId}
+            onViewDetails={() => setSelectedService(service)}
+          />
+        ))}
+      </div>
 
-      <motion.article
-        key={selectedService.id}
-        id={`service-panel-${selectedService.id}`}
-        role="tabpanel"
-        aria-labelledby={`service-tab-${selectedService.id}`}
-        className="mt-8 min-w-0"
-        variants={fadeUp}
-        initial="hidden"
-        animate="visible"
-        custom={0}
+      {/* Plan detail modal */}
+      <Dialog
+        open={selectedService !== null}
+        onOpenChange={(open) => {
+          if (!open) setSelectedService(null)
+        }}
       >
-        <div className="flex min-w-0 flex-col gap-5 pb-6 lg:flex-row lg:items-start lg:justify-between lg:pb-8">
-          <div className="min-w-0">
-            {/* <p className="text-xs font-semibold tracking-[0.22em] text-primary uppercase">
-              Package Details
-            </p> */}
-            <h3 className="mt-0 font-heading text-2xl font-bold tracking-tight break-words text-foreground sm:text-3xl">
-              {selectedService.title}
-            </h3>
-            {selectedService.tagline && (
-              <p className="mt-3 max-w-3xl text-sm leading-6 break-words text-muted-foreground sm:text-base">
-                {selectedService.tagline}
-              </p>
-            )}
-            {selectedService.description && (
-              <p className="mt-4 max-w-3xl text-sm leading-7 break-words text-muted-foreground">
-                {selectedService.description}
-              </p>
-            )}
-
-            <Link
-              href={BOOKING_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-8 inline-flex max-w-full items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-colors hover:bg-foreground/90"
-            >
-              <PhoneCallIcon className="size-3.5 shrink-0" />
-              <span className="truncate">Let&apos;s Discuss</span>
-            </Link>
-          </div>
-
-          {(selectedService.price || selectedService.timeline) && (
-            <div className="min-w-0 shrink-0 rounded-2xl border border-border bg-background p-4 lg:min-w-48 lg:text-right">
-              {selectedService.price && (
-                <p className="font-heading text-lg font-bold break-words text-foreground">
-                  {selectedService.price}
-                </p>
+        {selectedService && (
+          <DialogContent className="max-h-[85vh] overflow-hidden border border-border/60 bg-card sm:max-w-2xl">
+            <DialogHeader>
+              {(selectedService.price || selectedService.timeline) && (
+                <span className="eyebrow text-[11px]">
+                  {[selectedService.price, selectedService.timeline]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </span>
               )}
-              {selectedService.timeline && (
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {selectedService.timeline}
-                </p>
+              <DialogTitle className="font-heading text-xl font-semibold normal-case">
+                {selectedService.title}
+              </DialogTitle>
+              {selectedService.tagline && (
+                <DialogDescription className="text-sm text-muted-foreground">
+                  {selectedService.tagline}
+                </DialogDescription>
               )}
-            </div>
-          )}
-        </div>
+            </DialogHeader>
 
-        <div
-          className="-mx-4 flex gap-0 overflow-x-auto px-4 py-2 sm:mx-0 sm:px-0"
-          role="tablist"
-          aria-label="Service details"
-        >
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              type="button"
-              role="tab"
-              aria-selected={activeTab === tab}
-              onClick={() => setActiveTab(tab)}
-              className={`shrink-0 border-b-2 px-4 py-2 text-sm font-light transition-colors ${activeTab === tab ? "border-foreground font-medium" : "text-muted-foreground hover:border-muted hover:text-foreground"}`}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-
-        <div className="min-h-32 pt-8" role="tabpanel">
-          {activeTab === "Highlights" && (
-            <div className="grid gap-3 sm:grid-cols-2">
-              {selectedService.highlights.map((highlight) => (
-                <div
-                  key={highlight.label}
-                  className="rounded-2xl border border-border bg-muted/20 p-4"
-                >
-                  <h4 className="text-sm font-semibold text-foreground">
-                    {highlight.label}
-                  </h4>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    {highlight.description}
+            <div className="max-h-[52vh] space-y-6 overflow-y-auto pr-2">
+              {selectedService.description && (
+                <section>
+                  <h3 className="mb-3 font-heading text-base font-semibold text-foreground">
+                    About this plan
+                  </h3>
+                  <p className="text-sm leading-6 text-muted-foreground">
+                    {selectedService.description}
                   </p>
-                </div>
-              ))}
-              <div className="col-span-1 pt-6 sm:col-span-2">
-                <p className="mb-3 text-sm font-medium text-muted-foreground">
-                  Best for
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {selectedService.buyers.map((buyer) => (
-                    <span
-                      key={buyer}
-                      className="rounded-full border border-border px-3 py-1.5 text-sm text-muted-foreground"
-                    >
-                      {buyer}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-          {activeTab === "What You’ll Get" && (
-            <ul className="grid gap-3 sm:grid-cols-2">
-              {selectedService.deliverables.map((item) => (
-                <li
-                  key={item}
-                  className="flex items-start gap-2 text-sm leading-6 text-muted-foreground"
-                >
-                  <CheckIcon className="mt-1 size-3.5 shrink-0 text-primary" />
-                  {item}
-                </li>
-              ))}
+                </section>
+              )}
 
-              <div className="col-span-1 pt-6 sm:col-span-2">
-                <p className="mb-3 text-sm font-medium text-muted-foreground">
-                  Stack
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {selectedService.stackTags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full border border-border px-3 py-1.5 text-sm text-muted-foreground"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </ul>
-          )}
-        </div>
-      </motion.article>
+              {selectedService.highlights.length > 0 && (
+                <section>
+                  <h3 className="mb-3 font-heading text-base font-semibold text-foreground">
+                    Highlights
+                  </h3>
+                  <dl className="grid gap-3 sm:grid-cols-2">
+                    {selectedService.highlights.map((highlight) => (
+                      <div
+                        key={highlight.label}
+                        className="rounded-xl border border-border bg-muted/20 p-4"
+                      >
+                        <dt className="text-sm font-semibold text-foreground">
+                          {highlight.label}
+                        </dt>
+                        <dd className="mt-1.5 text-sm leading-6 text-muted-foreground">
+                          {highlight.description}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                </section>
+              )}
+            </div>
+
+            <DialogFooter className="items-center border-t border-border py-4">
+              <Link
+                href={BOOKING_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-colors hover:bg-foreground/90"
+              >
+                <PhoneCallIcon className="size-3.5 shrink-0" />
+                Let&apos;s Discuss
+              </Link>
+            </DialogFooter>
+          </DialogContent>
+        )}
+      </Dialog>
     </section>
   )
 }
@@ -444,17 +511,13 @@ function ProcessSection() {
   )
 }
 
-function FeaturedProjects({
-  projects,
-}: {
-  projects: ClientProjectInterface[]
-}) {
+function ClientProjects({ projects }: { projects: ClientProjectInterface[] }) {
   if (projects.length === 0) return null
 
   return (
     <section className="border-t border-border py-16">
       <div className="mb-8 flex items-baseline justify-between">
-        <span className="eyebrow">Featured Projects</span>
+        <span className="eyebrow">Client Projects</span>
       </div>
 
       <div className="space-y-0">
@@ -626,20 +689,20 @@ function CTASection() {
 export default function ServicesPageContent({
   services,
   testimonials,
-  featuredProjects,
+  clientProjects,
 }: {
   services: ServiceInterface[]
   testimonials: ServiceTestimonialInterface[]
-  featuredProjects: ClientProjectInterface[]
+  clientProjects: ClientProjectInterface[]
 }) {
   return (
     <>
       <HeroSection />
-      <Suspense fallback={<ServicePackagesFallback />}>
-        <ServicePackages services={services} />
+      <Suspense fallback={<PricingFallback />}>
+        <PricingPlans services={services} />
       </Suspense>
       <ProcessSection />
-      <FeaturedProjects projects={featuredProjects} />
+      <ClientProjects projects={clientProjects} />
       <TestimonialsSection testimonials={testimonials} />
       <CTASection />
     </>

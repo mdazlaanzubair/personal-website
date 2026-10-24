@@ -123,6 +123,7 @@ export interface CaseStudyDetailInterface extends CaseStudyInterface {
   gallery: (CaseStudyImageInterface & { _key: string })[]
   seo: { title: string; description: string; ogImageUrl: string | null }
   next: { title: string; slug: string; outcome: string } | null
+  previous: { title: string; slug: string; outcome: string } | null
 }
 
 export interface ExperienceInterface {

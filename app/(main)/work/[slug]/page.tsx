@@ -1,5 +1,5 @@
 import CaseStudyImage from "@/components/custom/CaseStudyImage"
-import ServicesInlineCta from "@/components/custom/ServicesInlineCta"
+import ContactCta from "@/components/custom/ContactCta"
 import JsonLd from "@/components/seo/JsonLd"
 import { formatCaseStudyClient, formatCaseStudyDates } from "@/lib/case-study"
 import { toCaseStudy } from "@/src/sanity/adapters"
@@ -7,13 +7,17 @@ import { client } from "@/src/sanity/client"
 import { CASE_STUDY_QUERY, CASE_STUDY_SLUGS_QUERY } from "@/src/sanity/queries"
 import { absoluteUrl, createPageMetadata } from "@/src/seo/site"
 import { PERSON_ID } from "@/src/seo/structured-data"
-import type { CaseStudyPointInterface } from "@/type"
-import { ArrowLeftIcon, ArrowRightIcon, ArrowUpRightIcon } from "lucide-react"
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  ArrowUpRightIcon,
+  CheckIcon,
+} from "lucide-react"
 import type { Metadata } from "next"
 import { PortableText, type PortableTextComponents } from "next-sanity"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { cache } from "react"
+import { cache, type ReactNode } from "react"
 
 export const revalidate = 21600
 
@@ -96,45 +100,25 @@ const problemComponents: PortableTextComponents = {
   },
 }
 
-function StorySection({
-  index,
-  title,
-  children,
-}: {
-  index: string
-  title: string
-  children: React.ReactNode
-}) {
+function SectionHeading({ index, title }: { index: string; title: string }) {
   return (
-    <section className="grid gap-4 border-t border-border py-10 sm:grid-cols-[10rem_1fr] sm:gap-8">
-      <div>
-        <span className="eyebrow">{index}</span>
-        <h2 className="mt-2 font-heading text-xl font-bold tracking-tight text-foreground">
-          {title}
-        </h2>
-      </div>
-      <div className="min-w-0 text-[15px] text-muted-foreground">
-        {children}
-      </div>
-    </section>
+    <div className="mb-6">
+      <span className="eyebrow">{index}</span>
+      <h2 className="mt-2 font-heading text-2xl font-bold tracking-tight text-foreground">
+        {title}
+      </h2>
+    </div>
   )
 }
 
-function PointList({ points }: { points: CaseStudyPointInterface[] }) {
+function Fact({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <ol className="space-y-6">
-      {points.map((point, i) => (
-        <li key={point._key} className="grid grid-cols-[2rem_1fr] gap-2">
-          <span className="pt-0.5 font-mono text-xs text-muted-foreground/70 tabular-nums">
-            {String(i + 1).padStart(2, "0")}
-          </span>
-          <div>
-            <h3 className="font-semibold text-foreground">{point.title}</h3>
-            <p className="mt-1 leading-7">{point.description}</p>
-          </div>
-        </li>
-      ))}
-    </ol>
+    <div>
+      <dt className="text-[11px] font-medium tracking-wider text-muted-foreground uppercase">
+        {label}
+      </dt>
+      <dd className="mt-1 text-sm font-medium text-foreground">{children}</dd>
+    </div>
   )
 }
 
@@ -146,58 +130,12 @@ export default async function CaseStudyPage({
   if (!study) notFound()
 
   const clientLabel = formatCaseStudyClient(study)
-  const details = [
-    { label: "Client", value: clientLabel },
-    { label: "Role", value: study.role },
-    { label: "Timeline", value: formatCaseStudyDates(study) },
-    {
-      label: "Industry",
-      value: [study.client?.industry, study.client?.region]
-        .filter(Boolean)
-        .join(" · "),
-    },
-  ].filter((detail) => Boolean(detail.value))
-
-  const sections = [
-    study.problem.length > 0 && {
-      title: "The problem",
-      content: (
-        <PortableText value={study.problem} components={problemComponents} />
-      ),
-    },
-    study.built.length > 0 && {
-      title: "What I built",
-      content: <PointList points={study.built} />,
-    },
-    study.decisions.length > 0 && {
-      title: "Key decisions",
-      content: <PointList points={study.decisions} />,
-    },
-    study.results.length > 0 && {
-      title: "Results",
-      content: (
-        <ul className="space-y-5">
-          {study.results.map((result) => (
-            <li key={result._key}>
-              {typeof result.metric?.value === "number" && (
-                <p className="font-heading text-3xl font-bold text-foreground">
-                  {result.metric.prefix}
-                  {result.metric.value}
-                  {result.metric.suffix}
-                  {result.metric.label && (
-                    <span className="ml-2 font-sans text-sm font-normal text-muted-foreground">
-                      {result.metric.label}
-                    </span>
-                  )}
-                </p>
-              )}
-              <p className="leading-7 text-foreground">{result.statement}</p>
-            </li>
-          ))}
-        </ul>
-      ),
-    },
-  ].filter((section) => section !== false)
+  const industry = [study.client?.industry, study.client?.region]
+    .filter(Boolean)
+    .join(" · ")
+  const [diagram, ...moreImages] = study.gallery
+  let sectionCount = 0
+  const nextIndex = () => String(++sectionCount).padStart(2, "0")
 
   const caseStudyJsonLd = {
     "@context": "https://schema.org",
@@ -215,36 +153,129 @@ export default async function CaseStudyPage({
     <article className="pb-4">
       <JsonLd data={caseStudyJsonLd} />
 
+      {/* ── Header ───────────────────────────────────────── */}
       <header className="pt-10 pb-8 sm:pt-12">
-        <Link href="/work#case-studies" className="section-link">
-          <ArrowLeftIcon className="size-3" /> All work
-        </Link>
-        <span className="mt-8 eyebrow block">Case study</span>
+        <div>
+          <Link href="/work#case-studies" className="section-link">
+            <ArrowLeftIcon className="size-3" /> All work
+          </Link>
+        </div>
+        <p className="mt-8 eyebrow">
+          Case study{clientLabel ? ` · ${clientLabel}` : ""}
+        </p>
         <h1 className="mt-4 display-heading">{study.title}</h1>
         {study.subtitle && (
           <p className="mt-4 text-lg leading-8 text-muted-foreground">
             {study.subtitle}
           </p>
         )}
-        <p className="mt-6 max-w-2xl border-l-2 border-primary pl-4 text-base leading-7 font-medium text-foreground">
+        <p className="mt-6 max-w-2xl font-heading text-xl leading-8 text-foreground sm:text-2xl sm:leading-9">
           {study.outcome}
         </p>
-
-        <dl className="mt-10 grid grid-cols-1 gap-x-6 gap-y-5 border-y border-border py-6 sm:grid-cols-2">
-          {details.map((detail) => (
-            <div key={detail.label}>
-              <dt className="text-[11px] font-medium tracking-wider text-muted-foreground uppercase">
-                {detail.label}
-              </dt>
-              <dd className="mt-1 text-sm font-medium text-foreground">
-                {detail.value}
-              </dd>
-            </div>
-          ))}
-        </dl>
       </header>
 
-      <figure className="mb-10">
+      {/* ── At a glance ──────────────────────────────────── */}
+      <section
+        aria-labelledby="at-a-glance"
+        className="rounded-2xl border border-border bg-muted/20 p-5 sm:p-6"
+      >
+        <h2 id="at-a-glance" className="eyebrow">
+          At a glance
+        </h2>
+
+        <dl className="mt-5 grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-4">
+          {clientLabel && <Fact label="Client">{clientLabel}</Fact>}
+          <Fact label="Role">{study.role}</Fact>
+          <Fact label="Timeline">{formatCaseStudyDates(study)}</Fact>
+          {industry && <Fact label="Industry">{industry}</Fact>}
+        </dl>
+
+        {study.results.length > 0 && (
+          <div className="mt-6 border-t border-border pt-5">
+            <h3 className="text-[11px] font-medium tracking-wider text-muted-foreground uppercase">
+              Results
+            </h3>
+            <ul className="mt-3 space-y-3">
+              {study.results.map((result) => (
+                <li
+                  key={result._key}
+                  className="flex items-start gap-2.5 text-sm leading-6 text-foreground"
+                >
+                  <CheckIcon className="mt-1 size-3.5 shrink-0 text-primary" />
+                  <span>
+                    {typeof result.metric?.value === "number" && (
+                      <strong className="font-heading text-base">
+                        {result.metric.prefix}
+                        {result.metric.value}
+                        {result.metric.suffix}
+                        {result.metric.label && ` ${result.metric.label}`}
+                        {" — "}
+                      </strong>
+                    )}
+                    {result.statement}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {(study.stack.length > 0 ||
+          study.links.length > 0 ||
+          study.linkNote) && (
+          <div className="mt-6 grid gap-5 border-t border-border pt-5 sm:grid-cols-2">
+            {study.stack.length > 0 && (
+              <div>
+                <h3 className="text-[11px] font-medium tracking-wider text-muted-foreground uppercase">
+                  Stack
+                </h3>
+                <ul aria-label="Stack" className="mt-3 flex flex-wrap gap-1.5">
+                  {study.stack.map((tool) => (
+                    <li
+                      key={tool}
+                      className="rounded-md border border-border bg-background px-2 py-0.5 text-xs text-foreground"
+                    >
+                      {tool}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {(study.links.length > 0 || study.linkNote) && (
+              <div>
+                <h3 className="text-[11px] font-medium tracking-wider text-muted-foreground uppercase">
+                  Links
+                </h3>
+                {study.links.length > 0 && (
+                  <ul className="mt-3 flex flex-wrap gap-2">
+                    {study.links.map((link) => (
+                      <li key={link._key}>
+                        <a
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1 text-xs font-medium text-foreground transition-colors hover:bg-muted"
+                        >
+                          {link.label}
+                          <ArrowUpRightIcon className="size-3" />
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {study.linkNote && (
+                  <p className="mt-3 text-xs leading-5 text-muted-foreground">
+                    {study.linkNote}
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+      </section>
+
+      {/* ── Cover ────────────────────────────────────────── */}
+      <figure className="mt-10">
         <CaseStudyImage
           image={study.coverImage}
           sizes="(min-width: 768px) 704px, 100vw"
@@ -254,28 +285,89 @@ export default async function CaseStudyPage({
         />
       </figure>
 
-      {sections.map((section, i) => (
-        <StorySection
-          key={section.title}
-          index={String(i + 1).padStart(2, "0")}
-          title={section.title}
-        >
-          {section.content}
-        </StorySection>
-      ))}
-
-      {study.credit && (
-        <p className="border-t border-border py-6 text-sm text-muted-foreground italic">
-          {study.credit}
-        </p>
+      {/* ── The problem ──────────────────────────────────── */}
+      {study.problem.length > 0 && (
+        <section className="border-b border-border py-12">
+          <SectionHeading index={nextIndex()} title="The problem" />
+          <div className="max-w-2xl text-base text-muted-foreground">
+            <PortableText
+              value={study.problem}
+              components={problemComponents}
+            />
+          </div>
+        </section>
       )}
 
-      {study.gallery.length > 0 && (
+      {/* ── What I built ─────────────────────────────────── */}
+      {study.built.length > 0 && (
+        <section className="border-b border-border py-12">
+          <SectionHeading index={nextIndex()} title="What I built" />
+          <ol className="grid gap-3 sm:grid-cols-2">
+            {study.built.map((point, i) => (
+              <li
+                key={point._key}
+                className="rounded-xl border border-border p-5 last:odd:sm:col-span-2"
+              >
+                <span className="font-mono text-xs text-primary tabular-nums">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <h3 className="mt-2 font-semibold text-foreground">
+                  {point.title}
+                </h3>
+                <p className="mt-1.5 text-sm leading-6 text-muted-foreground">
+                  {point.description}
+                </p>
+              </li>
+            ))}
+          </ol>
+
+          {diagram && (
+            <figure className="mt-8">
+              <CaseStudyImage
+                image={diagram}
+                sizes="(min-width: 768px) 704px, 100vw"
+                variant="natural"
+                className="rounded-2xl border border-border"
+              />
+              {diagram.caption && (
+                <figcaption className="mt-3 text-center text-xs text-muted-foreground">
+                  {diagram.caption}
+                </figcaption>
+              )}
+            </figure>
+          )}
+        </section>
+      )}
+
+      {/* ── Key decisions ────────────────────────────────── */}
+      {study.decisions.length > 0 && (
+        <section className="border-b border-border py-12">
+          <SectionHeading index={nextIndex()} title="Key decisions" />
+          <ol className="space-y-6">
+            {study.decisions.map((decision) => (
+              <li
+                key={decision._key}
+                className="border-l-2 border-primary pl-5"
+              >
+                <h3 className="font-semibold text-foreground">
+                  {decision.title}
+                </h3>
+                <p className="mt-1.5 max-w-2xl text-[15px] leading-7 text-muted-foreground">
+                  {decision.description}
+                </p>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+
+      {/* ── More images ──────────────────────────────────── */}
+      {moreImages.length > 0 && (
         <section
-          aria-label="Screenshots and diagrams"
-          className="space-y-8 border-t border-border py-10"
+          aria-label="More screenshots and diagrams"
+          className="space-y-8 border-b border-border py-12"
         >
-          {study.gallery.map((image) => (
+          {moreImages.map((image) => (
             <figure key={image._key}>
               <CaseStudyImage
                 image={image}
@@ -293,16 +385,17 @@ export default async function CaseStudyPage({
         </section>
       )}
 
-      <section
-        aria-label="Project details"
-        className="grid gap-8 border-t border-border py-10 sm:grid-cols-3"
-      >
-        {study.team.length > 0 && (
-          <div>
-            <h2 className="eyebrow">Team</h2>
-            <ul className="mt-3 space-y-2 text-sm">
+      {/* ── Team & credits ───────────────────────────────── */}
+      {(study.team.length > 0 || study.credit) && (
+        <section className="border-b border-border py-12">
+          <SectionHeading index={nextIndex()} title="Team & credits" />
+          {study.team.length > 0 && (
+            <ul className="grid gap-2 sm:grid-cols-3">
               {study.team.map((member) => (
-                <li key={member._key}>
+                <li
+                  key={member._key}
+                  className="rounded-xl border border-border px-4 py-3 text-sm"
+                >
                   <span className="text-foreground">{member.role}</span>
                   {member.name &&
                     (member.profileUrl ? (
@@ -310,89 +403,73 @@ export default async function CaseStudyPage({
                         href={member.profileUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block text-muted-foreground underline underline-offset-2 hover:text-foreground"
+                        className="mt-0.5 block text-muted-foreground underline underline-offset-2 hover:text-foreground"
                       >
                         {member.name}
                       </a>
                     ) : (
-                      <span className="block text-muted-foreground">
+                      <span className="mt-0.5 block text-muted-foreground">
                         {member.name}
                       </span>
                     ))}
                 </li>
               ))}
             </ul>
-          </div>
-        )}
-
-        {study.stack.length > 0 && (
-          <div>
-            <h2 className="eyebrow">Stack</h2>
-            <ul aria-label="Stack" className="mt-3 flex flex-wrap gap-2">
-              {study.stack.map((tool) => (
-                <li
-                  key={tool}
-                  className="rounded-md border border-border bg-muted px-2 py-px text-[11px]"
-                >
-                  {tool}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {(study.links.length > 0 || study.linkNote) && (
-          <div>
-            <h2 className="eyebrow">Links</h2>
-            {study.links.length > 0 && (
-              <ul className="mt-3 space-y-2 text-sm">
-                {study.links.map((link) => (
-                  <li key={link._key}>
-                    <a
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-foreground underline-offset-2 hover:underline"
-                    >
-                      {link.label}
-                      <ArrowUpRightIcon className="size-3" />
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            )}
-            {study.linkNote && (
-              <p className="mt-3 text-xs leading-5 text-muted-foreground">
-                {study.linkNote}
-              </p>
-            )}
-          </div>
-        )}
-      </section>
-
-      {study.next && (
-        <Link
-          href={`/work/${study.next.slug}`}
-          className="group mt-4 flex items-center justify-between gap-6 rounded-2xl border border-border p-5 transition-colors hover:border-foreground/20 hover:bg-muted/30 sm:p-6"
-        >
-          <div className="min-w-0">
-            <span className="eyebrow">Next case study</span>
-            <p className="mt-2 font-heading text-lg font-bold text-foreground">
-              {study.next.title}
-            </p>
-            <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
-              {study.next.outcome}
-            </p>
-          </div>
-          <ArrowRightIcon className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-        </Link>
+          )}
+          {study.credit && (
+            <p className="mt-5 text-sm text-muted-foreground">{study.credit}</p>
+          )}
+        </section>
       )}
 
-      <ServicesInlineCta
-        heading="Have a problem like this?"
-        text="I help teams find the real problem underneath the brief, then build the system that solves it."
-        href="/services"
-      />
+      {/* ── Previous / next ──────────────────────────────── */}
+      {(study.previous || study.next) && (
+        <nav
+          aria-label="More case studies"
+          className="mt-12 grid grid-cols-2 gap-3"
+        >
+          {study.previous ? (
+            <Link
+              href={`/work/${study.previous.slug}`}
+              title={study.previous.title}
+              className="group flex min-w-0 items-center gap-3 rounded-full border border-border px-4 py-3 text-sm transition-colors hover:border-foreground/20 hover:bg-muted/30"
+            >
+              <ArrowLeftIcon className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:-translate-x-0.5" />
+              <span className="min-w-0">
+                <span className="block text-[10px] font-semibold tracking-wider text-primary uppercase">
+                  Previous
+                </span>
+                <span className="block truncate font-medium text-foreground">
+                  {study.previous.title}
+                </span>
+              </span>
+            </Link>
+          ) : (
+            <span aria-hidden="true" />
+          )}
+          {study.next ? (
+            <Link
+              href={`/work/${study.next.slug}`}
+              title={study.next.title}
+              className="group flex min-w-0 items-center justify-end gap-3 rounded-full border border-border px-4 py-3 text-right text-sm transition-colors hover:border-foreground/20 hover:bg-muted/30"
+            >
+              <span className="min-w-0">
+                <span className="block text-[10px] font-semibold tracking-wider text-primary uppercase">
+                  Next
+                </span>
+                <span className="block truncate font-medium text-foreground">
+                  {study.next.title}
+                </span>
+              </span>
+              <ArrowRightIcon className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+            </Link>
+          ) : (
+            <span aria-hidden="true" />
+          )}
+        </nav>
+      )}
+
+      <ContactCta />
     </article>
   )
 }

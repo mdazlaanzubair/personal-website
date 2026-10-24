@@ -60,7 +60,7 @@ export default async function ServicesPage() {
     testimonialsResult.status === "fulfilled"
       ? toServiceTestimonials(testimonialsResult.value)
       : []
-  const featuredProjects =
+  const clientProjects =
     clientProjectsResult.status === "fulfilled"
       ? toClientProjects(clientProjectsResult.value)
       : []
@@ -86,7 +86,7 @@ export default async function ServicesPage() {
       <ServicesPageContent
         services={services}
         testimonials={testimonials}
-        featuredProjects={featuredProjects}
+        clientProjects={clientProjects}
       />
     </>
   )
