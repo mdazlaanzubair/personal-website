@@ -7,7 +7,7 @@ import {
 } from "@/src/sanity/adapters"
 import { client } from "@/src/sanity/client"
 import {
-  CASE_STUDIES_LIST_QUERY,
+  CASE_STUDIES_QUERY,
   PUBLICATIONS_LIST_QUERY,
   WORK_LIST_QUERY,
 } from "@/src/sanity/queries"
@@ -44,7 +44,7 @@ const fetchOptions = { next: { revalidate: 21600, tags: ["sanity-work"] } }
 export default async function WorkPage() {
   const [caseStudiesResult, projectsResult, publicationsResult] =
     await Promise.allSettled([
-      client.fetch(CASE_STUDIES_LIST_QUERY, {}, fetchOptions),
+      client.fetch(CASE_STUDIES_QUERY, {}, fetchOptions),
       client.fetch(WORK_LIST_QUERY, {}, fetchOptions),
       client.fetch(PUBLICATIONS_LIST_QUERY, {}, fetchOptions),
     ])
@@ -72,10 +72,10 @@ export default async function WorkPage() {
         "@type": "CreativeWork",
         "@id": absoluteUrl(`/work/${study.slug}`),
         name: study.title,
-        description: study.description,
+        description: study.outcome,
         url: absoluteUrl(`/work/${study.slug}`),
         creator: { "@id": PERSON_ID },
-        keywords: study.tags,
+        keywords: study.stack,
       })),
       ...projects.map((project) => {
         const featureList = toPlainText(

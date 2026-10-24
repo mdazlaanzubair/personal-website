@@ -8,11 +8,13 @@ import { client } from "@/src/sanity/client"
 import {
   ACADEMIC_HISTORY_QUERY,
   EXPERIENCE_QUERY,
+  FEATURED_CASE_STUDIES_QUERY,
   WORK_LIST_QUERY,
   SERVICES_QUERY,
 } from "@/src/sanity/queries"
 import {
   toAcademicHistory,
+  toCaseStudies,
   toExperience,
   toWorkItems,
   toServices,
@@ -40,13 +42,24 @@ export const revalidate = 21600
 const fetchOptions = { next: { revalidate: 21600 } }
 
 export default async function Page() {
-  const [experienceResult, academicResult, workResult, servicesResult] =
-    await Promise.allSettled([
-      client.fetch(EXPERIENCE_QUERY, {}, fetchOptions),
-      client.fetch(ACADEMIC_HISTORY_QUERY, {}, fetchOptions),
-      client.fetch(WORK_LIST_QUERY, {}, fetchOptions),
-      client.fetch(SERVICES_QUERY, {}, fetchOptions),
-    ])
+  const [
+    experienceResult,
+    academicResult,
+    workResult,
+    servicesResult,
+    caseStudiesResult,
+  ] = await Promise.allSettled([
+    client.fetch(EXPERIENCE_QUERY, {}, fetchOptions),
+    client.fetch(ACADEMIC_HISTORY_QUERY, {}, fetchOptions),
+    client.fetch(WORK_LIST_QUERY, {}, fetchOptions),
+    client.fetch(SERVICES_QUERY, {}, fetchOptions),
+    client.fetch(FEATURED_CASE_STUDIES_QUERY, {}, fetchOptions),
+  ])
+
+  const featuredCaseStudies =
+    caseStudiesResult.status === "fulfilled"
+      ? toCaseStudies(caseStudiesResult.value)
+      : []
 
   const experiences =
     experienceResult.status === "fulfilled"
@@ -76,7 +89,10 @@ export default async function Page() {
       <HeroSection />
       <WhatIDo />
       <FeaturedServices services={services} />
-      <SelectedWork projects={selectedProjects} />
+      <SelectedWork
+        caseStudies={featuredCaseStudies}
+        projects={selectedProjects}
+      />
       <BackgroundSummary experiences={experiences} academics={academics} />
       <ServicesInlineCta
         heading="Need something built?"

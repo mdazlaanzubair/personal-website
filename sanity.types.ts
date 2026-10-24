@@ -15,6 +15,13 @@
 export declare const internalGroqTypeReferenceTo: unique symbol
 
 // Source: schema.json
+export type Metric = {
+  value?: number
+  prefix?: string
+  suffix?: string
+  label?: string
+}
+
 export type PublicationReference = {
   _ref: string
   _type: "reference"
@@ -185,21 +192,6 @@ export type ExperienceCompany = {
   location: string
 }
 
-export type Seo = {
-  _type: "seo"
-  title?: string
-  description?: string
-  canonicalUrl?: string
-  openGraphImage?: {
-    asset?: SanityImageAssetReference
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    _type: "image"
-  }
-  noIndex?: boolean
-}
-
 export type ProjectSummary = {
   _type: "projectSummary"
   name: string
@@ -207,18 +199,10 @@ export type ProjectSummary = {
   website?: string
 }
 
-export type Company = {
-  _type: "company"
-  isAnonymized?: boolean
-  name?: string
-  logo?: {
-    asset?: SanityImageAssetReference
-    media?: unknown
-    hotspot?: SanityImageHotspot
-    crop?: SanityImageCrop
-    _type: "image"
-  }
-  website?: string
+export type Slug = {
+  _type: "slug"
+  current: string
+  source?: string
 }
 
 export type SiteSettings = {
@@ -316,48 +300,6 @@ export type Service = {
   sortOrder?: number
 }
 
-export type Slug = {
-  _type: "slug"
-  current: string
-  source?: string
-}
-
-export type CaseStudy = {
-  _id: string
-  _type: "caseStudy"
-  _createdAt: string
-  _updatedAt: string
-  _rev: string
-  title: string
-  slug: Slug
-  description: string
-  tags: Array<string>
-  body: PortableText
-  metadata: {
-    isFeatured?: boolean
-    timeline?: string
-    project?: ProjectSummary
-    company?: Company
-  }
-  seo?: Seo
-}
-
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop"
-  top: number
-  bottom: number
-  left: number
-  right: number
-}
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot"
-  x: number
-  y: number
-  height: number
-  width: number
-}
-
 export type Work = {
   _id: string
   _type: "work"
@@ -382,6 +324,22 @@ export type Work = {
     repositoryUrl?: string
     key_contributions: PortableText
   }
+}
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop"
+  top: number
+  bottom: number
+  left: number
+  right: number
+}
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot"
+  x: number
+  y: number
+  height: number
+  width: number
 }
 
 export type Publication = {
@@ -410,6 +368,186 @@ export type Publication = {
     doi?: string
     isFeatured?: boolean
   }
+}
+
+export type Seo = {
+  _type: "seo"
+  title?: string
+  description?: string
+  ogImage?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: "image"
+  }
+}
+
+export type CaseStudyImage = {
+  _type: "caseStudyImage"
+  asset?: SanityImageAssetReference
+  media?: unknown
+  hotspot?: SanityImageHotspot
+  crop?: SanityImageCrop
+  visualId?: string
+  alt: string
+  kind: "illustration" | "screenshot" | "diagram"
+  caption?: string
+}
+
+export type ExternalLink = {
+  _type: "externalLink"
+  label: string
+  url: string
+}
+
+export type TeamMember = {
+  _type: "teamMember"
+  role: string
+  name?: string
+  canName?: boolean
+  profileUrl?: string
+}
+
+export type CaseStudyResult = {
+  _type: "caseStudyResult"
+  statement: string
+  metric?: Metric
+  evidence?: string
+}
+
+export type CaseStudyPoint = {
+  _type: "caseStudyPoint"
+  title: string
+  description: string
+}
+
+export type RichText = Array<{
+  children?: Array<{
+    marks?: Array<string>
+    text?: string
+    _type: "span"
+    _key: string
+  }>
+  style?: "normal"
+  listItem?: "bullet"
+  markDefs?: Array<{
+    href: string
+    _type: "link"
+    _key: string
+  }>
+  level?: number
+  _type: "block"
+  _key: string
+}>
+
+export type Technology = {
+  _id: string
+  _type: "technology"
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  name: string
+  category:
+    | "frontend"
+    | "backend"
+    | "ai"
+    | "integration"
+    | "automation"
+    | "tooling"
+    | "design"
+}
+
+export type CompanyReference = {
+  _ref: string
+  _type: "reference"
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: "company"
+}
+
+export type TechnologyReference = {
+  _ref: string
+  _type: "reference"
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: "technology"
+}
+
+export type CaseStudy = {
+  _id: string
+  _type: "caseStudy"
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  title: string
+  slug: Slug
+  subtitle?: string
+  outcome: string
+  listing: "featured" | "listed" | "hidden"
+  priority: number
+  employer: CompanyReference
+  client?: {
+    visibility: "named" | "confidential"
+    company?: CompanyReference
+    publicLabel?: string
+    industry?: string
+    region?: string
+  }
+  role: string
+  team?: Array<
+    {
+      _key: string
+    } & TeamMember
+  >
+  startDate: string
+  endDate?: string
+  stack?: Array<
+    {
+      _key: string
+    } & TechnologyReference
+  >
+  links?: Array<
+    {
+      _key: string
+    } & ExternalLink
+  >
+  linkNote?: string
+  problem: RichText
+  built: Array<
+    {
+      _key: string
+    } & CaseStudyPoint
+  >
+  decisions?: Array<
+    {
+      _key: string
+    } & CaseStudyPoint
+  >
+  results: Array<
+    {
+      _key: string
+    } & CaseStudyResult
+  >
+  credit?: string
+  coverImage: CaseStudyImage
+  coverVideoUrl?: string
+  gallery?: Array<
+    {
+      _key: string
+    } & CaseStudyImage
+  >
+  seo?: Seo
+  internalNotes?: string
+}
+
+export type Company = {
+  _id: string
+  _type: "company"
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  name: string
+  website?: string
+  location?: string
 }
 
 export type SanityImagePaletteSwatch = {
@@ -510,6 +648,7 @@ export type Geopoint = {
 }
 
 export type AllSanitySchemaTypes =
+  | Metric
   | PublicationReference
   | WorkReference
   | PortableText
@@ -524,21 +663,30 @@ export type AllSanitySchemaTypes =
   | SocialProfile
   | Institute
   | ExperienceCompany
-  | Seo
   | ProjectSummary
-  | Company
+  | Slug
   | SiteSettings
   | Academic
   | Experience
   | ClientProject
   | ServiceTestimonial
   | Service
-  | Slug
-  | CaseStudy
+  | Work
   | SanityImageCrop
   | SanityImageHotspot
-  | Work
   | Publication
+  | Seo
+  | CaseStudyImage
+  | ExternalLink
+  | TeamMember
+  | CaseStudyResult
+  | CaseStudyPoint
+  | RichText
+  | Technology
+  | CompanyReference
+  | TechnologyReference
+  | CaseStudy
+  | Company
   | SanityImagePaletteSwatch
   | SanityImagePalette
   | SanityImageDimensions
@@ -549,206 +697,190 @@ export type AllSanitySchemaTypes =
   | Geopoint
 
 // Source: src/sanity/queries/caseStudies.ts
-// Variable: CASE_STUDIES_LIST_QUERY
-// Query: *[_type == "caseStudy" && defined(slug.current)]  | order(coalesce(metadata.isFeatured, false) desc, _updatedAt desc, _id asc) {      "id": _id,  title,  "slug": slug.current,  description,  "tags": coalesce(tags, []),  "metadata": {    "isFeatured": metadata.isFeatured == true,    "timeline": metadata.timeline,    "projectName": metadata.project.name,    "company": select(      !defined(metadata.company) => null,      metadata.company.isAnonymized == true => {        "name": "Confidential organization",        "isAnonymized": true      },      {        "name": coalesce(metadata.company.name, "Organization"),        "isAnonymized": false      }    )  },    "createdAt": _createdAt,  "updatedAt": _updatedAt  }
-export type CASE_STUDIES_LIST_QUERY_RESULT = Array<{
-  id: string
+// Variable: CASE_STUDIES_QUERY
+// Query: *[_type == "caseStudy" && defined(slug.current) && listing in ["featured", "listed"]]    | order(priority asc, startDate desc) {   _id,  title,  "slug": slug.current,  subtitle,  outcome,  listing,  priority,  "clientName": select(    client.visibility == "named" => client.company->name,    client.publicLabel  ),  "via": select(client.company._ref == employer._ref => null, employer->name),  startDate,  endDate,  "stack": stack[]->name,  coverImage {   asset->{ _id, url, metadata { lqip, dimensions { width, height } } },  alt,  kind,  caption,  hotspot,  crop } }
+export type CASE_STUDIES_QUERY_RESULT = Array<{
+  _id: string
   title: string
   slug: string
-  description: string
-  tags: Array<string>
-  metadata: {
-    isFeatured: boolean | false
-    timeline: string | null
-    projectName: string | null
-    company:
-      | null
-      | {
-          name: string | "Organization"
-          isAnonymized: false
-        }
-      | {
-          name: "Confidential organization"
-          isAnonymized: true
-        }
+  subtitle: string | null
+  outcome: string
+  listing: "featured" | "hidden" | "listed"
+  priority: number
+  clientName: string | null
+  via: null | string
+  startDate: string
+  endDate: string | null
+  stack: Array<string> | null
+  coverImage: {
+    asset: {
+      _id: string
+      url: string
+      metadata: {
+        lqip: string | null
+        dimensions: {
+          width: number
+          height: number
+        } | null
+      } | null
+    } | null
+    alt: string
+    kind: "diagram" | "illustration" | "screenshot"
+    caption: string | null
+    hotspot: SanityImageHotspot | null
+    crop: SanityImageCrop | null
   }
-  createdAt: string
-  updatedAt: string
 }>
 
 // Source: src/sanity/queries/caseStudies.ts
-// Variable: CASE_STUDY_SLUGS_QUERY
-// Query: *[_type == "caseStudy" && defined(slug.current)].slug.current
-export type CASE_STUDY_SLUGS_QUERY_RESULT = Array<string>
+// Variable: FEATURED_CASE_STUDIES_QUERY
+// Query: *[_type == "caseStudy" && defined(slug.current) && listing == "featured"]    | order(priority asc, startDate desc)[0...4] {   _id,  title,  "slug": slug.current,  subtitle,  outcome,  listing,  priority,  "clientName": select(    client.visibility == "named" => client.company->name,    client.publicLabel  ),  "via": select(client.company._ref == employer._ref => null, employer->name),  startDate,  endDate,  "stack": stack[]->name,  coverImage {   asset->{ _id, url, metadata { lqip, dimensions { width, height } } },  alt,  kind,  caption,  hotspot,  crop } }
+export type FEATURED_CASE_STUDIES_QUERY_RESULT = Array<{
+  _id: string
+  title: string
+  slug: string
+  subtitle: string | null
+  outcome: string
+  listing: "featured"
+  priority: number
+  clientName: string | null
+  via: null | string
+  startDate: string
+  endDate: string | null
+  stack: Array<string> | null
+  coverImage: {
+    asset: {
+      _id: string
+      url: string
+      metadata: {
+        lqip: string | null
+        dimensions: {
+          width: number
+          height: number
+        } | null
+      } | null
+    } | null
+    alt: string
+    kind: "diagram" | "illustration" | "screenshot"
+    caption: string | null
+    hotspot: SanityImageHotspot | null
+    crop: SanityImageCrop | null
+  }
+}>
 
 // Source: src/sanity/queries/caseStudies.ts
 // Variable: CASE_STUDY_QUERY
-// Query: *[_type == "caseStudy" && slug.current == $slug][0] {      "id": _id,  title,  "slug": slug.current,  description,  "tags": coalesce(tags, []),  "metadata": {    "isFeatured": metadata.isFeatured == true,    "timeline": metadata.timeline,    "projectName": metadata.project.name,    "company": select(      !defined(metadata.company) => null,      metadata.company.isAnonymized == true => {        "name": "Confidential organization",        "isAnonymized": true      },      {        "name": coalesce(metadata.company.name, "Organization"),        "isAnonymized": false      }    )  },    "createdAt": _createdAt,  "updatedAt": _updatedAt,    "body": coalesce(body[]{   ...,  _type == "portableImage" => {    image {      ...,      asset->{        _id,        url,        metadata {          dimensions,          lqip        }      }    }  },  _type == "callout" => {    content[]{...}  },  _type == "tableBlock" => {    rows[]{      _key,      cells    }  },  _type == "relatedContent" => {    reference->{      _id,      _type,      title,      "slug": slug.current    }  },  _type == "block" => {    markDefs[]{      ...,      _type == "relatedContentLink" => {        reference->{          _id,          _type,          title,          "slug": slug.current        }      }    }  } }, []),    "seo": select(      metadata.company.isAnonymized == true => {        "title": title,        "description": description,        "noIndex": seo.noIndex == true      },      {        "title": coalesce(seo.title, title),        "description": coalesce(seo.description, description),        "noIndex": seo.noIndex == true      }    )  }
+// Query: *[_type == "caseStudy" && slug.current == $slug && defined(listing) && listing != "hidden"][0] {      _id,  title,  "slug": slug.current,  subtitle,  outcome,  listing,  priority,  "clientName": select(    client.visibility == "named" => client.company->name,    client.publicLabel  ),  "via": select(client.company._ref == employer._ref => null, employer->name),  startDate,  endDate,  "stack": stack[]->name,  coverImage {   asset->{ _id, url, metadata { lqip, dimensions { width, height } } },  alt,  kind,  caption,  hotspot,  crop },    role,    client { visibility, industry, region },    team[] {      _key,      role,      "name": select(canName == true => name, null),      "profileUrl": select(canName == true => profileUrl, null)    },    links[] { _key, label, url },    linkNote,    problem,    built[] { _key, title, description },    decisions[] { _key, title, description },    results[] { _key, statement, metric { value, prefix, suffix, label } },    credit,    coverVideoUrl,    gallery[] { _key,   asset->{ _id, url, metadata { lqip, dimensions { width, height } } },  alt,  kind,  caption,  hotspot,  crop },    "seo": {      "title": coalesce(seo.title, title),      "description": coalesce(seo.description, outcome),      "ogImageUrl": coalesce(seo.ogImage.asset->url, coverImage.asset->url)    },    "next": *[      _type == "caseStudy" && listing in ["featured", "listed"] && priority > ^.priority    ] | order(priority asc)[0] { title, "slug": slug.current, outcome }  }
 export type CASE_STUDY_QUERY_RESULT = {
-  id: string
+  _id: string
   title: string
   slug: string
-  description: string
-  tags: Array<string>
-  metadata: {
-    isFeatured: boolean | false
-    timeline: string | null
-    projectName: string | null
-    company:
-      | null
-      | {
-          name: string | "Organization"
-          isAnonymized: false
-        }
-      | {
-          name: "Confidential organization"
-          isAnonymized: true
-        }
+  subtitle: string | null
+  outcome: string
+  listing: "featured" | "hidden" | "listed"
+  priority: number
+  clientName: string | null
+  via: null | string
+  startDate: string
+  endDate: string | null
+  stack: Array<string> | null
+  coverImage: {
+    asset: {
+      _id: string
+      url: string
+      metadata: {
+        lqip: string | null
+        dimensions: {
+          width: number
+          height: number
+        } | null
+      } | null
+    } | null
+    alt: string
+    kind: "diagram" | "illustration" | "screenshot"
+    caption: string | null
+    hotspot: SanityImageHotspot | null
+    crop: SanityImageCrop | null
   }
-  createdAt: string
-  updatedAt: string
-  body: Array<
-    | {
-        children?: Array<{
-          marks?: Array<string>
-          text?: string
-          _type: "span"
-          _key: string
-        }>
-        style?: "blockquote" | "h2" | "h3" | "h4" | "normal"
-        listItem?: "bullet" | "number"
-        markDefs: Array<
-          | {
-              href: string
-              openInNewTab?: boolean
-              _type: "link"
-              _key: string
-            }
-          | {
-              reference:
-                | {
-                    _id: string
-                    _type: "publication"
-                    title: string
-                    slug: null
-                  }
-                | {
-                    _id: string
-                    _type: "work"
-                    title: string
-                    slug: null
-                  }
-              _type: "relatedContentLink"
-              _key: string
-            }
-        > | null
-        level?: number
-        _type: "block"
-        _key: string
-      }
-    | {
-        _key: string
-        _type: "callout"
-        tone: "note" | "tip" | "warning"
-        title?: string
-        content: Array<{
-          children?: Array<{
-            marks?: Array<string>
-            text?: string
-            _type: "span"
-            _key: string
-          }>
-          style?: "normal"
-          listItem?: "bullet" | "number"
-          markDefs?: Array<{
-            href: string
-            openInNewTab?: boolean
-            _type: "link"
-            _key: string
-          }>
-          level?: number
-          _type: "block"
-          _key: string
-        }>
-      }
-    | {
-        _key: string
-        _type: "codeBlock"
-        code: string
-        language:
-          | "bash"
-          | "css"
-          | "groq"
-          | "html"
-          | "javascript"
-          | "json"
-          | "jsx"
-          | "text"
-          | "tsx"
-          | "typescript"
-        filename?: string
-      }
-    | {
-        _key: string
-        _type: "portableImage"
-        image: {
-          asset: {
-            _id: string
-            url: string
-            metadata: {
-              dimensions: SanityImageDimensions | null
-              lqip: string | null
-            } | null
-          } | null
-          media?: unknown
-          hotspot?: SanityImageHotspot
-          crop?: SanityImageCrop
-          _type: "image"
-        }
-        alt: string
-        caption?: string
-      }
-    | {
-        _key: string
-        _type: "relatedContent"
-        reference:
-          | {
-              _id: string
-              _type: "publication"
-              title: string
-              slug: null
-            }
-          | {
-              _id: string
-              _type: "work"
-              title: string
-              slug: null
-            }
-        label?: string
-      }
-    | {
-        _key: string
-        _type: "tableBlock"
-        caption?: string
-        hasHeaderRow?: boolean
-        rows: Array<{
-          _key: string
-          cells: Array<string>
-        }>
-      }
-  >
-  seo:
-    | {
-        title: string
-        description: string
-        noIndex: boolean | false
-      }
-    | {
-        title: string
-        description: string
-        noIndex: boolean | false
-      }
+  role: string
+  client: {
+    visibility: "confidential" | "named"
+    industry: string | null
+    region: string | null
+  } | null
+  team: Array<{
+    _key: string
+    role: string
+    name: string | null
+    profileUrl: string | null
+  }> | null
+  links: Array<{
+    _key: string
+    label: string
+    url: string
+  }> | null
+  linkNote: string | null
+  problem: RichText
+  built: Array<{
+    _key: string
+    title: string
+    description: string
+  }>
+  decisions: Array<{
+    _key: string
+    title: string
+    description: string
+  }> | null
+  results: Array<{
+    _key: string
+    statement: string
+    metric: {
+      value: number | null
+      prefix: string | null
+      suffix: string | null
+      label: string | null
+    } | null
+  }>
+  credit: string | null
+  coverVideoUrl: string | null
+  gallery: Array<{
+    _key: string
+    asset: {
+      _id: string
+      url: string
+      metadata: {
+        lqip: string | null
+        dimensions: {
+          width: number
+          height: number
+        } | null
+      } | null
+    } | null
+    alt: string
+    kind: "diagram" | "illustration" | "screenshot"
+    caption: string | null
+    hotspot: SanityImageHotspot | null
+    crop: SanityImageCrop | null
+  }> | null
+  seo: {
+    title: string
+    description: string
+    ogImageUrl: string | null
+  }
+  next: {
+    title: string
+    slug: string
+    outcome: string
+  } | null
 } | null
+
+// Source: src/sanity/queries/caseStudies.ts
+// Variable: CASE_STUDY_SLUGS_QUERY
+// Query: *[_type == "caseStudy" && defined(slug.current) && defined(listing) && listing != "hidden"] {    "slug": slug.current,    _updatedAt  }
+export type CASE_STUDY_SLUGS_QUERY_RESULT = Array<{
+  slug: string
+  _updatedAt: string
+}>
 
 // Source: src/sanity/queries/profile.ts
 // Variable: EXPERIENCE_QUERY
@@ -1188,9 +1320,10 @@ export type WORK_LIST_QUERY_RESULT = Array<{
 import "@sanity/client"
 declare module "@sanity/client" {
   interface SanityQueries {
-    '\n  *[_type == "caseStudy" && defined(slug.current)]\n  | order(coalesce(metadata.isFeatured, false) desc, _updatedAt desc, _id asc) {\n    \n  "id": _id,\n  title,\n  "slug": slug.current,\n  description,\n  "tags": coalesce(tags, []),\n  "metadata": {\n    "isFeatured": metadata.isFeatured == true,\n    "timeline": metadata.timeline,\n    "projectName": metadata.project.name,\n    "company": select(\n      !defined(metadata.company) => null,\n      metadata.company.isAnonymized == true => {\n        "name": "Confidential organization",\n        "isAnonymized": true\n      },\n      {\n        "name": coalesce(metadata.company.name, "Organization"),\n        "isAnonymized": false\n      }\n    )\n  },\n  \n  "createdAt": _createdAt,\n  "updatedAt": _updatedAt\n\n\n  }\n': CASE_STUDIES_LIST_QUERY_RESULT
-    '\n  *[_type == "caseStudy" && defined(slug.current)].slug.current\n': CASE_STUDY_SLUGS_QUERY_RESULT
-    '\n  *[_type == "caseStudy" && slug.current == $slug][0] {\n    \n  "id": _id,\n  title,\n  "slug": slug.current,\n  description,\n  "tags": coalesce(tags, []),\n  "metadata": {\n    "isFeatured": metadata.isFeatured == true,\n    "timeline": metadata.timeline,\n    "projectName": metadata.project.name,\n    "company": select(\n      !defined(metadata.company) => null,\n      metadata.company.isAnonymized == true => {\n        "name": "Confidential organization",\n        "isAnonymized": true\n      },\n      {\n        "name": coalesce(metadata.company.name, "Organization"),\n        "isAnonymized": false\n      }\n    )\n  },\n  \n  "createdAt": _createdAt,\n  "updatedAt": _updatedAt\n\n,\n    "body": coalesce(body[]{ \n  ...,\n  _type == "portableImage" => {\n    image {\n      ...,\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions,\n          lqip\n        }\n      }\n    }\n  },\n  _type == "callout" => {\n    content[]{...}\n  },\n  _type == "tableBlock" => {\n    rows[]{\n      _key,\n      cells\n    }\n  },\n  _type == "relatedContent" => {\n    reference->{\n      _id,\n      _type,\n      title,\n      "slug": slug.current\n    }\n  },\n  _type == "block" => {\n    markDefs[]{\n      ...,\n      _type == "relatedContentLink" => {\n        reference->{\n          _id,\n          _type,\n          title,\n          "slug": slug.current\n        }\n      }\n    }\n  }\n }, []),\n    "seo": select(\n      metadata.company.isAnonymized == true => {\n        "title": title,\n        "description": description,\n        "noIndex": seo.noIndex == true\n      },\n      {\n        "title": coalesce(seo.title, title),\n        "description": coalesce(seo.description, description),\n        "noIndex": seo.noIndex == true\n      }\n    )\n  }\n': CASE_STUDY_QUERY_RESULT
+    '\n  *[_type == "caseStudy" && defined(slug.current) && listing in ["featured", "listed"]]\n    | order(priority asc, startDate desc) { \n  _id,\n  title,\n  "slug": slug.current,\n  subtitle,\n  outcome,\n  listing,\n  priority,\n  "clientName": select(\n    client.visibility == "named" => client.company->name,\n    client.publicLabel\n  ),\n  "via": select(client.company._ref == employer._ref => null, employer->name),\n  startDate,\n  endDate,\n  "stack": stack[]->name,\n  coverImage { \n  asset->{ _id, url, metadata { lqip, dimensions { width, height } } },\n  alt,\n  kind,\n  caption,\n  hotspot,\n  crop\n }\n }\n': CASE_STUDIES_QUERY_RESULT
+    '\n  *[_type == "caseStudy" && defined(slug.current) && listing == "featured"]\n    | order(priority asc, startDate desc)[0...4] { \n  _id,\n  title,\n  "slug": slug.current,\n  subtitle,\n  outcome,\n  listing,\n  priority,\n  "clientName": select(\n    client.visibility == "named" => client.company->name,\n    client.publicLabel\n  ),\n  "via": select(client.company._ref == employer._ref => null, employer->name),\n  startDate,\n  endDate,\n  "stack": stack[]->name,\n  coverImage { \n  asset->{ _id, url, metadata { lqip, dimensions { width, height } } },\n  alt,\n  kind,\n  caption,\n  hotspot,\n  crop\n }\n }\n': FEATURED_CASE_STUDIES_QUERY_RESULT
+    '\n  *[_type == "caseStudy" && slug.current == $slug && defined(listing) && listing != "hidden"][0] {\n    \n  _id,\n  title,\n  "slug": slug.current,\n  subtitle,\n  outcome,\n  listing,\n  priority,\n  "clientName": select(\n    client.visibility == "named" => client.company->name,\n    client.publicLabel\n  ),\n  "via": select(client.company._ref == employer._ref => null, employer->name),\n  startDate,\n  endDate,\n  "stack": stack[]->name,\n  coverImage { \n  asset->{ _id, url, metadata { lqip, dimensions { width, height } } },\n  alt,\n  kind,\n  caption,\n  hotspot,\n  crop\n }\n,\n    role,\n    client { visibility, industry, region },\n    team[] {\n      _key,\n      role,\n      "name": select(canName == true => name, null),\n      "profileUrl": select(canName == true => profileUrl, null)\n    },\n    links[] { _key, label, url },\n    linkNote,\n    problem,\n    built[] { _key, title, description },\n    decisions[] { _key, title, description },\n    results[] { _key, statement, metric { value, prefix, suffix, label } },\n    credit,\n    coverVideoUrl,\n    gallery[] { _key, \n  asset->{ _id, url, metadata { lqip, dimensions { width, height } } },\n  alt,\n  kind,\n  caption,\n  hotspot,\n  crop\n },\n    "seo": {\n      "title": coalesce(seo.title, title),\n      "description": coalesce(seo.description, outcome),\n      "ogImageUrl": coalesce(seo.ogImage.asset->url, coverImage.asset->url)\n    },\n    "next": *[\n      _type == "caseStudy" && listing in ["featured", "listed"] && priority > ^.priority\n    ] | order(priority asc)[0] { title, "slug": slug.current, outcome }\n  }\n': CASE_STUDY_QUERY_RESULT
+    '\n  *[_type == "caseStudy" && defined(slug.current) && defined(listing) && listing != "hidden"] {\n    "slug": slug.current,\n    _updatedAt\n  }\n': CASE_STUDY_SLUGS_QUERY_RESULT
     '\n  *[_type == "experience"]\n  | order(_updatedAt desc) {\n    "company": select(\n      company.isAnonymized == true => {\n        "name": "Confidential organization",\n        "website": null,\n        "location": company.location,\n        "isAnonymized": true\n      },\n      {\n        "name": coalesce(company.name, "Organization"),\n        "website": company.website,\n        "location": company.location,\n        "isAnonymized": false\n      }\n    ),\n    timeline,\n    role,\n    "key_contributions": coalesce(key_contributions[]{\n      \n  ...,\n  _type == "portableImage" => {\n    image {\n      ...,\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions,\n          lqip\n        }\n      }\n    }\n  },\n  _type == "callout" => {\n    content[]{...}\n  },\n  _type == "tableBlock" => {\n    rows[]{\n      _key,\n      cells\n    }\n  },\n  _type == "relatedContent" => {\n    reference->{\n      _id,\n      _type,\n      title,\n      "slug": slug.current\n    }\n  },\n  _type == "block" => {\n    markDefs[]{\n      ...,\n      _type == "relatedContentLink" => {\n        reference->{\n          _id,\n          _type,\n          title,\n          "slug": slug.current\n        }\n      }\n    }\n  }\n\n    }, []),\n    \n  "createdAt": _createdAt,\n  "updatedAt": _updatedAt\n\n  }\n': EXPERIENCE_QUERY_RESULT
     '\n  *[_type == "academic"]\n  | order(_updatedAt desc) {\n    "institute": {\n      "name": institute.name,\n      "website": institute.website\n    },\n    degree,\n    field,\n    timeline,\n    \n  "createdAt": _createdAt,\n  "updatedAt": _updatedAt\n\n  }\n': ACADEMIC_HISTORY_QUERY_RESULT
     '\n  coalesce(*[_id == "siteSettings"][0].socialMedia, [])[]{\n    _key,\n    platform,\n    username,\n    url,\n    "isHidden": isHidden == true\n  }\n': SOCIAL_PROFILES_QUERY_RESULT

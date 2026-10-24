@@ -15,18 +15,13 @@ import type {
   PublicationInterface,
   WorkInterface,
 } from "@/type"
+import CaseStudyCard from "./CaseStudyCard"
 import ImageGallery from "./ImageGallery"
 import ServicesInlineCta from "./ServicesInlineCta"
-import {
-  ArrowRightIcon,
-  ArrowUpRightIcon,
-  Code2Icon,
-  ExternalLinkIcon,
-  ImageIcon,
-} from "lucide-react"
+import WorkCard from "./WorkCard"
+import { ArrowRightIcon, Code2Icon, ExternalLinkIcon } from "lucide-react"
 import { motion } from "framer-motion"
 import { PortableText, type PortableTextComponents } from "next-sanity"
-import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
 
@@ -143,82 +138,6 @@ function SectionHeader({
         {String(count).padStart(2, "0")}
       </span>
     </motion.div>
-  )
-}
-
-function CaseStudyCard({
-  study,
-  index,
-  isLead,
-}: {
-  study: CaseStudyInterface
-  index: number
-  isLead: boolean
-}) {
-  const meta = [study.metadata.company?.name, study.metadata.timeline]
-    .filter(Boolean)
-    .join(" · ")
-
-  return (
-    <motion.li
-      variants={itemVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-30px" }}
-      custom={index}
-      className={cn(isLead && "sm:col-span-2")}
-    >
-      <Link
-        href={`/work/${study.slug}`}
-        className={cn(
-          "group flex h-full flex-col rounded-2xl border border-border bg-muted/20 p-5 transition-colors hover:border-foreground/20 hover:bg-muted/40 sm:p-6",
-          isLead && "sm:p-8"
-        )}
-      >
-        <div className="flex items-start justify-between gap-4">
-          <span className="font-mono text-xs text-muted-foreground tabular-nums">
-            {String(index + 1).padStart(2, "0")}
-          </span>
-          {study.metadata.isFeatured && (
-            <span className="text-[10px] font-semibold tracking-wider text-primary uppercase">
-              Featured
-            </span>
-          )}
-        </div>
-        <h3
-          className={cn(
-            "mt-6 font-heading font-bold tracking-tight text-foreground",
-            isLead ? "text-2xl sm:text-3xl" : "text-xl"
-          )}
-        >
-          {study.title}
-        </h3>
-        {study.description && (
-          <p
-            className={cn(
-              "mt-3 text-sm leading-6 text-muted-foreground",
-              isLead ? "max-w-xl" : "line-clamp-3"
-            )}
-          >
-            {study.description}
-          </p>
-        )}
-
-        <div className="mt-auto flex flex-wrap items-end justify-between gap-3 pt-6">
-          {meta ? (
-            <p className="text-[11px] font-medium tracking-wider text-muted-foreground uppercase">
-              {meta}
-            </p>
-          ) : (
-            <span />
-          )}
-          <span className="inline-flex items-center gap-1 text-sm font-medium text-foreground">
-            Read case study
-            <ArrowRightIcon className="size-3.5 transition-transform group-hover:translate-x-0.5" />
-          </span>
-        </div>
-      </Link>
-    </motion.li>
   )
 }
 
@@ -355,14 +274,18 @@ export default function WorkPageContent({
             description="Client work, from the problem I was handed to the one I actually solved."
             count={caseStudies.length}
           />
-          <ul className="grid gap-4 sm:grid-cols-2">
+          <ul className="grid gap-3 sm:grid-cols-2">
             {caseStudies.map((study, i) => (
-              <CaseStudyCard
+              <motion.li
                 key={study.id}
-                study={study}
-                index={i}
-                isLead={i === 0 && caseStudies.length !== 2}
-              />
+                variants={itemVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-30px" }}
+                custom={i}
+              >
+                <CaseStudyCard study={study} />
+              </motion.li>
             ))}
           </ul>
         </section>
@@ -387,54 +310,27 @@ export default function WorkPageContent({
                 viewport={{ once: true, margin: "-30px" }}
                 custom={i}
               >
-                <button
-                  type="button"
+                <WorkCard
                   onClick={() => setSelectedProject(project)}
-                  className="group flex h-full w-full flex-col rounded-xl border border-border p-4 text-left transition-colors hover:border-foreground/20 hover:bg-muted/30"
-                >
-                  <div className="flex w-full items-start gap-3">
-                    {project.images.length > 0 && (
-                      <div className="relative size-12 shrink-0 overflow-hidden rounded-md bg-muted/30">
-                        <Image
-                          src={project.images[0].url}
-                          alt={project.images[0].alt || project.title}
-                          fill
-                          sizes="48px"
-                          className="object-cover"
-                          placeholder={
-                            project.images[0].lqip ? "blur" : "empty"
-                          }
-                          blurDataURL={project.images[0].lqip || undefined}
-                        />
-                        {project.images.length > 1 && (
-                          <span className="absolute right-0.5 bottom-0.5 flex items-center gap-0.5 rounded bg-black/60 px-1 py-0.5 text-[9px] text-white">
-                            <ImageIcon className="size-2.5" />
-                            {project.images.length}
-                          </span>
-                        )}
-                      </div>
-                    )}
-                    <div className="min-w-0 flex-1">
-                      {project.metadata.isFeatured && (
-                        <span className="text-[10px] font-semibold tracking-wider text-primary uppercase">
-                          Featured
-                        </span>
-                      )}
-                      <h3 className="text-sm font-semibold text-foreground sm:text-base">
-                        {project.title}
-                      </h3>
-                    </div>
-                    <ArrowUpRightIcon className="mt-0.5 size-3.5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                  </div>
-                  <p className="mt-3 line-clamp-2 text-xs leading-5 text-muted-foreground">
-                    {project.description}
-                  </p>
-                  {project.tags.length > 0 && (
-                    <p className="mt-auto pt-3 text-[11px] text-muted-foreground/70">
-                      {project.tags.slice(0, 4).join(" · ")}
-                    </p>
-                  )}
-                </button>
+                  title={project.title}
+                  label={project.metadata.isFeatured ? "Featured" : null}
+                  description={project.description}
+                  footer={
+                    project.tags.length > 0
+                      ? project.tags.slice(0, 4).join(" · ")
+                      : null
+                  }
+                  thumbnail={
+                    project.images[0]
+                      ? {
+                          url: project.images[0].url,
+                          alt: project.images[0].alt || project.title,
+                          lqip: project.images[0].lqip,
+                        }
+                      : null
+                  }
+                  imageCount={project.images.length}
+                />
               </motion.li>
             ))}
           </ul>

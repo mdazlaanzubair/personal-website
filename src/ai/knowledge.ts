@@ -14,13 +14,14 @@ import {
 import { client } from "@/src/sanity/client"
 import {
   ACADEMIC_HISTORY_QUERY,
-  CASE_STUDIES_LIST_QUERY,
+  CASE_STUDIES_QUERY,
   EXPERIENCE_QUERY,
   INTERESTS_QUERY,
   PUBLICATIONS_LIST_QUERY,
   SKILLS_QUERY,
   WORK_LIST_QUERY,
 } from "@/src/sanity/queries"
+import { formatCaseStudyClient, formatCaseStudyDates } from "@/lib/case-study"
 import { absoluteUrl } from "@/src/seo/site"
 import type { KnowledgeDocument } from "./types"
 
@@ -118,7 +119,7 @@ export async function loadPortfolioKnowledge(): Promise<KnowledgeDocument[]> {
     client.fetch(INTERESTS_QUERY, {}, fetchOptions),
     client.fetch(WORK_LIST_QUERY, {}, fetchOptions),
     client.fetch(PUBLICATIONS_LIST_QUERY, {}, fetchOptions),
-    client.fetch(CASE_STUDIES_LIST_QUERY, {}, fetchOptions),
+    client.fetch(CASE_STUDIES_QUERY, {}, fetchOptions),
   ])
 
   const documents = [...STATIC_KNOWLEDGE]
@@ -251,15 +252,15 @@ export async function loadPortfolioKnowledge(): Promise<KnowledgeDocument[]> {
         kind: "case-study",
         title: study.title,
         body: compact([
-          study.description,
-          study.metadata.company?.name,
-          study.metadata.projectName,
-          study.metadata.timeline,
+          study.subtitle,
+          study.outcome,
+          formatCaseStudyClient(study),
+          formatCaseStudyDates(study),
+          study.stack.length ? `Stack: ${study.stack.join(", ")}` : undefined,
         ]),
-        tags: ["case study", ...study.tags],
+        tags: ["case study", ...study.stack],
         sourceUrl: absoluteUrl(`/work/${study.slug}`),
         citationLabel: "Case study",
-        updatedAt: study.updatedAt,
       })
     })
   }
