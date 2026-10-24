@@ -1,6 +1,6 @@
 import "server-only"
 
-import { GoogleGenAI, ThinkingLevel } from "@google/genai"
+import { GoogleGenAI } from "@google/genai"
 
 import { loadPortfolioKnowledge, selectKnowledge } from "./knowledge"
 import { OFF_TOPIC_REPLY, PERSONA_FOUNDATION } from "./persona"

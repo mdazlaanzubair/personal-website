@@ -205,7 +205,7 @@ export async function loadPortfolioKnowledge(): Promise<KnowledgeDocument[]> {
             : undefined,
         ]),
         tags: ["project", ...project.tags],
-        sourceUrl: project.metadata.projectUrl || absoluteUrl("/projects"),
+        sourceUrl: project.metadata.projectUrl || absoluteUrl("/work"),
         citationLabel: "Project",
         updatedAt: project.updatedAt,
       })
@@ -238,7 +238,7 @@ export async function loadPortfolioKnowledge(): Promise<KnowledgeDocument[]> {
           ? publication.metadata.doi.startsWith("http")
             ? publication.metadata.doi
             : `https://doi.org/${publication.metadata.doi.replace(/^doi:\s*/i, "")}`
-          : absoluteUrl("/research"),
+          : absoluteUrl("/work"),
         citationLabel: "Research",
         updatedAt: publication.updatedAt,
       })
