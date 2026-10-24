@@ -1,14 +1,14 @@
 import ProjectsList from "@/components/custom/ProjectsList"
 import JsonLd from "@/components/seo/JsonLd"
 import { toWorkItems } from "@/src/sanity/adapters"
-import { client } from "@/src/sanity/client"
+import { buildTimeFetch, client } from "@/src/sanity/client"
 import { WORK_LIST_QUERY } from "@/src/sanity/queries"
 import { absoluteUrl, createPageMetadata } from "@/src/seo/site"
 import { createCollectionJsonLd, PERSON_ID } from "@/src/seo/structured-data"
 import type { WorkInterface } from "@/type"
 import { toPlainText } from "next-sanity"
 
-const options = { next: { revalidate: 21600, tags: ["sanity-projects"] } }
+const options = buildTimeFetch
 const description =
   "Selected software architecture, web engineering, AI, automation, and product development projects by Muhammad Azlaan Zubair."
 
@@ -25,7 +25,8 @@ export const metadata = createPageMetadata({
   ],
 })
 
-export const revalidate = 21600
+export const dynamic = "force-static"
+export const revalidate = false
 
 const Page = async () => {
   let projects: WorkInterface[] = []

@@ -5,7 +5,7 @@ import {
   toPublications,
   toWorkItems,
 } from "@/src/sanity/adapters"
-import { client } from "@/src/sanity/client"
+import { buildTimeFetch, client } from "@/src/sanity/client"
 import {
   CASE_STUDIES_QUERY,
   PUBLICATIONS_LIST_QUERY,
@@ -37,9 +37,10 @@ export const metadata = createPageMetadata({
   ],
 })
 
-export const revalidate = 21600
+export const dynamic = "force-static"
+export const revalidate = false
 
-const fetchOptions = { next: { revalidate: 21600, tags: ["sanity-work"] } }
+const fetchOptions = buildTimeFetch
 
 export default async function WorkPage() {
   const [caseStudiesResult, projectsResult, publicationsResult] =

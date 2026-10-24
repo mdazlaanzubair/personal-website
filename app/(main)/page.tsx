@@ -3,7 +3,7 @@ import AudiencePaths from "@/components/custom/AudiencePaths"
 import FeaturedServices from "@/components/custom/FeaturedServices"
 import SelectedWork from "@/components/custom/SelectedWork"
 import ContactCta from "@/components/custom/ContactCta"
-import { client } from "@/src/sanity/client"
+import { buildTimeFetch, client } from "@/src/sanity/client"
 import {
   FEATURED_CASE_STUDIES_QUERY,
   WORK_LIST_QUERY,
@@ -28,9 +28,10 @@ export const metadata = createPageMetadata({
   ],
 })
 
-export const revalidate = 21600
+export const dynamic = "force-static"
+export const revalidate = false
 
-const fetchOptions = { next: { revalidate: 21600 } }
+const fetchOptions = buildTimeFetch
 
 export default async function Page() {
   const [workResult, servicesResult, caseStudiesResult] =

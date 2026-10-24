@@ -3,7 +3,7 @@ import ContactCta from "@/components/custom/ContactCta"
 import JsonLd from "@/components/seo/JsonLd"
 import { formatCaseStudyClient, formatCaseStudyDates } from "@/lib/case-study"
 import { toCaseStudy } from "@/src/sanity/adapters"
-import { client } from "@/src/sanity/client"
+import { buildTimeFetch, client } from "@/src/sanity/client"
 import { CASE_STUDY_QUERY, CASE_STUDY_SLUGS_QUERY } from "@/src/sanity/queries"
 import { absoluteUrl, createPageMetadata } from "@/src/seo/site"
 import { PERSON_ID } from "@/src/seo/structured-data"
@@ -19,23 +19,23 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { cache, type ReactNode } from "react"
 
-export const revalidate = 21600
+export const dynamic = "force-static"
+export const revalidate = false
 
-const fetchOptions = {
-  next: { revalidate: 21600, tags: ["sanity-case-studies"] },
-}
+// Every case study is built at deploy time; an unknown slug is a 404.
+export const dynamicParams = false
+
+const fetchOptions = buildTimeFetch
 
 const getCaseStudy = cache(async (slug: string) =>
   toCaseStudy(await client.fetch(CASE_STUDY_QUERY, { slug }, fetchOptions))
 )
 
+// No try/catch: if Sanity can't be reached, the build should fail instead of
+// deploying a site with no case study pages.
 export async function generateStaticParams() {
-  try {
-    const studies = await client.fetch(CASE_STUDY_SLUGS_QUERY, {}, fetchOptions)
-    return studies.map(({ slug }) => ({ slug }))
-  } catch {
-    return []
-  }
+  const studies = await client.fetch(CASE_STUDY_SLUGS_QUERY, {}, fetchOptions)
+  return studies.map(({ slug }) => ({ slug }))
 }
 
 export async function generateMetadata({

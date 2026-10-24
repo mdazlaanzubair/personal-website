@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next"
 
-import { client } from "@/src/sanity/client"
+import { buildTimeFetch, client } from "@/src/sanity/client"
 import { CASE_STUDY_SLUGS_QUERY } from "@/src/sanity/queries"
 import { absoluteUrl } from "@/src/seo/site"
 
-export const revalidate = 21600
+export const dynamic = "force-static"
+export const revalidate = false
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let caseStudies: MetadataRoute.Sitemap = []
@@ -13,7 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const studies = await client.fetch(
       CASE_STUDY_SLUGS_QUERY,
       {},
-      { next: { revalidate: 21600, tags: ["sanity-case-studies"] } }
+      buildTimeFetch
     )
     caseStudies = studies.map((study) => ({
       url: absoluteUrl(`/work/${study.slug}`),

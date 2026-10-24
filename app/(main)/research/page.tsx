@@ -1,15 +1,13 @@
 import ResearchList from "@/components/custom/research-list/ResearchList"
 import JsonLd from "@/components/seo/JsonLd"
 import { toPublications } from "@/src/sanity/adapters"
-import { client } from "@/src/sanity/client"
+import { buildTimeFetch, client } from "@/src/sanity/client"
 import { PUBLICATIONS_LIST_QUERY } from "@/src/sanity/queries"
 import { createPageMetadata } from "@/src/seo/site"
 import { createResearchPageJsonLd } from "@/src/seo/structured-data"
 import type { PublicationInterface } from "@/type"
 
-const options = {
-  next: { revalidate: 21600, tags: ["sanity-publications"] },
-}
+const options = buildTimeFetch
 const description =
   "Research publications by Muhammad Azlaan Zubair, including full abstracts, co-authors, publication status, journals, and DOI links."
 
@@ -26,7 +24,8 @@ export const metadata = createPageMetadata({
   ],
 })
 
-export const revalidate = 21600
+export const dynamic = "force-static"
+export const revalidate = false
 
 export default async function Page() {
   let publications: PublicationInterface[] = []

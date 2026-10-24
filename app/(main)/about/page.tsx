@@ -8,7 +8,7 @@ import {
   toExperience,
   toSkills,
 } from "@/src/sanity/adapters"
-import { client } from "@/src/sanity/client"
+import { buildTimeFetch, client } from "@/src/sanity/client"
 import {
   ACADEMIC_HISTORY_QUERY,
   EXPERIENCE_QUERY,
@@ -33,11 +33,10 @@ export const metadata = createPageMetadata({
   ],
 })
 
-export const revalidate = 21600
+export const dynamic = "force-static"
+export const revalidate = false
 
-const fetchOptions = {
-  next: { revalidate: 21600, tags: ["sanity-about"] },
-}
+const fetchOptions = buildTimeFetch
 
 const errorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback
