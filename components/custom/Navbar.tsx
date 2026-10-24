@@ -6,13 +6,7 @@ import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { useTheme } from "next-themes"
 import { motion, AnimatePresence } from "framer-motion"
-import {
-  MenuIcon,
-  XIcon,
-  ChevronDownIcon,
-  ExternalLinkIcon,
-  PhoneIcon,
-} from "lucide-react"
+import { MenuIcon, XIcon, ArrowUpRightIcon, PhoneIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { ModeToggle } from "./ModeToggle"
 
@@ -26,26 +20,10 @@ const NAV_ITEMS: NavItem[] = [
   { label: "About", href: "/about" },
   { label: "Work", href: "/work" },
   { label: "Services", href: "/services" },
-  { label: "Writing", href: "/writing" },
+  { label: "Letinix", href: "https://letinix.com", external: true },
 ]
 
-const MORE_ITEMS: NavItem[] = [
-  {
-    label: "Blog",
-    href: "https://blog.mdazlaanzubair.com/",
-    external: true,
-  },
-  {
-    label: "Case Studies",
-    href: "https://blog.mdazlaanzubair.com/series/case-studies",
-    external: true,
-  },
-  {
-    label: "Product Observations",
-    href: "https://blog.mdazlaanzubair.com/series/product-observations",
-    external: true,
-  },
-]
+const externalLinkProps = { target: "_blank", rel: "noopener noreferrer" }
 
 function Logo() {
   const { resolvedTheme } = useTheme()
@@ -78,29 +56,10 @@ function Logo() {
 export default function Navbar() {
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [moreOpen, setMoreOpen] = useState(false)
 
   useEffect(() => {
     setMobileOpen(false)
-    setMoreOpen(false)
   }, [pathname])
-
-  useEffect(() => {
-    if (!moreOpen) return
-    const close = (e: MouseEvent) => {
-      const target = e.target as HTMLElement
-      if (!target.closest("[data-more-menu]")) setMoreOpen(false)
-    }
-    const esc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setMoreOpen(false)
-    }
-    document.addEventListener("mousedown", close)
-    document.addEventListener("keydown", esc)
-    return () => {
-      document.removeEventListener("mousedown", close)
-      document.removeEventListener("keydown", esc)
-    }
-  }, [moreOpen])
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/"
@@ -125,14 +84,18 @@ export default function Navbar() {
               <Link
                 key={item.href}
                 href={item.href}
+                {...(item.external ? externalLinkProps : {})}
                 className={cn(
-                  "relative px-3 py-1.5 text-sm font-medium transition-colors",
+                  "relative inline-flex items-center gap-0.5 px-3 py-1.5 text-sm font-medium transition-colors",
                   isActive(item.href)
                     ? "text-foreground"
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
                 {item.label}
+                {item.external && (
+                  <ArrowUpRightIcon className="size-3 opacity-60" />
+                )}
                 {isActive(item.href) && (
                   <motion.span
                     layoutId="nav-underline"
@@ -142,57 +105,6 @@ export default function Navbar() {
                 )}
               </Link>
             ))}
-
-            {/* More dropdown */}
-            <div className="relative" data-more-menu>
-              <button
-                type="button"
-                onClick={() => setMoreOpen((o) => !o)}
-                className={cn(
-                  "flex items-center gap-1 px-3 py-1.5 text-sm font-medium transition-colors",
-                  moreOpen
-                    ? "text-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-                aria-expanded={moreOpen}
-                aria-haspopup="menu"
-              >
-                More
-                <ChevronDownIcon
-                  className={cn(
-                    "size-3.5 transition-transform duration-200",
-                    moreOpen && "rotate-180"
-                  )}
-                />
-              </button>
-
-              <AnimatePresence>
-                {moreOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.15 }}
-                    role="menu"
-                    className="absolute top-full right-0 z-50 mt-2 w-56 rounded-lg bg-white p-1.5 shadow-lg dark:bg-black"
-                  >
-                    {MORE_ITEMS.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        role="menuitem"
-                        className="flex items-center justify-between rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                      >
-                        <span>{item.label}</span>
-                        <ExternalLinkIcon className="size-3 opacity-50" />
-                      </Link>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
           </div>
 
           {/* Right side actions */}
@@ -242,29 +154,18 @@ export default function Navbar() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  {...(item.external ? externalLinkProps : {})}
                   className={cn(
-                    "block rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
+                    "flex items-center justify-between rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
                     isActive(item.href)
                       ? "bg-muted text-foreground"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   )}
                 >
-                  {item.label}
-                </Link>
-              ))}
-
-              <div className="my-2 border-t border-border" />
-
-              {MORE_ITEMS.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between rounded-md px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                >
                   <span>{item.label}</span>
-                  <ExternalLinkIcon className="size-3 opacity-50" />
+                  {item.external && (
+                    <ArrowUpRightIcon className="size-3 opacity-50" />
+                  )}
                 </Link>
               ))}
 

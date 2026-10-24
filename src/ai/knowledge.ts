@@ -2,9 +2,9 @@ import "server-only"
 
 import { toPlainText } from "next-sanity"
 
-import { getHashnodeRssPosts, type HashnodePost } from "@/src/hashnode/hashnode"
 import {
   toAcademicHistory,
+  toCaseStudies,
   toExperience,
   toInterests,
   toPublications,
@@ -14,6 +14,7 @@ import {
 import { client } from "@/src/sanity/client"
 import {
   ACADEMIC_HISTORY_QUERY,
+  CASE_STUDIES_LIST_QUERY,
   EXPERIENCE_QUERY,
   INTERESTS_QUERY,
   PUBLICATIONS_LIST_QUERY,
@@ -82,32 +83,24 @@ const STATIC_KNOWLEDGE: KnowledgeDocument[] = [
     sourceUrl: "https://github.com/mdazlaanzubair/the-chronicles-of-UI-UX",
     citationLabel: "Portfolio repository",
   },
+  {
+    id: "writing-letinix",
+    kind: "article",
+    title: "Writing on Letinix",
+    body: [
+      "Azlaan's long-form writing now lives on Letinix (letinix.com), his standalone publication, separate from this portfolio.",
+      "The portfolio no longer hosts or mirrors blog posts; readers looking for his articles should visit letinix.com.",
+    ].join(" "),
+    tags: ["writing", "blog", "articles", "publication", "Letinix"],
+    sourceUrl: "https://letinix.com",
+    citationLabel: "Letinix",
+  },
 ]
 
 const clean = (value: string | null | undefined) => value?.trim() || ""
 
 const compact = (values: Array<string | null | undefined>) =>
   values.map(clean).filter(Boolean).join(" · ")
-
-const postToDocument = (post: HashnodePost): KnowledgeDocument => ({
-  id: `post-${post.id}`,
-  kind: post.series ? "case-study" : "article",
-  title: post.title,
-  body: compact([
-    post.brief,
-    post.content,
-    post.tags.length
-      ? `Topics: ${post.tags.map((tag) => tag.name).join(", ")}`
-      : undefined,
-  ]),
-  tags: [
-    post.series ? "case study" : "article",
-    ...post.tags.map((tag) => tag.name),
-  ],
-  sourceUrl: post.url,
-  citationLabel: post.series ? "Case study" : "Writing",
-  publishedAt: post.publishedAt,
-})
 
 export async function loadPortfolioKnowledge(): Promise<KnowledgeDocument[]> {
   const [
@@ -117,7 +110,7 @@ export async function loadPortfolioKnowledge(): Promise<KnowledgeDocument[]> {
     interestsResult,
     workResult,
     publicationsResult,
-    postsResult,
+    caseStudiesResult,
   ] = await Promise.allSettled([
     client.fetch(EXPERIENCE_QUERY, {}, fetchOptions),
     client.fetch(ACADEMIC_HISTORY_QUERY, {}, fetchOptions),
@@ -125,7 +118,7 @@ export async function loadPortfolioKnowledge(): Promise<KnowledgeDocument[]> {
     client.fetch(INTERESTS_QUERY, {}, fetchOptions),
     client.fetch(WORK_LIST_QUERY, {}, fetchOptions),
     client.fetch(PUBLICATIONS_LIST_QUERY, {}, fetchOptions),
-    getHashnodeRssPosts({ first: 30 }),
+    client.fetch(CASE_STUDIES_LIST_QUERY, {}, fetchOptions),
   ])
 
   const documents = [...STATIC_KNOWLEDGE]
@@ -251,8 +244,24 @@ export async function loadPortfolioKnowledge(): Promise<KnowledgeDocument[]> {
     })
   }
 
-  if (postsResult.status === "fulfilled") {
-    documents.push(...postsResult.value.map(postToDocument))
+  if (caseStudiesResult.status === "fulfilled") {
+    toCaseStudies(caseStudiesResult.value).forEach((study) => {
+      documents.push({
+        id: `case-study-${study.id}`,
+        kind: "case-study",
+        title: study.title,
+        body: compact([
+          study.description,
+          study.metadata.company?.name,
+          study.metadata.projectName,
+          study.metadata.timeline,
+        ]),
+        tags: ["case study", ...study.tags],
+        sourceUrl: absoluteUrl(`/work/${study.slug}`),
+        citationLabel: "Case study",
+        updatedAt: study.updatedAt,
+      })
+    })
   }
 
   return documents.filter((document) => document.body.length > 0)

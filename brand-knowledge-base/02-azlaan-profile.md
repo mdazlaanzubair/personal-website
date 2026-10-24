@@ -360,7 +360,7 @@ Personal interests can humanize content when they are genuinely relevant. Do not
 | Surface | Identifier / URL | 
 |---|---|---|
 | Portfolio | https://mdazlaanzubair.com | 
-| Blog | https://blog.mdazlaanzubair.com | 
+| Writing (Letinix, standalone publication) | https://letinix.com | 
 | LinkedIn | https://www.linkedin.com/in/mdazlaanzubair | 
 | GitHub | https://github.com/mdazlaanzubair | 
 | Google Scholar | https://scholar.google.com/citations?hl=en&user=K7XC7-MAAAAJ | 

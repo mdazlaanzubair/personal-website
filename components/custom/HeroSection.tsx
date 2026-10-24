@@ -71,10 +71,10 @@ export default function HeroSection() {
               <ArrowRightIcon className="size-3.5" />
             </Link>
             <Link
-              href="/writing"
+              href="/work"
               className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
             >
-              Read my writing
+              See my work
               <ArrowRightIcon className="size-3.5" />
             </Link>
           </motion.div>

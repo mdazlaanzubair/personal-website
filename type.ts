@@ -56,6 +56,28 @@ export interface WorkInterface {
   updatedAt: string
 }
 
+export interface CaseStudyInterface {
+  id: string
+  title: string
+  slug: string
+  description: string
+  tags: string[]
+  metadata: {
+    isFeatured: boolean
+    timeline: string | null
+    projectName: string | null
+    company: { name: string; isAnonymized: boolean } | null
+  }
+
+  createdAt: string
+  updatedAt: string
+}
+
+export interface CaseStudyDetailInterface extends CaseStudyInterface {
+  body: PortableTextBlock[]
+  seo: { title: string; description: string; noIndex: boolean }
+}
+
 export interface ExperienceInterface {
   company: {
     name: string

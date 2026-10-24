@@ -2,6 +2,8 @@ import type { PortableTextBlock } from "next-sanity"
 
 import type {
   ACADEMIC_HISTORY_QUERY_RESULT,
+  CASE_STUDIES_LIST_QUERY_RESULT,
+  CASE_STUDY_QUERY_RESULT,
   EXPERIENCE_QUERY_RESULT,
   INTERESTS_QUERY_RESULT,
   PUBLICATIONS_LIST_QUERY_RESULT,
@@ -11,6 +13,8 @@ import type {
 } from "@/sanity.types"
 import type {
   AcademicInterface,
+  CaseStudyDetailInterface,
+  CaseStudyInterface,
   ClientProjectInterface,
   ExperienceInterface,
   InterestType,
@@ -37,6 +41,20 @@ const asPortableTextBlocks = (body: unknown): PortableTextBlock[] =>
 export const toPublications = (
   documents: PUBLICATIONS_LIST_QUERY_RESULT
 ): PublicationInterface[] => documents as PublicationInterface[]
+
+export const toCaseStudies = (
+  documents: CASE_STUDIES_LIST_QUERY_RESULT
+): CaseStudyInterface[] => documents as CaseStudyInterface[]
+
+export const toCaseStudy = (
+  document: CASE_STUDY_QUERY_RESULT
+): CaseStudyDetailInterface | null =>
+  document
+    ? ({
+        ...document,
+        body: asPortableTextBlocks(document.body),
+      } as CaseStudyDetailInterface)
+    : null
 
 export const toWorkItems = (
   documents: WORK_LIST_QUERY_RESULT

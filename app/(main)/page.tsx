@@ -3,7 +3,6 @@ import WhatIDo from "@/components/custom/WhatIDo"
 import FeaturedServices from "@/components/custom/FeaturedServices"
 import BackgroundSummary from "@/components/custom/BackgroundSummary"
 import SelectedWork from "@/components/custom/SelectedWork"
-import LatestWriting from "@/components/custom/LatestWriting"
 import ServicesInlineCta from "@/components/custom/ServicesInlineCta"
 import { client } from "@/src/sanity/client"
 import {
@@ -18,11 +17,6 @@ import {
   toWorkItems,
   toServices,
 } from "@/src/sanity/adapters"
-import {
-  getHashnodePosts,
-  getHashnodeRssPosts,
-  type HashnodePost,
-} from "@/src/hashnode/hashnode"
 import { createPageMetadata } from "@/src/seo/site"
 
 const description =
@@ -77,25 +71,12 @@ export default async function Page() {
   const selectedProjects =
     featuredProjects.length > 0 ? featuredProjects : allProjects.slice(0, 3)
 
-  let posts: HashnodePost[] = []
-  try {
-    const res = await getHashnodePosts({ first: 3, excludeCaseStudies: false })
-    posts = res.posts
-  } catch {
-    try {
-      posts = await getHashnodeRssPosts({ first: 3, excludeCaseStudies: false })
-    } catch {
-      /* writing section will be empty */
-    }
-  }
-
   return (
     <>
       <HeroSection />
       <WhatIDo />
       <FeaturedServices services={services} />
       <SelectedWork projects={selectedProjects} />
-      <LatestWriting posts={posts} />
       <BackgroundSummary experiences={experiences} academics={academics} />
       <ServicesInlineCta
         heading="Need something built?"

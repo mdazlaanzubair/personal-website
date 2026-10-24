@@ -11,4 +11,9 @@ export {
   SERVICES_QUERY,
   SERVICE_TESTIMONIALS_QUERY,
 } from "./services"
+export {
+  CASE_STUDIES_LIST_QUERY,
+  CASE_STUDY_QUERY,
+  CASE_STUDY_SLUGS_QUERY,
+} from "./caseStudies"
 export { WORK_LIST_QUERY } from "./work"

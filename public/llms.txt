@@ -2,18 +2,17 @@
 
 > Building intelligent systems for real-world impact. I specialize in system architecture, web engineering, AI, and human-centered products — with a focus on structure, clarity, and long-term thinking.
 
-This website is the canonical portfolio for Muhammad Azlaan Zubair (`@mdazlaanzubair`), based in Karachi, Pakistan. Use the linked pages as primary sources for claims about his professional experience, projects, research, and writing.
+This website is the canonical portfolio for Muhammad Azlaan Zubair (`@mdazlaanzubair`), based in Karachi, Pakistan. Use the linked pages as primary sources for claims about his professional experience, projects, and research. His long-form writing lives on Letinix, a separate publication.
 
 ## Portfolio
 
-- [Home](https://mdazlaanzubair.com/): Landing page with positioning, selected experience, featured work, and latest writing.
+- [Home](https://mdazlaanzubair.com/): Landing page with positioning, selected experience, and featured work.
 - [About](https://mdazlaanzubair.com/about): Professional experience, academic background, technical skills, and bio.
-- [Work](https://mdazlaanzubair.com/work): Software projects and research publications — detailed descriptions, tech stacks, key contributions, source links, and DOI references where available.
-- [Writing](https://mdazlaanzubair.com/writing): Technical articles on AI, software engineering, and the systems that shape our world.
+- [Work](https://mdazlaanzubair.com/work): Client case studies, side projects, and research publications — descriptions, tech stacks, key contributions, source links, and DOI references where available.
 
 ## External profiles
 
-- [Technical blog](https://blog.mdazlaanzubair.com/): Long-form writing on AI, engineering, and product thinking.
+- [Letinix](https://letinix.com/): Standalone publication for long-form writing on AI, engineering, and product thinking.
 - [GitHub](https://github.com/mdazlaanzubair): Public source code and engineering activity.
 - [LinkedIn](https://www.linkedin.com/in/mdazlaanzubair/): Professional profile and career history.
 - [Google Scholar](https://scholar.google.com/citations?hl=en&user=K7XC7-MAAAAJ): Research publications and citations.

@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowRightIcon } from "lucide-react"
+import { ArrowRightIcon, ArrowUpRightIcon } from "lucide-react"
 
 const items = [
   {
@@ -16,9 +16,10 @@ const items = [
   },
   {
     label: "03 Write",
-    text: "22+ published articles investigating AI claims, engineering decisions, and product trade-offs.",
-    href: "/writing",
-    link: "Read the blog",
+    text: "I write long-form investigations into AI claims, engineering decisions, and product trade-offs on Letinix, my independent publication.",
+    href: "https://letinix.com",
+    link: "Read Letinix",
+    external: true,
   },
   {
     label: "04 Automate",
@@ -44,8 +45,19 @@ export default function WhatIDo() {
             <p className="mt-4 text-base leading-7 text-foreground">
               {item.text}
             </p>
-            <Link href={item.href} className="mt-6 section-link inline-flex">
-              {item.link} <ArrowRightIcon className="size-3" />
+            <Link
+              href={item.href}
+              className="mt-6 section-link inline-flex"
+              {...("external" in item && item.external
+                ? { target: "_blank", rel: "noopener noreferrer" }
+                : {})}
+            >
+              {item.link}
+              {"external" in item && item.external ? (
+                <ArrowUpRightIcon className="size-3" />
+              ) : (
+                <ArrowRightIcon className="size-3" />
+              )}
             </Link>
           </div>
         ))}
