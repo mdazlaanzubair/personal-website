@@ -9,6 +9,7 @@ export default defineCliConfig({
   },
   studioHost,
   deployment: {
+    appId: "twcajeah8axruv59h576qt3l",
     autoUpdates: true,
   },
   typegen: {
