@@ -2,7 +2,7 @@ import { formatCaseStudyClient, formatCaseStudyDates } from "@/lib/case-study"
 import type { CaseStudyInterface } from "@/type"
 import WorkCard from "./WorkCard"
 
-/** A case study in the same card as the side projects. */
+/** A case study as a compact work card. */
 export default function CaseStudyCard({
   study,
 }: {

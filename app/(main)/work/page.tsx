@@ -21,7 +21,7 @@ import { absoluteUrl } from "@/src/seo/site"
 import { toPlainText } from "next-sanity"
 
 const description =
-  "Client case studies, side projects, and research publications by Muhammad Azlaan Zubair — software engineer and researcher."
+  "Client case studies, projects, and research publications by Muhammad Azlaan Zubair — software engineer and researcher."
 
 export const metadata = createPageMetadata({
   title: "Work",

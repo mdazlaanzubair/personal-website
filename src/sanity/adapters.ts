@@ -1,3 +1,4 @@
+import { timelineSortKey } from "@/components/seo/Timeline"
 import type { PortableTextBlock } from "next-sanity"
 
 import type {
@@ -100,28 +101,38 @@ export const toWorkItems = (
 
 const looksLikeTimeline = (value: string) => /\b(?:19|20)\d{2}\b/.test(value)
 
+/**
+ * Newest first by the manual sort order (larger is newer). Roles without one
+ * yet fall back to their dates, so the list stays sensible while it's filled.
+ */
+const byExperienceOrder = (a: ExperienceInterface, b: ExperienceInterface) =>
+  (b.sortOrder ?? -1) - (a.sortOrder ?? -1) ||
+  timelineSortKey(b.timeline) - timelineSortKey(a.timeline)
+
 export const toExperience = (
   documents: EXPERIENCE_QUERY_RESULT
 ): ExperienceInterface[] =>
-  documents.map((document) => {
-    const hasSwappedLocationAndTimeline =
-      !looksLikeTimeline(document.timeline) &&
-      looksLikeTimeline(document.company.location)
+  documents
+    .map((document) => {
+      const hasSwappedLocationAndTimeline =
+        !looksLikeTimeline(document.timeline) &&
+        looksLikeTimeline(document.company.location)
 
-    return {
-      ...document,
-      company: {
-        ...document.company,
-        location: hasSwappedLocationAndTimeline
-          ? document.timeline
-          : document.company.location,
-      },
-      timeline: hasSwappedLocationAndTimeline
-        ? document.company.location
-        : document.timeline,
-      key_contributions: asPortableTextBlocks(document.key_contributions),
-    }
-  })
+      return {
+        ...document,
+        company: {
+          ...document.company,
+          location: hasSwappedLocationAndTimeline
+            ? document.timeline
+            : document.company.location,
+        },
+        timeline: hasSwappedLocationAndTimeline
+          ? document.company.location
+          : document.timeline,
+        key_contributions: asPortableTextBlocks(document.key_contributions),
+      }
+    })
+    .sort(byExperienceOrder)
 
 export const toAcademicHistory = (
   documents: ACADEMIC_HISTORY_QUERY_RESULT

@@ -7,7 +7,7 @@ import {
 
 export const EXPERIENCE_QUERY = defineQuery(/* groq */ `
   *[_type == "experience"]
-  | order(_updatedAt desc) {
+  | order(coalesce(sortOrder, -1) desc, _updatedAt desc) {
     "company": select(
       company.isAnonymized == true => {
         "name": "Confidential organization",
@@ -24,6 +24,7 @@ export const EXPERIENCE_QUERY = defineQuery(/* groq */ `
     ),
     timeline,
     role,
+    sortOrder,
     "key_contributions": coalesce(key_contributions[]{
       ${portableTextMembersProjection}
     }, []),
@@ -46,12 +47,33 @@ export const ACADEMIC_HISTORY_QUERY = defineQuery(/* groq */ `
 `)
 
 export const SOCIAL_PROFILES_QUERY = defineQuery(/* groq */ `
-  coalesce(*[_id == "siteSettings"][0].socialMedia, [])[]{
+  coalesce(*[_id == "siteSettings"][0].socialMedia, [])[defined(url)]{
     _key,
-    platform,
-    username,
+    // Links saved before the free-form schema have a platform instead of a
+    // label, and one isHidden switch for both places.
+    "label": coalesce(label, select(
+      platform == "x" => "X",
+      platform == "instagram" => "Instagram",
+      platform == "linkedin" => "LinkedIn",
+      platform == "github" => "Github",
+      platform == "scholar" => "Google Scholar",
+      platform == "whatsapp" => "WhatsApp",
+      "Link"
+    )),
     url,
-    "isHidden": isHidden == true
+    "hideFromPortfolio": coalesce(hideFromPortfolio, isHidden, false),
+    "hideFromResume": coalesce(hideFromResume, isHidden, false)
+  }
+`)
+
+export const CV_PROFILE_QUERY = defineQuery(/* groq */ `
+  *[_id == "siteSettings"][0]{
+    headline,
+    location,
+    email,
+    phone,
+    resumeSummary,
+    academicSummary
   }
 `)
 

@@ -71,7 +71,7 @@ export default function ExperienceAccordion({
         <p className="text-sm text-muted-foreground">{fetchError}</p>
       ) : (
         <Accordion defaultValue={["experience-0"]} hiddenUntilFound>
-          {items.reverse().map((item, idx) => {
+          {items.map((item, idx) => {
             const { key_contributions, company, role, timeline } = item
             const { website, location, name: companyName } = company
 
@@ -83,7 +83,7 @@ export default function ExperienceAccordion({
               >
                 <AccordionTrigger className="group flex w-full items-start gap-4 py-4 hover:no-underline">
                   <div className="flex-1 text-left">
-                    <p className="text-xs tabular-nums text-muted-foreground/60">
+                    <p className="text-xs text-muted-foreground/60 tabular-nums">
                       <Timeline value={timeline} />
                     </p>
                     <p className="mt-1 text-sm font-semibold text-foreground sm:text-base">

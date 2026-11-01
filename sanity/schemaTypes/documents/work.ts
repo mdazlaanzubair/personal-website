@@ -64,6 +64,15 @@ export const work = defineType({
       validation: (rule) => rule.max(4),
     }),
     defineField({
+      name: "previewVideo",
+      title: "Preview video",
+      description:
+        "Optional short, silent loop (MP4 or WebM, ideally under 10 s and 5 MB). It plays on the project card when hovered and leads the gallery. The first gallery image is its poster.",
+      type: "file",
+      group: "content",
+      options: { accept: "video/mp4,video/webm" },
+    }),
+    defineField({
       name: "metadata",
       title: "Project details",
       type: "object",

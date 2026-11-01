@@ -33,45 +33,18 @@ function FooterLogo() {
   )
 }
 
-const FOOTER_LINKS: { label: string; platform: string; fallbackUrl: string }[] =
-  [
-    {
-      label: "GitHub",
-      platform: "github",
-      fallbackUrl: "https://github.com/mdazlaanzubair",
-    },
-    {
-      label: "LinkedIn",
-      platform: "linkedin",
-      fallbackUrl: "https://www.linkedin.com/in/mdazlaanzubair",
-    },
-    {
-      label: "Email",
-      platform: "email",
-      fallbackUrl: "mailto:mdazlaan1996@gmail.com",
-    },
-    {
-      label: "Instagram",
-      platform: "instagram",
-      fallbackUrl: "https://instagram.com/mdazlaanzubairr",
-    },
-    {
-      label: "Threads",
-      platform: "threads",
-      fallbackUrl: "https://www.threads.com/@mdazlaanzubairr",
-    },
-  ]
+const EMAIL_LINK = { label: "Email", url: "mailto:mdazlaan1996@gmail.com" }
 
 export function Footer({
   socialLinks,
 }: {
   socialLinks: SocialMediaInterface[]
 }) {
-  const resolveUrl = (platform: string, fallbackUrl: string) => {
-    if (platform === "email") return fallbackUrl
-    const match = socialLinks.find((s) => s.platform === platform)
-    return match?.url ?? fallbackUrl
-  }
+  // Every Sanity link not hidden from the portfolio, in its saved order.
+  const links = [
+    ...socialLinks.filter((link) => !link.hideFromPortfolio),
+    EMAIL_LINK,
+  ]
 
   return (
     <footer className="">
@@ -83,20 +56,21 @@ export function Footer({
           </span>
         </div>
 
-        <div className="flex items-center gap-4">
-          {FOOTER_LINKS.map((link) => (
-            <Link
-              key={link.platform}
-              href={resolveUrl(link.platform, link.fallbackUrl)}
-              target={link.platform !== "email" ? "_blank" : undefined}
-              rel={
-                link.platform !== "email" ? "noopener noreferrer" : undefined
-              }
-              className="text-xs text-muted-foreground transition-colors hover:text-foreground"
-            >
-              {link.label}
-            </Link>
-          ))}
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+          {links.map((link) => {
+            const isWeb = /^https?:\/\//i.test(link.url)
+            return (
+              <Link
+                key={`${link.label}-${link.url}`}
+                href={link.url}
+                target={isWeb ? "_blank" : undefined}
+                rel={isWeb ? "noopener noreferrer" : undefined}
+                className="text-xs text-muted-foreground transition-colors hover:text-foreground"
+              >
+                {link.label}
+              </Link>
+            )
+          })}
         </div>
       </div>
     </footer>
