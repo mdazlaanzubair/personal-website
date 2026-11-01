@@ -2,8 +2,16 @@
 
 import Image from "next/image"
 import { motion } from "framer-motion"
-import { MapPinIcon, MailIcon, CalendarIcon, DownloadIcon } from "lucide-react"
-import Link from "next/link"
+import { Menu } from "@base-ui/react/menu"
+import {
+  CalendarIcon,
+  ChevronDownIcon,
+  DownloadIcon,
+  FileTextIcon,
+  MailIcon,
+  MapPinIcon,
+} from "lucide-react"
+import { RESUME_FILES } from "@/src/resume/files"
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -54,6 +62,47 @@ export default function AboutHeader() {
           structure, clarity, and long-term thinking.
         </p>
 
+        <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+          Over the years, I&apos;ve led architectural initiatives, optimized
+          high-traffic applications, and contributed to technical
+          decision-making that supports product growth. I believe strong
+          engineering is defined not just by delivery, but by durability.
+        </p>
+
+        <Menu.Root>
+          <Menu.Trigger className="mt-6 inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-colors outline-none hover:bg-foreground/90 focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background data-popup-open:bg-foreground/90">
+            <DownloadIcon className="size-3.5" />
+            Download CV
+            <ChevronDownIcon className="size-3.5 transition-transform in-data-popup-open:rotate-180" />
+          </Menu.Trigger>
+          <Menu.Portal>
+            <Menu.Positioner sideOffset={8} align="start" className="z-50">
+              <Menu.Popup className="w-72 origin-(--transform-origin) rounded-xl border border-border bg-popover p-1.5 text-popover-foreground shadow-lg transition-[opacity,scale] duration-150 outline-none data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0">
+                {Object.values(RESUME_FILES).map((file) => (
+                  <Menu.LinkItem
+                    key={file.path}
+                    href={file.path}
+                    download={file.fileName}
+                    closeOnClick
+                    className="flex cursor-pointer items-start gap-3 rounded-lg px-3 py-2.5 outline-none data-highlighted:bg-muted"
+                  >
+                    <FileTextIcon className="mt-0.5 size-4 shrink-0 text-primary" />
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-sm font-medium text-foreground">
+                        {file.label}
+                      </span>
+                      <span className="block text-xs text-muted-foreground">
+                        {file.description}
+                      </span>
+                    </span>
+                    <DownloadIcon className="mt-0.5 size-3.5 shrink-0 text-muted-foreground" />
+                  </Menu.LinkItem>
+                ))}
+              </Menu.Popup>
+            </Menu.Positioner>
+          </Menu.Portal>
+        </Menu.Root>
+
         <motion.div
           className="my-10 overflow-hidden rounded-2xl"
           initial={{ opacity: 0, scale: 0.98 }}
@@ -71,22 +120,6 @@ export default function AboutHeader() {
             />
           </div>
         </motion.div>
-
-        <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
-          Over the years, I&apos;ve led architectural initiatives, optimized
-          high-traffic applications, and contributed to technical
-          decision-making that supports product growth. I believe strong
-          engineering is defined not just by delivery, but by durability.
-        </p>
-
-        <Link
-          href="/resume/Resume - Software Engineer - Muhammad Azlaan Zubair.pdf"
-          download
-          className="mt-6 inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-colors hover:bg-foreground/90"
-        >
-          Download CV
-          <DownloadIcon className="size-3.5" />
-        </Link>
       </motion.div>
 
       <motion.blockquote

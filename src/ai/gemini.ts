@@ -11,22 +11,23 @@ import type {
   AssistantSource,
   KnowledgeDocument,
 } from "./types"
+import { RESUME_FILES } from "@/src/resume/files"
 
 const DEFAULT_MODEL = "gemini-3.8-flash"
 const MAX_CONTEXT_CHARACTERS = 18_000
 
 const PROFESSIONAL_RESUME_ACTION = {
   label: "Download professional resume (PDF)",
-  url: "/resume/Resume - Software Engineer - Muhammad Azlaan Zubair.pdf",
+  url: RESUME_FILES.professional.path,
   kind: "download",
-  fileName: "Resume - Software Engineer - Muhammad Azlaan Zubair.pdf",
+  fileName: RESUME_FILES.professional.fileName,
 } satisfies AssistantAction
 
 const ACADEMIC_CV_ACTION = {
   label: "Download academic CV (PDF)",
-  url: "/resume/CV - Software Engineer - Muhammad Azlaan Zubair (Academic).pdf",
+  url: RESUME_FILES.academic.path,
   kind: "download",
-  fileName: "CV - Software Engineer - Muhammad Azlaan Zubair (Academic).pdf",
+  fileName: RESUME_FILES.academic.fileName,
 } satisfies AssistantAction
 
 export class AssistantConfigurationError extends Error {}
@@ -415,15 +416,24 @@ export async function createAssistantReply(
     if (error instanceof DOMException && error.name === "AbortError") {
       throw new AssistantTimeoutError("The request timed out.")
     }
-    const message =
-      error instanceof Error ? error.message.toLowerCase() : ""
+    const message = error instanceof Error ? error.message.toLowerCase() : ""
     if (message.includes("rate") || message.includes("429")) {
       throw new AssistantRateLimitError("Gemini rate limit reached.")
     }
-    if (message.includes("safety") || message.includes("blocked") || message.includes("filter")) {
-      throw new AssistantContentFilteredError("The response was filtered by safety settings.")
+    if (
+      message.includes("safety") ||
+      message.includes("blocked") ||
+      message.includes("filter")
+    ) {
+      throw new AssistantContentFilteredError(
+        "The response was filtered by safety settings."
+      )
     }
-    if (message.includes("model") || message.includes("not found") || message.includes("invalid")) {
+    if (
+      message.includes("model") ||
+      message.includes("not found") ||
+      message.includes("invalid")
+    ) {
       throw new AssistantModelError("The AI model is unavailable.")
     }
     throw error

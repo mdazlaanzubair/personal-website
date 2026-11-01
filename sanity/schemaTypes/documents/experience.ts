@@ -26,12 +26,27 @@ export const experience = defineType({
       validation: (rule) => rule.required().max(MAX_TITLE_LENGTH),
     }),
     defineField({
+      name: "sortOrder",
+      title: "Sort order",
+      type: "number",
+      description:
+        "Controls where this role is listed. Smaller numbers are older roles, larger numbers are newer; the largest is shown first.",
+      validation: (rule) => rule.required().integer().min(0),
+    }),
+    defineField({
       name: "key_contributions",
       title: "Key contributions",
       type: "portableText",
       initialValue: [],
       validation: (rule) => rule.required().min(1),
     }),
+  ],
+  orderings: [
+    {
+      title: "Sort order, newest first",
+      name: "sortOrderDesc",
+      by: [{ field: "sortOrder", direction: "desc" }],
+    },
   ],
   preview: {
     select: {

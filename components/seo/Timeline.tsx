@@ -86,6 +86,24 @@ const parseTimeline = (timeline: string) => {
   return { start, end, isPresent }
 }
 
+/** A timeline as plain text, e.g. "2024-26" becomes "2024 – 2026". */
+export const formatTimeline = (value: string) => {
+  const timeline = parseTimeline(value)
+  if (!timeline) return value
+  return `${timeline.start.label} – ${
+    timeline.isPresent ? "Present" : timeline.end!.label
+  }`
+}
+
+/** Orders timelines by when they end; ongoing ones sort last (newest). */
+export const timelineSortKey = (value: string) => {
+  const timeline = parseTimeline(value)
+  if (!timeline) return 0
+  if (timeline.isPresent) return Number.POSITIVE_INFINITY
+  const [year, month = "12"] = timeline.end!.dateTime.split("-")
+  return Number(year) * 12 + Number(month)
+}
+
 export default function Timeline({ value }: { value: string }) {
   const timeline = parseTimeline(value)
 

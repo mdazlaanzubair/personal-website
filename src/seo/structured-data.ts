@@ -12,51 +12,28 @@ import { absoluteUrl, SITE_DESCRIPTION, SITE_HANDLE, SITE_NAME } from "./site"
 export const PERSON_ID = absoluteUrl("/#person")
 export const WEBSITE_ID = absoluteUrl("/#website")
 
+/** Used only when Sanity's links can't be loaded or none are saved. */
 export const DEFAULT_SOCIAL_PROFILES: SocialMediaInterface[] = [
+  { label: "LinkedIn", url: "https://www.linkedin.com/in/mdazlaanzubair/" },
+  { label: "Github", url: "https://github.com/mdazlaanzubair" },
   {
-    platform: "github",
-    username: "mdazlaanzubair",
-    url: "https://github.com/mdazlaanzubair",
-    isHidden: false,
-  },
-  {
-    platform: "linkedin",
-    username: "mdazlaanzubair",
-    url: "https://www.linkedin.com/in/mdazlaanzubair/",
-    isHidden: false,
-  },
-  {
-    platform: "scholar",
-    username: "K7XC7-MAAAAJ",
+    label: "Google Scholar",
     url: "https://scholar.google.com/citations?hl=en&user=K7XC7-MAAAAJ",
-    isHidden: false,
   },
-  {
-    platform: "x",
-    username: "mdazlaanzubair",
-    url: "https://x.com/mdazlaanzubair",
-    isHidden: false,
-  },
-  {
-    platform: "instagram",
-    username: "mdazlaanzubairr",
-    url: "https://www.instagram.com/mdazlaanzubairr/",
-    isHidden: false,
-  },
-]
+  { label: "X", url: "https://x.com/mdazlaanzubair" },
+  { label: "Instagram", url: "https://www.instagram.com/mdazlaanzubairr/" },
+].map((link) => ({ ...link, hideFromPortfolio: false, hideFromResume: false }))
 
 export const resolveSocialProfiles = (
   profiles: SocialMediaInterface[]
-): SocialMediaInterface[] => {
-  const profilesByPlatform = new Map(
-    DEFAULT_SOCIAL_PROFILES.map((profile) => [profile.platform, profile])
-  )
+): SocialMediaInterface[] =>
+  profiles.length > 0 ? profiles : DEFAULT_SOCIAL_PROFILES
 
-  profiles.forEach((profile) => {
-    profilesByPlatform.set(profile.platform, profile)
-  })
-
-  return [...profilesByPlatform.values()]
+/** A web profile, as opposed to a contact link such as email or WhatsApp. */
+const isProfileUrl = (url: string) => {
+  if (!/^https?:\/\//i.test(url)) return false
+  const host = new URL(url).hostname.replace(/^www\./, "")
+  return !["wa.me", "api.whatsapp.com", "whatsapp.com"].includes(host)
 }
 
 export const createSiteJsonLd = (socialProfiles: SocialMediaInterface[]) => ({
@@ -106,7 +83,10 @@ export const createSiteJsonLd = (socialProfiles: SocialMediaInterface[]) => ({
       sameAs: [
         ...new Set([
           ...socialProfiles
-            .filter((profile) => !profile.isHidden)
+            .filter(
+              (profile) =>
+                !profile.hideFromPortfolio && isProfileUrl(profile.url)
+            )
             .map((profile) => profile.url),
           "https://letinix.com/",
         ]),

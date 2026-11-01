@@ -9,6 +9,8 @@ This website is the canonical portfolio for Muhammad Azlaan Zubair (`@mdazlaanzu
 - [Home](https://mdazlaanzubair.com/): Landing page with positioning, selected experience, and featured work.
 - [About](https://mdazlaanzubair.com/about): Professional experience, academic background, technical skills, and bio.
 - [Work](https://mdazlaanzubair.com/work): Client case studies, projects, and research publications — descriptions, tech stacks, key contributions, source links, and DOI references where available.
+- [Resume (PDF)](https://mdazlaanzubair.com/resume.pdf): Concise resume generated from the same content on every deploy.
+- [Academic CV (PDF)](https://mdazlaanzubair.com/academic-cv.pdf): Fuller record with education and publications first, generated on every deploy.
 
 ## External profiles
 

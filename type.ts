@@ -3,8 +3,6 @@ import type { PortableTextBlock } from "next-sanity"
 type PublicationStatus =
   "in_preparation" | "submitted" | "under_review" | "accepted" | "published"
 
-type SocialPlatform = "x" | "instagram" | "linkedin" | "github" | "scholar"
-
 export interface GalleryImage {
   url: string
   alt: string | null
@@ -32,10 +30,10 @@ export interface PublicationInterface {
 }
 
 export interface SocialMediaInterface {
-  platform: SocialPlatform
-  username: string
+  label: string
   url: string
-  isHidden: boolean
+  hideFromPortfolio: boolean
+  hideFromResume: boolean
 }
 
 export interface WorkInterface {
@@ -137,6 +135,7 @@ export interface ExperienceInterface {
 
   timeline: string
   role: string
+  sortOrder: number | null
   key_contributions: PortableTextBlock[]
 
   createdAt: string

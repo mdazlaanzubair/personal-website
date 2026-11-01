@@ -1,58 +1,68 @@
 import { EarthGlobeIcon } from "@sanity/icons/EarthGlobe"
 import { defineField, defineType } from "sanity"
 
-import { socialPlatformOptions } from "../shared/options"
-
 export const socialProfile = defineType({
   name: "socialProfile",
-  title: "Social profile",
+  title: "Link",
   type: "object",
   icon: EarthGlobeIcon,
+  initialValue: {
+    hideFromPortfolio: false,
+    hideFromResume: false,
+  },
   fields: [
     defineField({
-      name: "platform",
+      name: "label",
       type: "string",
-      options: {
-        list: [...socialPlatformOptions],
-        layout: "dropdown",
-      },
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: "username",
-      type: "string",
-      validation: (rule) => rule.required().max(100),
+      description: "The link text, for example LinkedIn, Blog or WhatsApp.",
+      validation: (rule) => rule.required().max(40),
     }),
     defineField({
       name: "url",
+      title: "URL",
       type: "url",
+      description:
+        "A full link, such as https://…, mailto:… or a WhatsApp chat link like https://wa.me/923113046692.",
       validation: (rule) =>
         rule
           .required()
-          .uri({ scheme: ["http", "https"] })
-          .error("Use a complete http:// or https:// profile URL."),
+          .uri({ scheme: ["http", "https", "mailto", "tel"] })
+          .error("Use a complete https://, mailto: or tel: link."),
     }),
     defineField({
-      name: "isHidden",
-      title: "Hide this profile",
+      name: "hideFromPortfolio",
+      title: "Hide from portfolio",
+      description:
+        "Leave it out of the website footer and search results data.",
+      type: "boolean",
+      initialValue: false,
+    }),
+    defineField({
+      name: "hideFromResume",
+      title: "Hide from resume",
+      description: "Leave it out of the resume and academic CV.",
       type: "boolean",
       initialValue: false,
     }),
   ],
   preview: {
     select: {
-      hidden: "isHidden",
-      platform: "platform",
-      username: "username",
+      label: "label",
+      url: "url",
+      hideFromPortfolio: "hideFromPortfolio",
+      hideFromResume: "hideFromResume",
     },
-    prepare({ hidden, platform, username }) {
-      const platformTitle =
-        socialPlatformOptions.find(({ value }) => value === platform)?.title ??
-        platform
+    prepare({ label, url, hideFromPortfolio, hideFromResume }) {
+      const hidden = [
+        hideFromPortfolio && "portfolio",
+        hideFromResume && "resume",
+      ].filter(Boolean)
 
       return {
-        title: platformTitle,
-        subtitle: `${username ?? "Missing username"}${hidden ? " · Hidden" : ""}`,
+        title: label ?? "Untitled link",
+        subtitle: `${url ?? "Missing URL"}${
+          hidden.length > 0 ? ` · Hidden from ${hidden.join(" and ")}` : ""
+        }`,
       }
     },
   },
