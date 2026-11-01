@@ -44,6 +44,7 @@ export interface WorkInterface {
   description: string
   tags: string[]
   images: GalleryImage[]
+  previewVideo: string | null
 
   metadata: {
     isFeatured: boolean

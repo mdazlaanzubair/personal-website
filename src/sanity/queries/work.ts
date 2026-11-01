@@ -19,6 +19,7 @@ export const WORK_LIST_QUERY = defineQuery(/* groq */ `
       "height": asset->metadata.dimensions.height,
       "lqip": asset->metadata.lqip
     }, []),
+    "previewVideo": previewVideo.asset->url,
     "metadata": {
       "isFeatured": metadata.isFeatured == true,
       "projectUrl": metadata.projectUrl,

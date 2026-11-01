@@ -5,6 +5,7 @@ import { motion } from "framer-motion"
 import { ArrowRightIcon } from "lucide-react"
 import type { CaseStudyInterface, WorkInterface } from "@/type"
 import { cn } from "@/lib/utils"
+import Carousel from "./Carousel"
 import CaseStudyCard from "./CaseStudyCard"
 
 const itemVariants = {
@@ -32,27 +33,26 @@ export default function SelectedWork({
   return (
     <section className="border-t border-border py-16">
       <div className="mb-8 flex items-baseline justify-between">
-        <span className="eyebrow">Selected work</span>
+        <span className="eyebrow">Work</span>
         <Link href="/work" className="section-link">
           View all <ArrowRightIcon className="size-3" />
         </Link>
       </div>
 
       {caseStudies.length > 0 ? (
-        <ul className="grid gap-3 sm:grid-cols-2">
-          {caseStudies.map((study, i) => (
-            <motion.li
-              key={study.id}
-              variants={itemVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-30px" }}
-              custom={i}
-            >
-              <CaseStudyCard study={study} />
-            </motion.li>
-          ))}
-        </ul>
+        <motion.div
+          variants={itemVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-30px" }}
+          custom={0}
+        >
+          <Carousel label="Selected case studies" itemName="case study">
+            {caseStudies.map((study) => (
+              <CaseStudyCard key={study.id} study={study} />
+            ))}
+          </Carousel>
+        </motion.div>
       ) : (
         <div className="space-y-0">
           {projects.map((project, i) => {

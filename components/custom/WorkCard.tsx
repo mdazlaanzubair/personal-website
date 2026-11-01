@@ -6,8 +6,8 @@ const cardClassName =
   "group flex h-full w-full flex-col rounded-xl border border-border p-4 text-left transition-colors hover:border-foreground/20 hover:bg-muted/30"
 
 /**
- * The compact card shared by side projects and case studies, so both read
- * the same. Pass `href` to link to a page, or `onClick` to open a dialog.
+ * The compact card used for case studies. Pass `href` to link to a page, or
+ * `onClick` to open a dialog.
  */
 export default function WorkCard({
   title,

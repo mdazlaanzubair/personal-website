@@ -1,28 +1,18 @@
 "use client"
 
-import { buttonVariants } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
 import type {
   CaseStudyInterface,
   PublicationInterface,
   WorkInterface,
 } from "@/type"
+import Carousel from "./Carousel"
 import CaseStudyCard from "./CaseStudyCard"
-import ImageGallery from "./ImageGallery"
+import ProjectCard from "./ProjectCard"
 import ServicesInlineCta from "./ServicesInlineCta"
-import WorkCard from "./WorkCard"
-import { ArrowRightIcon, Code2Icon, ExternalLinkIcon } from "lucide-react"
+import { ProjectModal, PublicationModal, toStatusLabel } from "./WorkModals"
+import { ArrowRightIcon } from "lucide-react"
 import { motion } from "framer-motion"
-import { PortableText, type PortableTextComponents } from "next-sanity"
-import Link from "next/link"
 import { useState } from "react"
 
 const ease = [0.22, 1, 0.36, 1] as const
@@ -43,66 +33,6 @@ const itemVariants = {
     y: 0,
     transition: { delay: i * 0.06, duration: 0.4, ease },
   }),
-}
-
-const portableTextComponents: PortableTextComponents = {
-  block: {
-    normal: ({ children }) => (
-      <p className="leading-6 [&:not(:first-child)]:mt-3">{children}</p>
-    ),
-    h2: ({ children }) => (
-      <h4 className="mt-4 font-semibold text-foreground">{children}</h4>
-    ),
-    h3: ({ children }) => (
-      <h4 className="mt-4 font-semibold text-foreground">{children}</h4>
-    ),
-    h4: ({ children }) => (
-      <h4 className="mt-4 font-semibold text-foreground">{children}</h4>
-    ),
-    blockquote: ({ children }) => (
-      <blockquote className="my-4 border-l-2 border-primary pl-4 italic">
-        {children}
-      </blockquote>
-    ),
-  },
-  list: {
-    bullet: ({ children }) => (
-      <ul className="my-3 list-outside list-disc space-y-2 pl-5">{children}</ul>
-    ),
-    number: ({ children }) => (
-      <ol className="my-3 list-outside list-decimal space-y-2 pl-5">
-        {children}
-      </ol>
-    ),
-  },
-  marks: {
-    link: ({ children, value }) => {
-      const href = typeof value?.href === "string" ? value.href : undefined
-      if (!href) return <>{children}</>
-      const openInNewTab = value.openInNewTab === true
-      return (
-        <a
-          href={href}
-          target={openInNewTab ? "_blank" : undefined}
-          rel={openInNewTab ? "noopener noreferrer" : undefined}
-          className="text-primary underline underline-offset-2"
-        >
-          {children}
-        </a>
-      )
-    },
-  },
-}
-
-const toDoiUrl = (doi: string | null) => {
-  if (!doi) return null
-  if (/^https?:\/\//i.test(doi)) return doi
-  return `https://doi.org/${doi.replace(/^doi:\s*/i, "")}`
-}
-
-const toStatusLabel = (status: string) => {
-  const label = status.replaceAll("_", " ")
-  return label.charAt(0).toUpperCase() + label.slice(1)
 }
 
 type Category = "case-studies" | "projects" | "publications"
@@ -160,7 +90,7 @@ export default function WorkPageContent({
   const categories = (
     [
       { id: "case-studies", label: "Case studies", count: caseStudies.length },
-      { id: "projects", label: "Side projects", count: projects.length },
+      { id: "projects", label: "Projects", count: projects.length },
       { id: "publications", label: "Publications", count: publications.length },
     ] satisfies { id: Category; label: string; count: number }[]
   ).filter((category) => category.count > 0)
@@ -203,7 +133,7 @@ export default function WorkPageContent({
           animate="visible"
           custom={2}
         >
-          Client case studies that show the problem underneath the brief, side
+          Client case studies that show the problem underneath the brief,
           projects where I test ideas in code, and published research.
         </motion.p>
 
@@ -274,33 +204,31 @@ export default function WorkPageContent({
             description="Client work, from the problem I was handed to the one I actually solved."
             count={caseStudies.length}
           />
-          <ul className="grid gap-3 sm:grid-cols-2">
-            {caseStudies.map((study, i) => (
-              <motion.li
-                key={study.id}
-                variants={itemVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-30px" }}
-                custom={i}
-              >
-                <CaseStudyCard study={study} />
-              </motion.li>
-            ))}
-          </ul>
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-30px" }}
+            transition={{ duration: 0.4, ease }}
+          >
+            <Carousel label="Case studies" itemName="case study">
+              {caseStudies.map((study) => (
+                <CaseStudyCard key={study.id} study={study} />
+              ))}
+            </Carousel>
+          </motion.div>
         </section>
       )}
 
-      {/* Side projects */}
+      {/* Projects */}
       {isVisible("projects") && (
         <section id="projects" className="scroll-mt-24 pb-14">
           <SectionHeader
             index={sectionIndex("projects")}
-            title="Side projects"
+            title="Projects"
             description="Tools and experiments I build to test an idea end to end."
             count={projects.length}
           />
-          <ul className="grid gap-3 sm:grid-cols-2">
+          <ul className="grid gap-x-4 gap-y-9 sm:grid-cols-2">
             {projects.map((project, i) => (
               <motion.li
                 key={project.id}
@@ -309,27 +237,12 @@ export default function WorkPageContent({
                 whileInView="visible"
                 viewport={{ once: true, margin: "-30px" }}
                 custom={i}
+                className={cn("min-w-0", i === 0 && "sm:col-span-2")}
               >
-                <WorkCard
-                  onClick={() => setSelectedProject(project)}
-                  title={project.title}
-                  label={project.metadata.isFeatured ? "Featured" : null}
-                  description={project.description}
-                  footer={
-                    project.tags.length > 0
-                      ? project.tags.slice(0, 4).join(" · ")
-                      : null
-                  }
-                  thumbnail={
-                    project.images[0]
-                      ? {
-                          url: project.images[0].url,
-                          alt: project.images[0].alt || project.title,
-                          lqip: project.images[0].lqip,
-                        }
-                      : null
-                  }
-                  imageCount={project.images.length}
+                <ProjectCard
+                  project={project}
+                  wide={i === 0}
+                  onOpen={() => setSelectedProject(project)}
                 />
               </motion.li>
             ))}
@@ -419,189 +332,14 @@ export default function WorkPageContent({
         </section>
       )}
 
-      {/* Project detail modal */}
-      <Dialog
-        open={selectedProject !== null}
-        onOpenChange={(open) => {
-          if (!open) setSelectedProject(null)
-        }}
-      >
-        {selectedProject && (
-          <DialogContent className="max-h-[85vh] overflow-hidden border border-border/60 bg-card sm:max-w-2xl">
-            <DialogHeader>
-              {selectedProject.metadata.isFeatured && (
-                <span className="eyebrow text-[11px]">Featured project</span>
-              )}
-              <DialogTitle className="font-heading text-xl font-semibold normal-case">
-                {selectedProject.title}
-              </DialogTitle>
-              <DialogDescription className="text-sm text-muted-foreground">
-                {selectedProject.description}
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="max-h-[52vh] space-y-6 overflow-y-auto pr-2">
-              {selectedProject.images.length > 0 && (
-                <ImageGallery images={selectedProject.images} />
-              )}
-
-              {selectedProject.metadata.key_contributions.length > 0 && (
-                <section>
-                  <h3 className="mb-3 font-heading text-base font-semibold text-foreground">
-                    Key contributions
-                  </h3>
-                  <div className="text-xs text-muted-foreground">
-                    <PortableText
-                      value={selectedProject.metadata.key_contributions}
-                      components={portableTextComponents}
-                    />
-                  </div>
-                </section>
-              )}
-
-              {selectedProject.tags.length > 0 && (
-                <ul aria-label="Technologies" className="flex flex-wrap gap-2">
-                  {selectedProject.tags.map((tag) => (
-                    <li
-                      key={`${selectedProject.id}-${tag}`}
-                      className="rounded-md border border-border bg-muted px-2 py-px text-[10px]"
-                    >
-                      {tag}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-
-            {(selectedProject.metadata.repositoryUrl ||
-              selectedProject.metadata.projectUrl) && (
-              <DialogFooter className="items-center border-t border-border py-4">
-                <div className="flex items-center gap-2">
-                  {selectedProject.metadata.repositoryUrl && (
-                    <Link
-                      href={selectedProject.metadata.repositoryUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={cn(
-                        buttonVariants({ variant: "ghost", size: "sm" }),
-                        "gap-1 text-xs"
-                      )}
-                    >
-                      <Code2Icon className="size-3" />
-                      Source
-                    </Link>
-                  )}
-                  {selectedProject.metadata.projectUrl && (
-                    <Link
-                      href={selectedProject.metadata.projectUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={cn(
-                        buttonVariants({ variant: "ghost", size: "sm" }),
-                        "gap-1 text-xs text-primary hover:bg-primary/5 hover:text-primary"
-                      )}
-                    >
-                      <ExternalLinkIcon className="size-3" />
-                      Visit project
-                    </Link>
-                  )}
-                </div>
-              </DialogFooter>
-            )}
-          </DialogContent>
-        )}
-      </Dialog>
-
-      {/* Publication detail modal */}
-      <Dialog
-        open={selectedPublication !== null}
-        onOpenChange={(open) => {
-          if (!open) setSelectedPublication(null)
-        }}
-      >
-        {selectedPublication && (
-          <DialogContent className="overflow-hidden border border-border/60 bg-card sm:max-w-2xl">
-            <DialogHeader className="border-b border-border pb-4">
-              <span className="eyebrow text-[11px]">
-                {toStatusLabel(selectedPublication.metadata.status)}
-                {selectedPublication.metadata.year && (
-                  <>
-                    <span aria-hidden="true"> · </span>
-                    <time dateTime={String(selectedPublication.metadata.year)}>
-                      {selectedPublication.metadata.year}
-                    </time>
-                  </>
-                )}
-              </span>
-              <DialogTitle className="leading-8 normal-case">
-                {selectedPublication.title}
-              </DialogTitle>
-              {selectedPublication.authors.length > 0 && (
-                <DialogDescription render={<div />}>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-xs font-medium text-foreground">
-                      Authors
-                    </span>
-                    {selectedPublication.authors.map((author, index) => {
-                      const normalizedAuthor = author.toLowerCase()
-                      const isMainAuthor =
-                        normalizedAuthor.includes("azlaan") ||
-                        normalizedAuthor.includes("zubair")
-                      return (
-                        <span
-                          key={`${selectedPublication.id}-${author}-${index}`}
-                          className={cn(
-                            "rounded-md border px-2 py-px text-[10px]",
-                            isMainAuthor
-                              ? "border-foreground/30 bg-muted/50 font-medium text-foreground"
-                              : "border-border bg-muted/50 text-muted-foreground"
-                          )}
-                        >
-                          {author}
-                        </span>
-                      )
-                    })}
-                  </div>
-                </DialogDescription>
-              )}
-            </DialogHeader>
-
-            <div className="max-h-[52vh] space-y-6 overflow-y-auto pr-2">
-              {selectedPublication.images.length > 0 && (
-                <ImageGallery images={selectedPublication.images} />
-              )}
-
-              {selectedPublication.abstract && (
-                <section>
-                  <h3 className="mb-3 font-heading text-base font-semibold text-foreground">
-                    Abstract
-                  </h3>
-                  <p className="text-justify text-xs leading-6 whitespace-pre-line text-muted-foreground">
-                    {selectedPublication.abstract}
-                  </p>
-                </section>
-              )}
-            </div>
-
-            {toDoiUrl(selectedPublication.metadata.doi) && (
-              <DialogFooter className="items-center border-t border-border py-4">
-                <Link
-                  href={toDoiUrl(selectedPublication.metadata.doi)!}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={cn(
-                    buttonVariants({ variant: "ghost", size: "sm" }),
-                    "gap-1 text-xs"
-                  )}
-                >
-                  Read publication
-                  <ExternalLinkIcon className="size-3" />
-                </Link>
-              </DialogFooter>
-            )}
-          </DialogContent>
-        )}
-      </Dialog>
+      <ProjectModal
+        project={selectedProject}
+        onClose={() => setSelectedProject(null)}
+      />
+      <PublicationModal
+        publication={selectedPublication}
+        onClose={() => setSelectedPublication(null)}
+      />
     </>
   )
 }

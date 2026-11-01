@@ -300,6 +300,13 @@ export type Service = {
   sortOrder?: number
 }
 
+export type SanityFileAssetReference = {
+  _ref: string
+  _type: "reference"
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: "sanity.fileAsset"
+}
+
 export type Work = {
   _id: string
   _type: "work"
@@ -318,6 +325,11 @@ export type Work = {
     _type: "image"
     _key: string
   }>
+  previewVideo?: {
+    asset?: SanityFileAssetReference
+    media?: unknown
+    _type: "file"
+  }
   metadata: {
     isFeatured?: boolean
     projectUrl?: string
@@ -671,6 +683,7 @@ export type AllSanitySchemaTypes =
   | ClientProject
   | ServiceTestimonial
   | Service
+  | SanityFileAssetReference
   | Work
   | SanityImageCrop
   | SanityImageHotspot
@@ -1167,7 +1180,7 @@ export type CLIENT_PROJECTS_QUERY_RESULT = Array<{
 
 // Source: src/sanity/queries/work.ts
 // Variable: WORK_LIST_QUERY
-// Query: *[_type == "work"]  | order(coalesce(metadata.isFeatured, false) desc, _updatedAt desc, _id asc) {    "id": _id,    title,    description,    "tags": coalesce(tags, []),    "images": coalesce(images[]{      "url": asset->url,      "alt": alt,      "width": asset->metadata.dimensions.width,      "height": asset->metadata.dimensions.height,      "lqip": asset->metadata.lqip    }, []),    "metadata": {      "isFeatured": metadata.isFeatured == true,      "projectUrl": metadata.projectUrl,      "repositoryUrl": metadata.repositoryUrl,      "key_contributions": coalesce(metadata.key_contributions[]{          ...,  _type == "portableImage" => {    image {      ...,      asset->{        _id,        url,        metadata {          dimensions,          lqip        }      }    }  },  _type == "callout" => {    content[]{...}  },  _type == "tableBlock" => {    rows[]{      _key,      cells    }  },  _type == "relatedContent" => {    reference->{      _id,      _type,      title,      "slug": slug.current    }  },  _type == "block" => {    markDefs[]{      ...,      _type == "relatedContentLink" => {        reference->{          _id,          _type,          title,          "slug": slug.current        }      }    }  }      }, [])    },      "createdAt": _createdAt,  "updatedAt": _updatedAt  }
+// Query: *[_type == "work"]  | order(coalesce(metadata.isFeatured, false) desc, _updatedAt desc, _id asc) {    "id": _id,    title,    description,    "tags": coalesce(tags, []),    "images": coalesce(images[]{      "url": asset->url,      "alt": alt,      "width": asset->metadata.dimensions.width,      "height": asset->metadata.dimensions.height,      "lqip": asset->metadata.lqip    }, []),    "previewVideo": previewVideo.asset->url,    "metadata": {      "isFeatured": metadata.isFeatured == true,      "projectUrl": metadata.projectUrl,      "repositoryUrl": metadata.repositoryUrl,      "key_contributions": coalesce(metadata.key_contributions[]{          ...,  _type == "portableImage" => {    image {      ...,      asset->{        _id,        url,        metadata {          dimensions,          lqip        }      }    }  },  _type == "callout" => {    content[]{...}  },  _type == "tableBlock" => {    rows[]{      _key,      cells    }  },  _type == "relatedContent" => {    reference->{      _id,      _type,      title,      "slug": slug.current    }  },  _type == "block" => {    markDefs[]{      ...,      _type == "relatedContentLink" => {        reference->{          _id,          _type,          title,          "slug": slug.current        }      }    }  }      }, [])    },      "createdAt": _createdAt,  "updatedAt": _updatedAt  }
 export type WORK_LIST_QUERY_RESULT = Array<{
   id: string
   title: string
@@ -1182,6 +1195,7 @@ export type WORK_LIST_QUERY_RESULT = Array<{
         lqip: string | null
       }>
     | Array<never>
+  previewVideo: string | null
   metadata: {
     isFeatured: boolean | false
     projectUrl: string | null
@@ -1322,8 +1336,7 @@ export type WORK_LIST_QUERY_RESULT = Array<{
 }>
 
 // Query TypeMap
-import "@sanity/client"
-declare module "@sanity/client" {
+declare global {
   interface SanityQueries {
     '\n  *[_type == "caseStudy" && defined(slug.current) && listing in ["featured", "listed"]]\n    | order(priority asc, startDate desc) { \n  _id,\n  title,\n  "slug": slug.current,\n  subtitle,\n  outcome,\n  listing,\n  priority,\n  "clientName": select(\n    client.visibility == "named" => client.company->name,\n    client.publicLabel\n  ),\n  "via": select(client.company._ref == employer._ref => null, employer->name),\n  startDate,\n  endDate,\n  "stack": stack[]->name,\n  coverImage { \n  asset->{ _id, url, metadata { lqip, dimensions { width, height } } },\n  alt,\n  kind,\n  caption,\n  hotspot,\n  crop\n }\n }\n': CASE_STUDIES_QUERY_RESULT
     '\n  *[_type == "caseStudy" && defined(slug.current) && listing == "featured"]\n    | order(priority asc, startDate desc)[0...4] { \n  _id,\n  title,\n  "slug": slug.current,\n  subtitle,\n  outcome,\n  listing,\n  priority,\n  "clientName": select(\n    client.visibility == "named" => client.company->name,\n    client.publicLabel\n  ),\n  "via": select(client.company._ref == employer._ref => null, employer->name),\n  startDate,\n  endDate,\n  "stack": stack[]->name,\n  coverImage { \n  asset->{ _id, url, metadata { lqip, dimensions { width, height } } },\n  alt,\n  kind,\n  caption,\n  hotspot,\n  crop\n }\n }\n': FEATURED_CASE_STUDIES_QUERY_RESULT
@@ -1338,6 +1351,10 @@ declare module "@sanity/client" {
     '\n  *[_type == "service" && isActive == true]\n  | order(coalesce(sortOrder, 999) asc, _updatedAt desc, _id asc) {\n    "id": _id,\n    title,\n    "slug": slug.current,\n    tagline,\n    description,\n    price,\n    timeline,\n    "buyers": coalesce(buyers, []),\n    "deliverables": coalesce(deliverables, []),\n    "stackTags": coalesce(stackTags, []),\n    "highlights": coalesce(highlights[]{\n      label,\n      description\n    }, []),\n    sortOrder,\n    \n  "createdAt": _createdAt,\n  "updatedAt": _updatedAt\n\n  }\n': SERVICES_QUERY_RESULT
     '\n  *[_type == "serviceTestimonial" && isActive == true]\n  | order(coalesce(sortOrder, 999) asc, _updatedAt desc, _id asc) {\n    "id": _id,\n    clientName,\n    clientRole,\n    quote,\n    projectType,\n    \n  "createdAt": _createdAt,\n  "updatedAt": _updatedAt\n\n  }\n': SERVICE_TESTIMONIALS_QUERY_RESULT
     '\n  *[_type == "clientProject" && isActive == true]\n  | order(coalesce(sortOrder, 999) asc, _updatedAt desc, _id asc) {\n    "id": _id,\n    title,\n    domain,\n    description,\n    "tags": coalesce(tags, []),\n    sortOrder,\n    \n  "createdAt": _createdAt,\n  "updatedAt": _updatedAt\n\n  }\n': CLIENT_PROJECTS_QUERY_RESULT
-    '\n  *[_type == "work"]\n  | order(coalesce(metadata.isFeatured, false) desc, _updatedAt desc, _id asc) {\n    "id": _id,\n    title,\n    description,\n    "tags": coalesce(tags, []),\n    "images": coalesce(images[]{\n      "url": asset->url,\n      "alt": alt,\n      "width": asset->metadata.dimensions.width,\n      "height": asset->metadata.dimensions.height,\n      "lqip": asset->metadata.lqip\n    }, []),\n    "metadata": {\n      "isFeatured": metadata.isFeatured == true,\n      "projectUrl": metadata.projectUrl,\n      "repositoryUrl": metadata.repositoryUrl,\n      "key_contributions": coalesce(metadata.key_contributions[]{\n        \n  ...,\n  _type == "portableImage" => {\n    image {\n      ...,\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions,\n          lqip\n        }\n      }\n    }\n  },\n  _type == "callout" => {\n    content[]{...}\n  },\n  _type == "tableBlock" => {\n    rows[]{\n      _key,\n      cells\n    }\n  },\n  _type == "relatedContent" => {\n    reference->{\n      _id,\n      _type,\n      title,\n      "slug": slug.current\n    }\n  },\n  _type == "block" => {\n    markDefs[]{\n      ...,\n      _type == "relatedContentLink" => {\n        reference->{\n          _id,\n          _type,\n          title,\n          "slug": slug.current\n        }\n      }\n    }\n  }\n\n      }, [])\n    },\n    \n  "createdAt": _createdAt,\n  "updatedAt": _updatedAt\n\n  }\n': WORK_LIST_QUERY_RESULT
+    '\n  *[_type == "work"]\n  | order(coalesce(metadata.isFeatured, false) desc, _updatedAt desc, _id asc) {\n    "id": _id,\n    title,\n    description,\n    "tags": coalesce(tags, []),\n    "images": coalesce(images[]{\n      "url": asset->url,\n      "alt": alt,\n      "width": asset->metadata.dimensions.width,\n      "height": asset->metadata.dimensions.height,\n      "lqip": asset->metadata.lqip\n    }, []),\n    "previewVideo": previewVideo.asset->url,\n    "metadata": {\n      "isFeatured": metadata.isFeatured == true,\n      "projectUrl": metadata.projectUrl,\n      "repositoryUrl": metadata.repositoryUrl,\n      "key_contributions": coalesce(metadata.key_contributions[]{\n        \n  ...,\n  _type == "portableImage" => {\n    image {\n      ...,\n      asset->{\n        _id,\n        url,\n        metadata {\n          dimensions,\n          lqip\n        }\n      }\n    }\n  },\n  _type == "callout" => {\n    content[]{...}\n  },\n  _type == "tableBlock" => {\n    rows[]{\n      _key,\n      cells\n    }\n  },\n  _type == "relatedContent" => {\n    reference->{\n      _id,\n      _type,\n      title,\n      "slug": slug.current\n    }\n  },\n  _type == "block" => {\n    markDefs[]{\n      ...,\n      _type == "relatedContentLink" => {\n        reference->{\n          _id,\n          _type,\n          title,\n          "slug": slug.current\n        }\n      }\n    }\n  }\n\n      }, [])\n    },\n    \n  "createdAt": _createdAt,\n  "updatedAt": _updatedAt\n\n  }\n': WORK_LIST_QUERY_RESULT
   }
+}
+// Lets @sanity/client releases that predate the global registry read it too
+declare module "@sanity/client" {
+  interface SanityQueries extends globalThis.SanityQueries {}
 }

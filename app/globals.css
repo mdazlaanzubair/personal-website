@@ -1,14 +1,5 @@
 @import "tailwindcss";
 
-@keyframes services-marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(calc(-50% - 0.375rem));
-  }
-}
-
 @keyframes testimonials-scroll-up {
   from {
     transform: translateY(0);
