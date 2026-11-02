@@ -41,6 +41,7 @@ export interface WorkInterface {
   title: string
   description: string
   tags: string[]
+  sortOrder: number | null
   images: GalleryImage[]
   /** URL of an uploaded preview clip. Takes priority over YouTube. */
   previewVideo: string | null

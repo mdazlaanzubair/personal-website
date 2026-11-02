@@ -43,6 +43,15 @@ export const work = defineType({
       validation: (rule) => rule.required().unique().max(12),
     }),
     defineField({
+      name: "sortOrder",
+      title: "Sort order",
+      type: "number",
+      group: "content",
+      description:
+        "Controls where this project is listed. Smaller numbers are older projects, larger numbers are newer; the largest is shown first.",
+      validation: (rule) => rule.required().integer().min(0),
+    }),
+    defineField({
       name: "images",
       title: "Gallery images",
       description:
@@ -127,6 +136,13 @@ export const work = defineType({
         }),
       ],
     }),
+  ],
+  orderings: [
+    {
+      title: "Sort order, newest first",
+      name: "sortOrderDesc",
+      by: [{ field: "sortOrder", direction: "desc" }],
+    },
   ],
   preview: {
     select: {

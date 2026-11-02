@@ -7,11 +7,12 @@ import {
 
 export const WORK_LIST_QUERY = defineQuery(/* groq */ `
   *[_type == "work"]
-  | order(coalesce(metadata.isFeatured, false) desc, _updatedAt desc, _id asc) {
+  | order(coalesce(metadata.isFeatured, false) desc, coalesce(sortOrder, -1) desc, _updatedAt desc, _id asc) {
     "id": _id,
     title,
     description,
     "tags": coalesce(tags, []),
+    sortOrder,
     "images": coalesce(images[]{
       "url": asset->url,
       "alt": alt,
