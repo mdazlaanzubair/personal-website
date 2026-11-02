@@ -372,6 +372,7 @@ export type Publication = {
   title: string
   abstract: string
   authors: Array<string>
+  sortOrder: number
   images?: Array<{
     asset?: SanityImageAssetReference
     media?: unknown
@@ -387,6 +388,7 @@ export type Publication = {
       "in_preparation" | "submitted" | "under_review" | "accepted" | "published"
     year?: number
     doi?: string
+    bibtex?: string
     isFeatured?: boolean
   }
 }
@@ -1139,12 +1141,13 @@ export type INTERESTS_QUERY_RESULT = Array<string> | Array<never>
 
 // Source: src/sanity/queries/publications.ts
 // Variable: PUBLICATIONS_LIST_QUERY
-// Query: *[_type == "publication"]  | order(      metadata.status == "published" desc,      coalesce(metadata.isFeatured, false) desc,      metadata.year desc,      _updatedAt desc,      _id asc    ) {    "id": _id,    title,    abstract,    "authors": coalesce(authors, []),    "images": coalesce(images[]{      "url": asset->url,      "alt": alt,      "width": asset->metadata.dimensions.width,      "height": asset->metadata.dimensions.height,      "lqip": asset->metadata.lqip    }, []),    "metadata": {      "journal": metadata.journal,      "status": metadata.status,      "year": metadata.year,      "doi": metadata.doi,      "isFeatured": metadata.isFeatured == true    },      "createdAt": _createdAt,  "updatedAt": _updatedAt  }
+// Query: *[_type == "publication"]  | order(      (metadata.status == "published") desc,      coalesce(metadata.isFeatured, false) desc,      coalesce(sortOrder, -1) desc,      metadata.year desc,      _updatedAt desc,      _id asc    ) {    "id": _id,    title,    abstract,    "authors": coalesce(authors, []),    sortOrder,    "images": coalesce(images[]{      "url": asset->url,      "alt": alt,      "width": asset->metadata.dimensions.width,      "height": asset->metadata.dimensions.height,      "lqip": asset->metadata.lqip    }, []),    "metadata": {      "journal": metadata.journal,      "status": metadata.status,      "year": metadata.year,      "doi": metadata.doi,      "bibtex": metadata.bibtex,      "isFeatured": metadata.isFeatured == true    },      "createdAt": _createdAt,  "updatedAt": _updatedAt  }
 export type PUBLICATIONS_LIST_QUERY_RESULT = Array<{
   id: string
   title: string
   abstract: string
   authors: Array<string>
+  sortOrder: number
   images:
     | Array<{
         url: string | null
@@ -1160,6 +1163,7 @@ export type PUBLICATIONS_LIST_QUERY_RESULT = Array<{
       "accepted" | "in_preparation" | "published" | "submitted" | "under_review"
     year: number | null
     doi: string | null
+    bibtex: string | null
     isFeatured: boolean | false
   }
   createdAt: string
@@ -1390,7 +1394,7 @@ declare global {
     '\n  *[_id == "siteSettings"][0]{\n    headline,\n    location,\n    email,\n    phone,\n    resumeSummary,\n    academicSummary\n  }\n': CV_PROFILE_QUERY_RESULT
     '\n  coalesce(*[_id == "siteSettings"][0].skills, [])[]{\n    "id": _key,\n    "title": coalesce(title, "Untitled skill"),\n    "tags": coalesce(tags, [])\n  }\n': SKILLS_QUERY_RESULT
     '\n  coalesce(*[_id == "siteSettings"][0].interests, [])\n': INTERESTS_QUERY_RESULT
-    '\n  *[_type == "publication"]\n  | order(\n      metadata.status == "published" desc,\n      coalesce(metadata.isFeatured, false) desc,\n      metadata.year desc,\n      _updatedAt desc,\n      _id asc\n    ) {\n    "id": _id,\n    title,\n    abstract,\n    "authors": coalesce(authors, []),\n    "images": coalesce(images[]{\n      "url": asset->url,\n      "alt": alt,\n      "width": asset->metadata.dimensions.width,\n      "height": asset->metadata.dimensions.height,\n      "lqip": asset->metadata.lqip\n    }, []),\n    "metadata": {\n      "journal": metadata.journal,\n      "status": metadata.status,\n      "year": metadata.year,\n      "doi": metadata.doi,\n      "isFeatured": metadata.isFeatured == true\n    },\n    \n  "createdAt": _createdAt,\n  "updatedAt": _updatedAt\n\n  }\n': PUBLICATIONS_LIST_QUERY_RESULT
+    '\n  *[_type == "publication"]\n  | order(\n      (metadata.status == "published") desc,\n      coalesce(metadata.isFeatured, false) desc,\n      coalesce(sortOrder, -1) desc,\n      metadata.year desc,\n      _updatedAt desc,\n      _id asc\n    ) {\n    "id": _id,\n    title,\n    abstract,\n    "authors": coalesce(authors, []),\n    sortOrder,\n    "images": coalesce(images[]{\n      "url": asset->url,\n      "alt": alt,\n      "width": asset->metadata.dimensions.width,\n      "height": asset->metadata.dimensions.height,\n      "lqip": asset->metadata.lqip\n    }, []),\n    "metadata": {\n      "journal": metadata.journal,\n      "status": metadata.status,\n      "year": metadata.year,\n      "doi": metadata.doi,\n      "bibtex": metadata.bibtex,\n      "isFeatured": metadata.isFeatured == true\n    },\n    \n  "createdAt": _createdAt,\n  "updatedAt": _updatedAt\n\n  }\n': PUBLICATIONS_LIST_QUERY_RESULT
     '\n  *[_type == "service" && isActive == true]\n  | order(coalesce(sortOrder, 999) asc, _updatedAt desc, _id asc) {\n    "id": _id,\n    title,\n    "slug": slug.current,\n    tagline,\n    description,\n    price,\n    timeline,\n    "buyers": coalesce(buyers, []),\n    "deliverables": coalesce(deliverables, []),\n    "stackTags": coalesce(stackTags, []),\n    "highlights": coalesce(highlights[]{\n      label,\n      description\n    }, []),\n    sortOrder,\n    \n  "createdAt": _createdAt,\n  "updatedAt": _updatedAt\n\n  }\n': SERVICES_QUERY_RESULT
     '\n  *[_type == "serviceTestimonial" && isActive == true]\n  | order(coalesce(sortOrder, 999) asc, _updatedAt desc, _id asc) {\n    "id": _id,\n    clientName,\n    clientRole,\n    quote,\n    projectType,\n    \n  "createdAt": _createdAt,\n  "updatedAt": _updatedAt\n\n  }\n': SERVICE_TESTIMONIALS_QUERY_RESULT
     '\n  *[_type == "clientProject" && isActive == true]\n  | order(coalesce(sortOrder, 999) asc, _updatedAt desc, _id asc) {\n    "id": _id,\n    title,\n    domain,\n    description,\n    "tags": coalesce(tags, []),\n    sortOrder,\n    \n  "createdAt": _createdAt,\n  "updatedAt": _updatedAt\n\n  }\n': CLIENT_PROJECTS_QUERY_RESULT

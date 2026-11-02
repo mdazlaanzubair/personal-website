@@ -537,19 +537,6 @@ export function ProjectModal({
   )
 }
 
-const toCitation = (publication: PublicationInterface) => {
-  const doiUrl = toDoiUrl(publication.metadata.doi)
-  return [
-    publication.authors.join(", "),
-    publication.metadata.year ? `(${publication.metadata.year}).` : null,
-    `${publication.title}.`,
-    publication.metadata.journal ? `${publication.metadata.journal}.` : null,
-    doiUrl,
-  ]
-    .filter(Boolean)
-    .join(" ")
-}
-
 export function PublicationModal({
   publication: selected,
   onClose,
@@ -571,6 +558,7 @@ export function PublicationModal({
   }
 
   const doiUrl = publication ? toDoiUrl(publication.metadata.doi) : null
+  const bibtex = publication?.metadata.bibtex?.trim() || null
   const isPublished = publication?.metadata.status === "published"
   const paragraphs = publication?.abstract
     ? publication.abstract.split(/\n\s*\n/).filter((p) => p.trim())
@@ -653,23 +641,25 @@ export function PublicationModal({
       footer={
         publication && (
           <div className="flex w-full items-center justify-between gap-2">
-            <button
-              type="button"
-              onClick={() => copy("citation", toCitation(publication))}
-              className={cn(
-                pillButtonClassName,
-                "border border-border text-foreground hover:bg-muted max-sm:size-12 max-sm:px-0"
-              )}
-            >
-              {copied === "citation" ? (
-                <CheckIcon className="size-3.5" />
-              ) : (
-                <QuoteIcon className="size-3.5" />
-              )}
-              <span className="max-sm:sr-only">
-                {copied === "citation" ? "Citation copied" : "Copy citation"}
-              </span>
-            </button>
+            {bibtex && (
+              <button
+                type="button"
+                onClick={() => copy("citation", bibtex)}
+                className={cn(
+                  pillButtonClassName,
+                  "border border-border text-foreground hover:bg-muted max-sm:size-12 max-sm:px-0"
+                )}
+              >
+                {copied === "citation" ? (
+                  <CheckIcon className="size-3.5" />
+                ) : (
+                  <QuoteIcon className="size-3.5" />
+                )}
+                <span className="max-sm:sr-only">
+                  {copied === "citation" ? "BibTeX copied" : "Copy BibTeX"}
+                </span>
+              </button>
+            )}
             {doiUrl && (
               <Link
                 href={doiUrl}
@@ -677,7 +667,7 @@ export function PublicationModal({
                 rel="noopener noreferrer"
                 className={cn(
                   pillButtonClassName,
-                  "h-11 bg-foreground px-5 text-background hover:bg-foreground/85 max-sm:h-12 max-sm:flex-1"
+                  "ml-auto h-11 bg-foreground px-5 text-background hover:bg-foreground/85 max-sm:h-12 max-sm:flex-1"
                 )}
               >
                 Read the paper

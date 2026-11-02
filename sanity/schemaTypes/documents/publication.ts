@@ -46,6 +46,15 @@ export const publication = defineType({
       validation: (rule) => rule.required().min(1).unique(),
     }),
     defineField({
+      name: "sortOrder",
+      title: "Sort order",
+      type: "number",
+      group: "content",
+      description:
+        "Controls where this publication is listed. Smaller numbers are older publications, larger numbers are newer; the largest is shown first.",
+      validation: (rule) => rule.required().integer().min(0),
+    }),
+    defineField({
       name: "images",
       title: "Gallery images",
       description:
@@ -114,6 +123,20 @@ export const publication = defineType({
             }),
         }),
         defineField({
+          name: "bibtex",
+          title: "BibTeX citation",
+          type: "text",
+          rows: 8,
+          description:
+            "Paste the full BibTeX entry (e.g. @article{...}). The Copy BibTeX button only appears on the site when this is filled in.",
+          validation: (rule) =>
+            rule.custom((value) =>
+              !value || /^\s*@\w+\s*\{/.test(value)
+                ? true
+                : "Use a BibTeX entry that starts with @type{, e.g. @article{key, ...}"
+            ),
+        }),
+        defineField({
           name: "isFeatured",
           title: "Feature this publication",
           type: "boolean",
@@ -123,6 +146,11 @@ export const publication = defineType({
     }),
   ],
   orderings: [
+    {
+      title: "Sort order, newest first",
+      name: "sortOrderDesc",
+      by: [{ field: "sortOrder", direction: "desc" }],
+    },
     {
       title: "Publication year, newest",
       name: "publicationYearDesc",

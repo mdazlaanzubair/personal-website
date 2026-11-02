@@ -16,12 +16,15 @@ export interface PublicationInterface {
   title: string
   abstract: string
   authors: string[]
+  sortOrder: number | null
   images: GalleryImage[]
   metadata: {
     journal: string | null
     status: PublicationStatus
     year: number | null
     doi: string | null
+    /** Full BibTeX entry, entered in Sanity. */
+    bibtex: string | null
     isFeatured: boolean
   }
 

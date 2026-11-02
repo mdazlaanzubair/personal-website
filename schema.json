@@ -2104,6 +2104,13 @@
         },
         "optional": false
       },
+      "sortOrder": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "number"
+        },
+        "optional": false
+      },
       "images": {
         "type": "objectAttribute",
         "value": {
@@ -2221,6 +2228,13 @@
               "optional": true
             },
             "doi": {
+              "type": "objectAttribute",
+              "value": {
+                "type": "string"
+              },
+              "optional": true
+            },
+            "bibtex": {
               "type": "objectAttribute",
               "value": {
                 "type": "string"
