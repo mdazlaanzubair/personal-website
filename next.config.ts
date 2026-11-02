@@ -31,6 +31,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "cdn.sanity.io",
       },
+      {
+        // Thumbnails for projects whose preview video is on YouTube.
+        protocol: "https",
+        hostname: "i.ytimg.com",
+      },
     ],
   },
 }

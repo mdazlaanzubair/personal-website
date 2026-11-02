@@ -1,6 +1,7 @@
 "use client"
 
 import { cn } from "@/lib/utils"
+import { youTubeEmbedUrl, youTubeThumbnailUrl } from "@/lib/youtube"
 import type { WorkInterface } from "@/type"
 import { ArrowUpRightIcon, PlayIcon } from "lucide-react"
 import { useReducedMotion } from "framer-motion"
@@ -16,9 +17,9 @@ const initials = (title: string) =>
     .join("")
 
 /**
- * An image-led project card. When the project has a preview video it loads
- * on first hover (or when mostly in view on touch screens) and plays muted
- * over the poster, like Framer and Webflow showcase cards.
+ * An image-led project card. When the project has a preview video (uploaded
+ * or on YouTube) it loads on first hover, or when mostly in view on touch
+ * screens, and plays muted over the poster, like Framer and Webflow cards.
  */
 export default function ProjectCard({
   project,
@@ -36,15 +37,28 @@ export default function ProjectCard({
   const [hasLoaded, setHasLoaded] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
 
-  const poster = project.images[0] ?? null
+  // Without images, a YouTube preview's own thumbnail is the cover.
+  const poster =
+    project.images[0] ??
+    (project.previewYoutubeId
+      ? {
+          url: youTubeThumbnailUrl(project.previewYoutubeId),
+          alt: project.title,
+          lqip: null,
+        }
+      : null)
   // An animated GIF cover behaves like a preview video: Sanity renders its
   // first frame as the still poster, and the animation plays on hover.
   const gif = poster?.url.endsWith(".gif") ? poster.url : null
   const posterUrl = gif ? `${gif}?fm=jpg` : poster?.url
+  // One preview at most: an uploaded clip, else YouTube, else a GIF cover.
   const video = prefersReducedMotion ? null : project.previewVideo
-  const animatedImage = prefersReducedMotion || video ? null : gif
-  const hasPreview = Boolean(video || animatedImage)
-  // A GIF has no pause event, so it only counts as playing while shown.
+  const youtubeId =
+    prefersReducedMotion || video ? null : project.previewYoutubeId
+  const animatedImage = prefersReducedMotion || video || youtubeId ? null : gif
+  const hasPreview = Boolean(video || youtubeId || animatedImage)
+  // A GIF or YouTube embed has no pause event here, so it only counts as
+  // playing while shown.
   const showPlaying = isPlaying && (Boolean(video) || isActive)
 
   useEffect(() => {
@@ -141,6 +155,27 @@ export default function ProjectCard({
               showPlaying ? "opacity-100" : "opacity-0"
             )}
           />
+        )}
+
+        {youtubeId && isActive && (
+          // Mounted only while active, so leaving the card stops it. Sized to
+          // cover the card the way object-cover does, whatever its ratio.
+          <div className="[container-type:size] pointer-events-none absolute inset-0 overflow-hidden">
+            <iframe
+              src={youTubeEmbedUrl(youtubeId, { background: true })}
+              title={`${project.title} preview`}
+              aria-hidden="true"
+              tabIndex={-1}
+              allow="autoplay; encrypted-media; picture-in-picture"
+              referrerPolicy="strict-origin-when-cross-origin"
+              // The player paints a moment after the frame loads.
+              onLoad={() => setTimeout(() => setIsPlaying(true), 700)}
+              className={cn(
+                "absolute top-1/2 left-1/2 h-[max(100cqh,calc(100cqw*9/16))] w-[max(100cqw,calc(100cqh*16/9))] -translate-x-1/2 -translate-y-1/2 border-0 transition-opacity duration-500",
+                showPlaying ? "opacity-100" : "opacity-0"
+              )}
+            />
+          </div>
         )}
 
         {animatedImage && hasLoaded && isActive && (

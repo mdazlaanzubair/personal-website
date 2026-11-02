@@ -1,4 +1,5 @@
 import { timelineSortKey } from "@/components/seo/Timeline"
+import { getYouTubeId } from "@/lib/youtube"
 import type { PortableTextBlock } from "next-sanity"
 
 import type {
@@ -89,8 +90,9 @@ export const toCaseStudy = (
 export const toWorkItems = (
   documents: WORK_LIST_QUERY_RESULT
 ): WorkInterface[] =>
-  documents.map((document) => ({
+  documents.map(({ previewYoutubeUrl, ...document }) => ({
     ...document,
+    previewYoutubeId: getYouTubeId(previewYoutubeUrl),
     metadata: {
       ...document.metadata,
       key_contributions: asPortableTextBlocks(

@@ -42,7 +42,10 @@ export interface WorkInterface {
   description: string
   tags: string[]
   images: GalleryImage[]
+  /** URL of an uploaded preview clip. Takes priority over YouTube. */
   previewVideo: string | null
+  /** Video ID parsed from the project's YouTube preview link. */
+  previewYoutubeId: string | null
 
   metadata: {
     isFeatured: boolean

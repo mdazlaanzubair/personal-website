@@ -1,6 +1,7 @@
 import { ProjectsIcon } from "@sanity/icons/Projects"
 import { defineArrayMember, defineField, defineType } from "sanity"
 
+import { getYouTubeId } from "../../../lib/youtube"
 import { MAX_DESCRIPTION_LENGTH, MAX_TITLE_LENGTH } from "../shared/validation"
 
 export const work = defineType({
@@ -67,10 +68,24 @@ export const work = defineType({
       name: "previewVideo",
       title: "Preview video",
       description:
-        "Optional short, silent loop (MP4 or WebM, ideally under 10 s and 5 MB). It plays on the project card when hovered and leads the gallery. The first gallery image is its poster.",
+        "Optional short, silent loop (MP4 or WebM, ideally under 10 s and 5 MB). It plays on the project card when hovered and leads the gallery. The first gallery image is its poster. If a YouTube URL is also set, this upload is used.",
       type: "file",
       group: "content",
       options: { accept: "video/mp4,video/webm" },
+    }),
+    defineField({
+      name: "previewYoutubeUrl",
+      title: "Preview video (YouTube)",
+      description:
+        "Use a YouTube link instead of uploading, to save Sanity storage. It plays muted on the project card when hovered and leads the gallery. Watch, youtu.be and Shorts links all work.",
+      type: "url",
+      group: "content",
+      validation: (rule) =>
+        rule.custom((url) =>
+          !url || getYouTubeId(url)
+            ? true
+            : "Use a YouTube video link, e.g. https://www.youtube.com/watch?v=…"
+        ),
     }),
     defineField({
       name: "metadata",

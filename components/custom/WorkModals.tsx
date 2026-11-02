@@ -8,6 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
+import { youTubeEmbedUrl, youTubeThumbnailUrl } from "@/lib/youtube"
 import type { GalleryImage, PublicationInterface, WorkInterface } from "@/type"
 import {
   ArrowUpRightIcon,
@@ -188,6 +189,7 @@ function useLastNonNull<T>(value: T | null) {
 
 type MediaItem =
   | { kind: "video"; url: string; poster: string | null; alt: string }
+  | { kind: "youtube"; id: string; alt: string }
   | { kind: "image"; image: GalleryImage; alt: string }
 
 /** A viewer that shows every screenshot whole, with thumbnails beneath. */
@@ -252,6 +254,16 @@ function MediaViewer({
               controls
               className="size-full rounded-md object-contain"
             />
+          ) : current.kind === "youtube" ? (
+            <iframe
+              key={current.id}
+              src={youTubeEmbedUrl(current.id, { autoplay: true })}
+              title={current.alt}
+              allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+              allowFullScreen
+              referrerPolicy="strict-origin-when-cross-origin"
+              className="size-full rounded-md border-0"
+            />
           ) : (
             <Image
               key={current.image.url}
@@ -310,7 +322,12 @@ function MediaViewer({
       {count > 1 && (
         <div className="flex shrink-0 gap-2 overflow-x-auto pb-0.5 sm:gap-2.5">
           {items.map((item, i) => {
-            const thumb = item.kind === "video" ? item.poster : item.image.url
+            const thumb =
+              item.kind === "video"
+                ? item.poster
+                : item.kind === "youtube"
+                  ? youTubeThumbnailUrl(item.id)
+                  : item.image.url
             const isActive = i === index
             return (
               <button
@@ -335,7 +352,7 @@ function MediaViewer({
                     className="object-cover object-top"
                   />
                 )}
-                {item.kind === "video" && (
+                {item.kind !== "image" && (
                   <span className="absolute bottom-1 left-1 inline-flex size-5 items-center justify-center rounded-full bg-black/70 text-white">
                     <PlayIcon className="size-2.5 fill-current" />
                   </span>
@@ -368,7 +385,15 @@ export function ProjectModal({
                 alt: `${project.title} walkthrough video`,
               },
             ]
-          : []),
+          : project.previewYoutubeId
+            ? [
+                {
+                  kind: "youtube" as const,
+                  id: project.previewYoutubeId,
+                  alt: `${project.title} walkthrough video`,
+                },
+              ]
+            : []),
         ...project.images.map((image, i) => ({
           kind: "image" as const,
           image,

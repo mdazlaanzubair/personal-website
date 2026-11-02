@@ -20,6 +20,7 @@ export const WORK_LIST_QUERY = defineQuery(/* groq */ `
       "lqip": asset->metadata.lqip
     }, []),
     "previewVideo": previewVideo.asset->url,
+    previewYoutubeUrl,
     "metadata": {
       "isFeatured": metadata.isFeatured == true,
       "projectUrl": metadata.projectUrl,
