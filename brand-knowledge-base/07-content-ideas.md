@@ -64,11 +64,10 @@ generic, quick context dump (all optional — I'll
 work with whatever you give me):
 
 1. What did you build, ship, or work on this week?
-2. Anything interesting happen in class or with students?
-3. Did you read any papers, articles, or see any 
+2. Did you read any papers, articles, or see any 
    AI/tech news worth reacting to?
-4. Any client calls, projects, or freelance conversations?
-5. Anything frustrate or surprise you this week?
+3. Any client calls, projects, or freelance conversations?
+4. Anything frustrate or surprise you this week?
 ```
 
 After they respond — even partially — generate ideas using their real context combined with the content pillars and idea bank below. If they respond with "nothing" or "just give me something," THEN use the evergreen idea bank as a fallback.
@@ -134,8 +133,8 @@ Technical observations, architectural decisions, debugging stories, frontend com
 ### Pillar 2: AI & research
 Paper breakdowns, AI product evaluations, LLM observations, context engineering, agent architecture, research translation, benchmark analysis, AI tool critiques.
 
-### Pillar 3: Teaching & mentorship
-Classroom observations, student questions that break assumptions, curriculum design decisions, the gap between textbooks and production, explaining concepts to beginners.
+### Pillar 3: Explaining systems
+The gap between textbook explanations and production reality, explaining complex concepts to beginners, assumptions developers commonly hold.
 
 ### Pillar 4: Building in public
 Service delivery process, tools and automations built, project demos, shipping speed, client pipeline system, behind-the-scenes of the productized service.
@@ -184,12 +183,10 @@ MVP scoping, what to build vs. what not to build, founder mistakes, product deci
 
 ## Evergreen idea bank (fallback for Mode 2 when no context given)
 
-### Teaching-derived
-- "A student asked me [question]. Here's why it's better than it sounds."
-- "I'm designing a [course] curriculum. The hardest part is [unexpected challenge]."
+### Explaining systems
 - "The gap between how textbooks explain [concept] and how production works."
-- "Today I explained [complex topic] without jargon. Here's the analogy I used."
-- "My students assume [common assumption]. The reality is [reframe]."
+- "[Complex topic] without jargon. Here's the analogy I use."
+- "Most developers assume [common assumption]. The reality is [reframe]."
 
 ### Build-in-public
 - "Day [N] of building [thing]. Here's where I am."
@@ -212,7 +209,6 @@ MVP scoping, what to build vs. what not to build, founder mistakes, product deci
 ### Career & industry
 - "The skill nobody teaches in CS programs but every employer wants."
 - "The difference between 3 years of experience and 1 year repeated 3 times."
-- "Why teaching made me a better engineer."
 
 ### Product thinking
 - "Every founder thinks their MVP needs [N] features. It needs 2."
@@ -246,7 +242,7 @@ Output in the chat as a table:
 | Day | Platform | Hook/Title | Pillar | Effort |
 |---|---|---|---|---|
 | Mon | LinkedIn | [hook] | Engineering craft | Quick |
-| Wed | LinkedIn | [hook] | Teaching | Quick |
+| Wed | LinkedIn | [hook] | Explaining systems | Quick |
 | Fri | Instagram | [concept] | Build in public | Medium |
 ```
 

@@ -25,7 +25,7 @@ const PROOF = [
   { value: "5+ years", label: "shipping production web apps" },
   { value: "PM Workbench AI", label: "Software Engineer, current" },
   { value: "Peer-reviewed", label: "AI for software engineering research" },
-  { value: "Visiting faculty", label: "teaching software engineering & CS" },
+  { value: "MS, FAST", label: "software engineering, completing 2026" },
 ]
 
 const PREVIOUSLY = ["Cobone", "Yallacompare", "Transviti"]
@@ -43,7 +43,7 @@ export default function HeroSection() {
             animate="visible"
             custom={0}
           >
-            Software Engineer · Researcher · Visiting Faculty
+            Software Engineer · Researcher
           </motion.span>
 
           <motion.h1
@@ -65,8 +65,7 @@ export default function HeroSection() {
           >
             I&apos;m Azlaan, a software engineer who builds web products,
             integrations and AI-enabled workflows. I also publish research on AI
-            for software engineering, and teach software engineering at
-            university level.
+            for software engineering.
           </motion.p>
 
           <motion.div

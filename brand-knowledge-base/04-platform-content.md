@@ -24,9 +24,9 @@ Never post the same content across platforms. The core identity — who I am, ho
 | Platform | Audience | Archetype | Style |
 |---|---|---|---|
 | **Hashnode** | Senior devs, leads, researchers | The System Source | Long-form, evidence-heavy, ASCII diagrams, blockquote principles, references. |
-| **LinkedIn** | CTOs, hiring managers, recruiters | The Business Value | Short skimmable paragraphs. Zero code. Judgment, ROI, credibility. Teaching signals leadership and communication. |
+| **LinkedIn** | CTOs, hiring managers, recruiters | The Business Value | Short skimmable paragraphs. Zero code. Judgment, ROI, credibility. |
 | **X / Threads** | Engineers, peer developers | The Dev-to-Dev Signal | Punchy opinions, paper reactions, binary reframes, unpolished directness. |
-| **Instagram** | Juniors, students, design-conscious devs | The Visual Framework | Carousels, aesthetic layouts, high-level structural advice, relatability, classroom-derived insights. |
+| **Instagram** | Juniors, students, design-conscious devs | The Visual Framework | Carousels, aesthetic layouts, high-level structural advice, relatability. |
 
 Each platform version answers: what does *this* audience need from *this* insight, in the format *they* consume? A LinkedIn post is not a shortened blog post. An Instagram carousel is not a LinkedIn post with images.
 
@@ -66,8 +66,8 @@ Each platform version answers: what does *this* audience need from *this* insigh
 
 ## Platform 2 — LinkedIn
 
-**Audience:** Hiring managers, CTOs, leads, recruiters. They skim. They respond to structure, bold claims backed by evidence, and credibility signals. Teaching-derived content is high-value here — a post about what you learned designing a Software Architecture curriculum signals leadership, communication clarity, and mentorship capacity differently than a post about what you read in a paper.
-**Dominant register:** Analytical for insights. Motivational for career lessons and teaching reflections. Narrative sparingly — only when a short story lands faster than an argument.
+**Audience:** Hiring managers, CTOs, leads, recruiters. They skim. They respond to structure, bold claims backed by evidence, and credibility signals.
+**Dominant register:** Analytical for insights. Motivational for career lessons. Narrative sparingly — only when a short story lands faster than an argument.
 **Performs:** White space, bold hooks, one strong idea per post, professional judgment through specifics, qualified credibility.
 **Fails:** "I'm excited to share…", engagement bait ("Agree?"), long unbroken paragraphs, code blocks, markdown (LinkedIn does not render it), vague platitudes.
 **Formatting:** No Markdown rendering. Use line breaks for structure. CAPS sparingly for emphasis. One emoji max as a structural marker — the engagement gain is entirely in the first emoji; more adds nothing. **"See more" truncation cuts at ~210 characters** — the hook must land before that cut. Data from 3M+ posts shows hooks under 40 characters significantly outperform longer ones, and story-style openers outperform questions and plain statements.
@@ -161,7 +161,7 @@ Each platform version answers: what does *this* audience need from *this* insigh
 
 ## Platform 4 — Instagram
 
-**Audience:** Younger devs, juniors, students, design-conscious engineers, tech-curious audience. Azlaan now has a direct relationship with this demographic through university teaching — students are people he works with weekly, not just an anonymous broadcast audience. Teaching moments, the gap between textbook explanations and production reality, and relatable classroom observations are content this audience recognizes as authentic. They scroll fast — the visual carries the argument.
+**Audience:** Younger devs, juniors, students, design-conscious engineers, tech-curious audience. The gap between textbook explanations and production reality is content this audience recognizes as authentic. They scroll fast — the visual carries the argument.
 **Dominant register:** Motivational and narrative. Analytical register simplified into accessible frameworks.
 **Performs:** Visual clarity, digestible frameworks, relatable engineering moments, clean aesthetic, high-level structural advice.
 **Fails:** Dense technical prose, code blocks, jargon without visual translation, text-heavy slides, generic stock aesthetics.
@@ -211,7 +211,7 @@ Each platform version answers: what does *this* audience need from *this* insigh
 
 **Audience:** Engineers and tech-curious readers. Discussion-starter energy. The most casual platform.
 **Dominant register:** Narrative, casual. Reads like a smart friend texting you an observation. Analytical precision in the idea, loose delivery.
-**Performs:** Casual observations, discussion starters, micro-opinions, relatable frustrations, humor, classroom observations. Posts that make people reply. Teaching-derived content is a natural fit — casual observations like "Today a student asked why we can't just put everything in one component. I had to sit down for a minute." land perfectly here.
+**Performs:** Casual observations, discussion starters, micro-opinions, relatable frustrations, humor. Posts that make people reply.
 **Fails:** Polished LinkedIn-style posts, formal structure, long analysis, self-promotion without personality, hashtags.
 **Formatting:** Up to 500 characters. No markdown. No traditional hashtags — use one topic tag per post for discoverability. Text carries the idea, but pairing text with an image boosts engagement by ~60% over text-only.
 **Algorithm notes:** Engagement velocity is the #1 ranking signal — the first 30–60 minutes after posting determine distribution. Reply to every comment fast. Reply depth (back-and-forth conversation) matters far more than likes. Engagement bait ("Like if you agree") is actively penalized. Links are no longer suppressed — Mosseri confirmed improved link ranking in 2025. Post 3–5 times per week for consistency; more than 3 per day risks splitting engagement.

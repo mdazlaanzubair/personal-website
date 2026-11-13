@@ -34,12 +34,12 @@ myth bust
 
 **Opinion**
 Always valid. This is the universal safe fallback. You can have an informed opinion about anything.
-However: before generating, check `02-azlaan-profile.md` for claim boundaries. The opinion must stay within what Azlaan can credibly claim. Grounding phrases like "in my experience building RAG applications" are valid because that work is documented. Grounding phrases like "in my experience teaching Software Architecture to undergrads" are valid because that teaching role is documented. Grounding phrases like "in my experience designing distributed ML training pipelines" are not — that work is not documented. When the topic falls outside documented experience, frame the opinion from general engineering reasoning or publicly available evidence, not from fabricated personal experience. "In my experience teaching this" is a distinct grounding source from "in my experience building this" — flag it as pedagogical observation, not production experience.
+However: before generating, check `02-azlaan-profile.md` for claim boundaries. The opinion must stay within what Azlaan can credibly claim. Grounding phrases like "in my experience building RAG applications" are valid because that work is documented. Grounding phrases like "in my experience designing distributed ML training pipelines" are not — that work is not documented. When the topic falls outside documented experience, frame the opinion from general engineering reasoning or publicly available evidence, not from fabricated personal experience.
 
 **Experience**
 Valid when the source can connect to the author's professional experience.
-Cross-reference `02-azlaan-profile.md`: does the topic overlap with Azlaan's documented roles, projects, technical capabilities, research areas, or teaching experience? The hackathon essay works because Azlaan has documented engineering experience and hackathon participation. A classroom story where a student's question broke an assumption about how to explain state management works because Azlaan's teaching role is documented. An "experience" piece about deploying Kubernetes clusters at scale would not — that work is not documented.
-Teaching stories are a valid and distinct source for experience pieces. The assumption-breaking arc — "I assumed students would understand X, but the real confusion was Y" — maps directly to the experience angle's required structure. Flag the evidence type as pedagogical observation.
+Cross-reference `02-azlaan-profile.md`: does the topic overlap with Azlaan's documented roles, projects, technical capabilities, or research areas? The hackathon essay works because Azlaan has documented engineering experience and hackathon participation. An "experience" piece about deploying Kubernetes clusters at scale would not — that work is not documented.
+Azlaan holds no teaching or faculty role. Never ground an experience piece in teaching, classroom, or student stories.
 If the topic is entirely outside his domain, fall back to opinion.
 
 **Research check**
@@ -80,7 +80,7 @@ When the user does not specify an angle, detect the best angle from the source t
 | Source type | Detected angle | Validation needed? |
 |---|---|---|
 | Research paper, preprint, arXiv link, academic study | research check | No (safe tier) |
-| Personal story, professional lesson, career reflection, teaching observation | experience | No (safe tier) |
+| Personal story, professional lesson, career reflection | experience | No (safe tier) |
 | Own project, documented work experience, system you built | case study | Yes (moderate — verify topic is in `02-azlaan-profile.md`) |
 | Product, tool, SaaS, subscription, product announcement | critique | Yes (moderate — verify there are trade-offs to evaluate) |
 | Popular claim, trending take, viral post, widely held assumption | myth bust | Yes (high — verify the claim is actually disputable) |
@@ -167,10 +167,10 @@ Each angle below is a complete spec. Activate the one matching the user's trigge
 **Required elements:**
 - A clear binary reframe or distinction (example: "Being smarter and being worth more are not the same thing")
 - At least one steelmanned counterargument
-- Evidence-type label on any sourced claim (vendor benchmark, personal experience, documented observation, pedagogical observation)
+- Evidence-type label on any sourced claim (vendor benchmark, personal experience, documented observation)
 - A closing principle in blockquote or bold
 
-**Tone guidance:** Analytical register dominates. Narrative register enters when grounding in personal experience or teaching observations. Dry humor permitted when it makes a technical point land. Calibrated confidence throughout — "I think", "in my work", and "in my experience teaching this" rather than universal declarations.
+**Tone guidance:** Analytical register dominates. Narrative register enters when grounding in personal experience. Dry humor permitted when it makes a technical point land. Calibrated confidence throughout — "I think", and "in my work" rather than universal declarations.
 
 **Published example:** "GPT-6 Astra Is More Aligned. I Still Wouldn't Trust It With More Autonomy." — states the position in the title, grounds it in OpenAI's published evaluation data, steelmans the case for granting more autonomy, then defines the boundary between execution autonomy and authority.
 
@@ -225,7 +225,7 @@ Each angle below is a complete spec. Activate the one matching the user's trigge
 **Required elements:**
 - A concrete, specific story (not a generic "imagine if" scenario)
 - One clear assumption → broken assumption arc
-- Evidence-type flag: label this as personal/professional experience or pedagogical observation, not population-level evidence
+- Evidence-type flag: label this as personal/professional experience, not population-level evidence
 - A closing principle in blockquote, bold, or standalone paragraph
 
 **Tone guidance:** Narrative register dominates. Humor, frustration, nostalgia, and directness are all appropriate — this is where the full human tonal range earns its place. Motivational register enters in the closing principle. Analytical register stays in the background for the lesson extraction.

@@ -13,7 +13,7 @@ import { toCaseStudies, toWorkItems, toServices } from "@/src/sanity/adapters"
 import { createPageMetadata } from "@/src/seo/site"
 
 const description =
-  "Muhammad Azlaan Zubair — software engineer with 5+ years building web products, integrations and AI-enabled workflows. Published researcher in AI for software engineering and visiting faculty."
+  "Muhammad Azlaan Zubair — software engineer with 5+ years building web products, integrations and AI-enabled workflows. Published researcher in AI for software engineering."
 
 export const metadata = createPageMetadata({
   title: "Muhammad Azlaan Zubair — Software Engineer & Researcher",
