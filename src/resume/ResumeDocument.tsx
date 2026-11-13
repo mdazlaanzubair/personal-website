@@ -287,9 +287,11 @@ export default function ResumeDocument({
     </Section>
   )
 
+  // The resume puts the stack right under the summary, where recruiters and
+  // ATS keyword matching look first; education closes it.
   const sections = isAcademic
     ? [summary, education, publications, projectList, experience, skills]
-    : [summary, experience, education, projectList, publications, skills]
+    : [summary, skills, experience, projectList, publications, education]
 
   return (
     <Document
@@ -303,16 +305,15 @@ export default function ResumeDocument({
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
           <Text style={styles.name}>{data.name}</Text>
-          <Text style={styles.headline}>
-            {data.headline} from <Labelled link={data.location} underline />
-          </Text>
+          <Text style={styles.headline}>{data.headline}</Text>
           <Text style={styles.headerLine}>
-            Email:{" "}
+            <Labelled link={data.location} underline />
+            {" | "}
             <Labelled
               link={{ label: data.email, url: `mailto:${data.email}` }}
               underline
             />
-            {data.phone && ` | Contact: ${data.phone}`}
+            {data.phone && ` | ${data.phone}`}
           </Text>
           <Text style={styles.headerLine}>
             <LinkList links={data.links} underline />

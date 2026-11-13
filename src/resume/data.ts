@@ -70,6 +70,14 @@ const byNewest = <T extends { timeline: string }>(items: T[]) =>
     (a, b) => timelineSortKey(b.timeline) - timelineSortKey(a.timeline)
   )
 
+// A degree that ends after this month is still in progress.
+const isUpcoming = (timeline: string) => {
+  const now = new Date()
+  const thisMonth = now.getFullYear() * 12 + now.getMonth() + 1
+  const end = timelineSortKey(timeline)
+  return Number.isFinite(end) && end > thisMonth
+}
+
 const settled = <T>(result: PromiseSettledResult<T>, fallback: T) =>
   result.status === "fulfilled" ? result.value : fallback
 
@@ -150,7 +158,12 @@ export async function getResumeData(): Promise<ResumeData> {
     links,
     experience,
     education: byNewest(toAcademicHistory(settled(academicResult, []))).map(
-      (item) => ({ ...item, timeline: formatTimeline(item.timeline) })
+      (item) => ({
+        ...item,
+        timeline: isUpcoming(item.timeline)
+          ? `${formatTimeline(item.timeline)} (expected)`
+          : formatTimeline(item.timeline),
+      })
     ),
     skills: toSkills(settled(skillsResult, [])).map((skill) => ({
       ...skill,

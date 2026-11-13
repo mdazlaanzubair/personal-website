@@ -19,13 +19,13 @@ When this file conflicts with an old post, draft, or generated biography, this f
 
 - **Name:** Muhammad Azlaan Zubair
 - **Preferred public name:** Muhammad Azlaan Zubair / Azlaan
-- **Current professional identity:** Software Engineer with a frontend-focused web engineering background; visiting faculty teaching software engineering and computer science at the university level
+- **Current professional identity:** Software Engineer with a frontend-focused web engineering background
 - **Current location:** Karachi, Pakistan
-- **Current roles:** Software Engineer at PM Workbench AI, a US startup building AI context-aware agents that enables the context transparency, observability and traceability. Visiting Faculty at a reputed university, teaching undergraduate Software Engineering and Computer Science courses.
-- **Professional experience:** More than five years across web applications, frontend engineering, system integrations, automation, and increasingly AI-enabled product workflows — plus university-level teaching
+- **Current roles:** Software Engineer at PM Workbench AI, a US startup building AI context-aware agents that enables the context transparency, observability and traceability.
+- **Professional experience:** More than five years across web applications, frontend engineering, system integrations, automation, and increasingly AI-enabled product workflows
 - **Academic status:** MS Software Engineering from FAST
 - **Research status:** One peer-reviewed AI/software-engineering research article published; additional research is in progress
-- **Teaching status:** Active visiting faculty for Bachelor-level SE/CS courses
+- **Teaching status:** Does not hold a teaching or faculty role. Do not claim university teaching, visiting faculty, or classroom experience.
 
 ## Short factual summary
 
@@ -33,9 +33,7 @@ Azlaan is a software engineer whose strongest established professional foundatio
 
 His more recent work increasingly intersects with AI-enabled products and workflows, including interfaces around extraction, embedding, analysis and synthesis pipelines, LLM API integrations, RAG-based document systems, AI writing assistance, and applied research in AI for software engineering.
 
-He has also begun teaching at the university level as visiting faculty, covering courses that span foundational programming, software engineering, architecture, product management, HCI, and agentic AI. This teaching role reinforces his trajectory from practitioner toward someone who can explain, structure, and evaluate systems — not just build them.
-
-His profile should communicate an expanding trajectory from frontend-focused software engineering toward broader software systems, AI engineering, architecture thinking, research-informed engineering, and academic teaching without pretending that the destination has already been reached.
+His profile should communicate an expanding trajectory from frontend-focused software engineering toward broader software systems, AI engineering, architecture thinking, and research-informed engineering without pretending that the destination has already been reached.
 
 ## Professional experience
 
@@ -52,29 +50,6 @@ Documented work includes:
 - Developing product interfaces for Product Managers working with AI-assisted requirements and document-generation workflows.
 
 **Public-claim boundary:** this supports experience building interfaces and integrations around AI workflows. It does not automatically support claims that Azlaan designed or owned the underlying model infrastructure, distributed processing backend, or all AI architecture decisions unless Azlaan explicitly supplies that evidence.
-
-### Visiting Faculty — Reputed University
-**2026 – Present**
-
-Azlaan teaches undergraduate Bachelor-level courses as visiting faculty in Software Engineering and Computer Science. Course offerings include:
-
-- Software Engineering
-- Human-Computer Interaction (HCI)
-- IT for Managers
-- Product Management
-- Project Management
-- Software Architecture
-- Agentic AI
-- Programming Fundamentals
-- Python
-- Web Development
-- Object-Oriented Programming (OOP)
-
-**Scope note:** the breadth of course offerings spans foundational programming, software engineering methodology, architecture, AI, and cross-disciplinary subjects (product management, HCI, IT for managers). This supports claims about teaching and explaining systems across these domains. It does not automatically support claims of deep specialist expertise in every course's subject matter — teaching introductory Product Management to undergraduates is not the same as being a product management expert.
-
-**Public-claim boundary:** this supports experience teaching software engineering and computer science at the university level, designing curriculum, explaining complex systems to newcomers, and classroom-derived pedagogical observations. It does not support claims of a full-time academic appointment, tenured position, or academic leadership unless Azlaan explicitly supplies that evidence.
-
-**University name caution:** do not name the university in generated content until Azlaan explicitly confirms which name to use publicly. Use "a reputed university" or similar phrasing.
 
 ### Cobone — Frontend Developer
 **September 2024 – December 2025**
@@ -293,15 +268,6 @@ Documented themes:
 - LLM API integration
 - Vector databases / semantic search
 
-### Teaching experience
-
-University-level teaching of SE/CS courses demonstrates:
-
-- Ability to explain complex systems to people encountering them for the first time
-- Curriculum design across foundational and advanced topics
-- Cross-disciplinary breadth (engineering, architecture, AI, product, HCI)
-- Pedagogical observation as a distinct evidence source
-
 ### Active growth / research areas
 
 These may be discussed as areas of study, work, or increasing focus, but should not automatically become expert titles:
@@ -316,7 +282,6 @@ These may be discussed as areas of study, work, or increasing focus, but should 
 - Software architecture
 - Reliable intelligent workflows
 - Research engineering
-- Academic teaching and technical education
 
 ## Career direction
 
@@ -327,7 +292,7 @@ Azlaan's long-term direction includes:
 - Deeper software architecture responsibility over time.
 - Research-engineering and applied-research opportunities.
 - PhD / academic research possibilities where there is credible fit.
-- Academic teaching, mentorship, and potential longer-term academic involvement — the visiting faculty role is an active step in this direction.
+- Potential longer-term academic involvement, including teaching and mentorship.
 - Building SaaS products, developer tools, automation systems, and AI-enabled products.
 - Developing a technical reputation that can support future entrepreneurship, research collaboration, consulting/advisory possibilities, academic positions, and high-value employment.
 
@@ -383,9 +348,6 @@ Personal interests can humanize content when they are genuinely relevant. Do not
 - Conducts or contributes to ongoing applied AI/software-engineering research
 - Builds software across frontend, API integrations, automation, and selected full-stack/AI-enabled systems
 - Interested in software architecture, AI agents, LLM systems, context engineering, and reliable AI workflows
-- Teaches software engineering and computer science courses at the university level as visiting faculty
-- Designs curriculum and explains complex engineering systems to undergraduate students
-- Draws on classroom observations as a distinct evidence source (pedagogical observation)
 
 ### Claims that require direct supporting evidence or explicit user approval
 
@@ -402,9 +364,7 @@ Personal interests can humanize content when they are genuinely relevant. Do not
 - Industry-leading
 - Research lead
 - Claims that Azlaan designed an entire production AI architecture when his documented contribution was primarily frontend/integration work
-- Full-time professor / tenured faculty / academic leader
-- Education expert / pedagogy researcher (unless Azlaan supplies that evidence)
-- Deep specialist authority in every subject he teaches — teaching an introductory course is not the same as being a domain expert
+- Any teaching, lecturer, or faculty role (none is held)
 
 ## Operating rule for agents
 

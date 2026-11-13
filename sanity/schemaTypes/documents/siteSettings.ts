@@ -89,7 +89,7 @@ export const siteSettings = defineType({
       name: "academicSummary",
       title: "Academic CV summary",
       description:
-        "For professors and research teams. Your research focus, record, studies and teaching.",
+        "For professors and research teams. Your research focus, record and studies.",
       type: "text",
       rows: 4,
       group: "cv",

@@ -56,7 +56,7 @@ Always have these available when drafting outreach. Mention only the ONE relevan
 
 All outreach must stay within the claim boundaries defined in `02-azlaan-profile.md`.
 
-- **Safe claims:** software engineer, years shipping production apps, builds MVPs in 7 business days, teaches software engineering at university level, published researcher
+- **Safe claims:** software engineer, years shipping production apps, builds MVPs in 7 business days, published researcher
 - **Never claim:** AI expert, senior architect, thought leader, or any title not supported by profile
 - **Tone:** confident but not arrogant, specific not generic, helpful not salesy, casual not corporate
 
